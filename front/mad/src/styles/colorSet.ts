@@ -9,6 +9,8 @@ const colorSet = {
     placeholder: "#E3E3E3",
     colorless: "#FFFFFF", // CSS 기본 "white"과의 혼동을 피하기 위해 "colorless"로 표기
     red: "#FF2E00",
+    white:"#FFFFFF",
+    gray:"#B6B6B6"
   };
   
   export default colorSet;

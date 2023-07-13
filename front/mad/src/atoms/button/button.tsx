@@ -30,18 +30,18 @@ const Button = styled.button<ButtonProps>`
     switch (variant) {
       case ButtonVariant.outlined:
         return css`
-          border: 1px solid ${colorSet.primary};
+          border: 10px solid ${colorSet.white};
           border-radius: 5px;
           padding: 10px 20px;
-          color: ${colorSet.primary};
+          color: ${colorSet.white};
 
           :hover {
-            background-color: ${colorSet.secondary};
+            background-color: ${colorSet.gray};
           }
         `;
       case ButtonVariant.contained:
         return css`
-          background-color: ${colorSet.primary};
+          background-color: ${colorSet.gray};
           border-radius: 5px;
           padding: 10px 20px;
           color: ${colorSet.colorless};
