@@ -2,24 +2,24 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("MYSQL_URL_DEV")
+  provider = "mysql"
+  url      = env("MYSQL_URL_DEV")
 }
 
 model User {
-    id String @id @default(uuid())
+  id String @id @default(uuid())
 
-    name         String
-    photo        String?
-    googleId     String  @unique()
-    refreshToken String?
-    score        Int     @default(0)
+  name         String
+  photo        String?
+  score        Int     @default(0)
+  googleId     String  @unique()
+  refreshToken String?
 
-    deletedAt DateTime?
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @default(now())
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
 }

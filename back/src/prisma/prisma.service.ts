@@ -31,10 +31,18 @@ export class PrismaService
       const before = Date.now();
       const result = await next(params);
       const after = Date.now();
+      const time = after - before;
       console.log(
-        `Query ${params.model}.${params.action} took ${after - before}ms`,
+        `Database 1/2 | ${params.model}.${params.action}\n${JSON.stringify(
+          params.args,
+          null,
+          2,
+        )}`,
       );
-      //   console.log(`Result ${JSON.stringify(result)}`);
+      console.log(
+        `Database 2/2 | ${time}ms\n${JSON.stringify(result, null, 2)}`,
+      );
+      console.trace();
       return result;
     });
   }
