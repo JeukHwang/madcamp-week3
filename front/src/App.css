@@ -43,3 +43,17 @@
   font-weight: normal;
   font-style: normal;
 }
+
+/* Custom styles for the toast container */
+.custom-toast-container {
+  .Toastify__toast-container {
+    /* Customize the container background color */
+    background-color: #ff0000;
+  }
+}
+
+/* Custom styles for the toast message */
+.Toastify__toast {
+  /* Customize the toast message background color */
+  background-color: #ff0000;
+}
