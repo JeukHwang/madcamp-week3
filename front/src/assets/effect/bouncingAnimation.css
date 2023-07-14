@@ -1,0 +1,16 @@
+@keyframes bounce {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .bounce {
+    animation: bounce 0.5s;
+  }
+  

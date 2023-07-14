@@ -7,24 +7,28 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import Button from "../../atoms/button/button";
 import Icon from "../../assets/icon/Icon";
+import Java from "../../assets/icon/java.svg";
+import JavaScript from "../../assets/icon/javascript.svg";
+import Python from "../../assets/icon/python.svg";
+import TypeScript from "../../assets/icon/typescript.svg";
+import Dart from "../../assets/icon/dart.svg";
+import Check from '../../assets/icon/programming.png';
+import "../../assets/effect/bouncingAnimation.css";
 const width=7;
 const iconimage = [
-  Icon.Java,
-  Icon.Python,
-  Icon.JavaScript,
-  Icon.TypeScript,
-
-
+  Java
+  ,JavaScript
+  ,Python
+  ,TypeScript
+  , Dart
 ]
-const iconcolors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"]
-const icons = ["🍎", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒"]
 const Main = () => {
   const [currentColorArrangement, setCurrentColorArrangement] = useState<string[]>([]);
   const [selectedCells, setSelectedCells] = useState<[number, number][]>([]);
   const createBoard = () => {
   const randomcolorarrangement = []
   for (let i = 0; i < width*width; i++) {
-    const randomColor = iconcolors[Math.floor(Math.random()*iconcolors.length)]
+    const randomColor = iconimage[Math.floor(Math.random()*iconimage.length)]
     randomcolorarrangement.push(randomColor)
   }
   setCurrentColorArrangement(randomcolorarrangement)
@@ -36,7 +40,6 @@ const handleCellClick = (row: number, col: number) => {
     alert("You can only select up to 3 cells.");
     return;
   }
-
 
   if (selectedCells.length > 0) {
     const [prevRow, prevCol] = selectedCells[selectedCells.length - 1];
@@ -51,32 +54,31 @@ const handleCellClick = (row: number, col: number) => {
     }
   }
 
-/*   if (selectedCells.length > 0) {
-    const [prevRow, prevCol] = selectedCells[selectedCells.length - 1];
-    const prevColor = currentColorArrangement[prevRow * width + prevCol];
-    const currentColor = currentColorArrangement[row * width + col];
-
-    if(prevColor !== currentColor){
-      alert("⚠ You can only select adjacent cells with the same color.");
-      return;
-    }
-
-
-  } */
-  const newSelectedCells = [...selectedCells];
-  const cellIndex = newSelectedCells.findIndex(([r, c]) => r === row && c === col);
+  const cellIndex = selectedCells.findIndex(([r, c]) => r === row && c === col);
 
   if (cellIndex !== -1) {
     // Clicked on an already selected cell, so deselect it
-    newSelectedCells.splice(cellIndex, 1);
+    const updatedSelectedCells: [number, number][] = selectedCells.filter(([r, c]) => !(r === row && c === col));
+    setSelectedCells(updatedSelectedCells);
   } else {
     // Clicked on a new cell, add it to selected cells
-    newSelectedCells.push([row, col]);
-    console.log(row,col);
-  }
+    const updatedSelectedCells: [number, number][] = [...selectedCells, [row, col]];
+    setSelectedCells(updatedSelectedCells);
 
-  setSelectedCells(newSelectedCells);
+    // Add the "bounce" class to the clicked cell
+    const cell = document.getElementById(`cell-${row}-${col}`);
+    if (cell) {
+      cell.classList.add("bounce");
+
+      // Remove the "bounce" class after the animation completes
+      setTimeout(() => {
+        cell.classList.remove("bounce");
+      }, 500);
+    }
+  }
 };
+
+
 
 const isCellSelected = (row: number, col: number) => {
   return selectedCells.some(([r, c]) => r === row && c === col);
@@ -84,10 +86,6 @@ const isCellSelected = (row: number, col: number) => {
 useEffect(() => {
 createBoard()
 }, [width])
-const [lines, setLines] = useState([
-  { from: "topLeft", to: "centerLeft" },
-  { from: "bottomCenter", to: "centerRight" }
-]);
 
 
 //console.log(currentColorArrangement)
@@ -97,12 +95,15 @@ const [lines, setLines] = useState([
       <Background color={colorSet.white}>
         <div className="app">
           <div className="game">
-            {currentColorArrangement.map((iconcolors, index)=>(
-              <img
-                key = {index}
-                
+            {currentColorArrangement.map((iconPath, index)=>(
+                <img
+                key={index}
+                id={`cell-${Math.floor(index / width)}-${index % width}`} // Unique ID for each cell
+                src={iconPath}
                 style={{
-                  backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width) ? "white" : iconcolors
+                  backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width)
+                    ? "black"
+                    : "transparent",
                 }}
                 onClick={() => handleCellClick(Math.floor(index / width), index % width)}
               />
