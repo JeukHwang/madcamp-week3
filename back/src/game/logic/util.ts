@@ -26,9 +26,12 @@ export function input(msg: string): Promise<string> {
   );
 }
 
-export function inputToMove(input: string, player: Player): Position[] {
+export async function getPositionsFromInput(
+  player: Player,
+): Promise<Position[]> {
+  const str = await input('Move: ');
   const positions: Position[] = [];
-  const chars = input.split('');
+  const chars = str.split('');
   for (const char of chars) {
     const pos = positions[positions.length - 1] || player.position;
     switch (char) {

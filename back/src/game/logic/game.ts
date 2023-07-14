@@ -1,17 +1,17 @@
 import { Move, Position } from './move';
 import { Player, PlayerJSON } from './player';
 import { Language, Tile, TileJSON, TileLanguage } from './tile';
-import { count, input, inputToMove } from './util';
+import { count, getPositionsFromInput } from './util';
 
 export const mapSize = 7;
 
-export type GameJSON = {
+export type GameInstanceJSON = {
   turn: number;
   map: TileJSON[];
   player: PlayerJSON;
 };
 
-export class Game {
+export class GameInstance {
   constructor(public turn: number, public map: Tile[], public player: Player) {}
 
   static new() {
@@ -20,28 +20,23 @@ export class Game {
       .fill(null)
       .map(Tile.random);
     const player = Player.random();
-    return new Game(turn, map, player);
+    return new GameInstance(turn, map, player);
   }
 
-  async play() {
-    console.clear();
-    this.show();
-    try {
-      const str = await input('Move: ');
-      const positions: Position[] = inputToMove(str, this.player);
-      this.movePlayer(positions);
-      this.turn++;
-    } catch (error) {
-      return;
-    }
-  }
-
-  movePlayer(positions: Position[]) {
-    const move = new Move(
+  async getMoveFromPositions(positions: Position[]) {
+    return new Move(
       positions.map((p) => p.toIndex()),
       this.player,
       this.map,
     );
+  }
+
+  async playStep(move: Move) {
+    this.movePlayer(move);
+    this.turn++;
+  }
+
+  movePlayer(move: Move) {
     const collectedTile: { name: TileLanguage; count: number }[] = count(
       move.tiles.map((tile) => tile.language),
     );
@@ -51,7 +46,7 @@ export class Game {
       }
     });
     move.tiles.forEach((tile) => tile.reset()),
-      (this.player.position = positions[positions.length - 1]);
+      (this.player.position = move.positions[move.positions.length - 1]);
   }
 
   show() {
@@ -66,8 +61,8 @@ export class Game {
     console.log(this.player);
   }
 
-  static fromJson(json: GameJSON): Game {
-    const game = new Game(
+  static fromJson(json: GameInstanceJSON): GameInstance {
+    const game = new GameInstance(
       json.turn,
       json.map.map(Tile.fromJson),
       Player.fromJson(json.player),
@@ -75,11 +70,28 @@ export class Game {
     return game;
   }
 
-  toJson(): GameJSON {
+  toJson(): GameInstanceJSON {
     return {
       turn: this.turn,
       map: this.map.map((tile) => tile.toJson()),
       player: this.player.toJson(),
     };
+  }
+}
+
+export async function playGameFromCLI() {
+  let game = GameInstance.new();
+  while (true) {
+    console.clear();
+    game.show();
+    let move: Move;
+    try {
+      const positions = await getPositionsFromInput(game.player);
+      move = await game.getMoveFromPositions(positions);
+    } catch (e) {
+      continue;
+    }
+    await game.playStep(move);
+    game = GameInstance.fromJson(game.toJson());
   }
 }
