@@ -32,14 +32,14 @@ const HomePage = () => {
     return (
       <Area>
         <Background style={{ padding: "50px" }}>
-          <Text size="5.0rem" color="white" font={Font.Bold} style={{padding:"50px"}}>
-            개발자 게임
-          </Text>
+          <Text size="5.0rem" color="white" font={Font.Bold} style={{padding:"50px"}}
+          dangerouslySetInnerHTML={{ __html: "&lt;취업하자/&gt;" }}
+          />
           <Button onClick={main} variant={ButtonVariant.contained}>
-            <Text size="3.0rem" font={Font.Medium}>나도!!</Text>
+            <Text size="3.0rem" font={Font.Medium}>지원하기</Text>
           </Button>
           <Button onClick ={handleButtonClick} variant={ButtonVariant.outlined}>
-            <Text size="3.0rem" font={Font.Bold}>구글 로그인</Text>
+            <Text size="3.0rem" font={Font.Bold}>구글로그인</Text>
           </Button>
 
           <a href="https://madcamp-week3-production.up.railway.app/auth">

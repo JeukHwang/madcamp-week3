@@ -23,13 +23,15 @@ code {
   padding:30px;
 }
 .game{
-  width:490px;
-  height:490px;
+  width:560px;
+  height:560px;
+  padding:10px;
   display:flex;
   flex-wrap:wrap;
 }
 
 .game img{
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
+  padding: 10px;
 }

@@ -5,13 +5,13 @@ import colorSet from "../../styles/colorSet";
 import Background from "../../atoms/containers/background/background";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import Button from "../../atoms/button/button";
+import Button, { ButtonVariant } from "../../atoms/button/button";
 import Icon from "../../assets/icon/Icon";
-import Java from "../../assets/icon/java.svg";
-import JavaScript from "../../assets/icon/javascript.svg";
-import Python from "../../assets/icon/python.svg";
-import TypeScript from "../../assets/icon/typescript.svg";
-import Dart from "../../assets/icon/dart.svg";
+import Java from "../../assets/icon/8bit_java.png";
+import JavaScript from "../../assets/icon/jss.png";
+import Python from "../../assets/icon/py.png";
+import TypeScript from "../../assets/icon/ts.png";
+import Dart from "../../assets/icon/8bit.png";
 import Check from '../../assets/icon/programming.png';
 import "../../assets/effect/bouncingAnimation.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -59,7 +59,7 @@ const Main = () => {
 }
 
 const handleCellClick = (row: number, col: number) => {
-  if (selectedCells.length === 3 && !isCellSelected(row, col)) {
+  if (selectedCells.length === 5 && !isCellSelected(row, col)) {
     // Show warning popup when maximum selection limit is reached
     toast.warning("최대 3개까지 선택할 수 있습니다.", { autoClose: 1000 });
     return;
@@ -78,12 +78,24 @@ const handleCellClick = (row: number, col: number) => {
     }
   }
 
+  const firstCell = selectedCells[0];
+  const lastCell = selectedCells[selectedCells.length - 1];
+
   const cellIndex = selectedCells.findIndex(([r, c]) => r === row && c === col);
 
   if (cellIndex !== -1) {
     // Clicked on an already selected cell, so deselect it
-    const updatedSelectedCells: [number, number][] = selectedCells.filter(([r, c]) => !(r === row && c === col));
+    const isFirstCell = cellIndex === 0;
+  const isLastCell = cellIndex === selectedCells.length - 1;
+
+  if (isFirstCell || isLastCell) {
+    // 이미 선택된 첫 번째 셀이거나 마지막 셀을 클릭한 경우, 선택 해제합니다.
+    const updatedSelectedCells: [number, number][] = selectedCells.filter(([r, c], index) => index !== cellIndex);
     setSelectedCells(updatedSelectedCells);
+  } else {
+    // 경고 메시지를 토스트로 표시합니다.
+    toast.warning("가운데 셀은 해제할 수 없습니다.", { autoClose: 1000 });
+  }
   } else {
     // Clicked on a new cell, add it to selected cells
     const updatedSelectedCells: [number, number][] = [...selectedCells, [row, col]];
@@ -137,9 +149,9 @@ createBoard()
 
           </div>
         </div>
-        <Button onClick={sendSelectedCells}>
-          <Text font={Font.Bold} size={"5.0rem"} color={colorSet.gray}>
-            check
+        <Button variant={ButtonVariant.commitchange} onClick={sendSelectedCells}>
+          <Text font={Font.Bold} size={"2.1rem"} color={colorSet.white}>
+            Commit Changes
           </Text>
         </Button>
         <ToastContainer position="top-center" 

@@ -6,6 +6,7 @@ import colorSet from "../../styles/colorSet";
 export enum ButtonVariant {
   outlined = "outlined",
   contained = "contained",
+  commitchange="commitchange",
 }
 
 interface ButtonProps {
@@ -30,13 +31,25 @@ const Button = styled.button<ButtonProps>`
     switch (variant) {
       case ButtonVariant.outlined:
         return css`
-          border: 10px solid ${colorSet.white};
+          border: 10px solid ${colorSet.gray};
           border-radius: 5px;
           padding: 10px 20px;
           color: ${colorSet.white};
 
           :hover {
             background-color: ${colorSet.gray};
+          }
+        `;
+        case ButtonVariant.commitchange:
+        return css`
+          border: 1px solid ${colorSet.green};
+          background-color: ${colorSet.green};
+          border-radius: 10px;
+          padding: 10px 20px;
+          color: ${colorSet.white};
+
+          :hover {
+            background-color: ${colorSet.lightgreen};
           }
         `;
       case ButtonVariant.contained:
