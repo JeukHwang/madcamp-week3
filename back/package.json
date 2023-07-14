@@ -19,7 +19,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "style": "pnpm lint && pnpm format",
-    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "railway:build": "pnpm prisma:generate && pnpm build",
+    "railway:start": "pnpm start:prod"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
