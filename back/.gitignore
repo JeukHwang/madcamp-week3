@@ -44,6 +44,7 @@ yarn-error.log
 build/config\.gypi
 
 # Custom
+pnpm-lock.yaml
 dist
 build
 .env
