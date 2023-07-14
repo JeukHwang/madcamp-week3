@@ -5,6 +5,11 @@ import { Player } from './player';
 import { Tile } from './tile';
 import { isArrayUnique } from './util';
 
+export type PositionJSON = {
+  x: number;
+  y: number;
+};
+
 export class Position {
   constructor(public x: number, public y: number) {
     if (0 <= x && x < mapSize && 0 <= y && y < mapSize) {
@@ -26,6 +31,17 @@ export class Position {
 
   static random() {
     return Position.fromIndex(randomInt(0, mapSize * mapSize));
+  }
+
+  static fromJson(json: PositionJSON): Position {
+    return new Position(json.x, json.y);
+  }
+
+  toJson(): PositionJSON {
+    return {
+      x: this.x,
+      y: this.y,
+    };
   }
 }
 

@@ -1,32 +1,38 @@
 import { Move, Position } from './move';
-import { Player } from './player';
-import { Language, Tile, TileLanguage } from './tile';
+import { Player, PlayerJSON } from './player';
+import { Language, Tile, TileJSON, TileLanguage } from './tile';
 import { count, input, inputToMove } from './util';
 
 export const mapSize = 7;
 
-export class Game {
-  map: Tile[];
-  player: Player;
+export type GameJSON = {
+  turn: number;
+  map: TileJSON[];
+  player: PlayerJSON;
+};
 
-  constructor() {
-    this.map = Array(mapSize * mapSize)
+export class Game {
+  constructor(public turn: number, public map: Tile[], public player: Player) {}
+
+  static new() {
+    const turn = 1;
+    const map = Array(mapSize * mapSize)
       .fill(null)
       .map(Tile.random);
-    this.player = Player.random();
+    const player = Player.random();
+    return new Game(turn, map, player);
   }
 
   async play() {
-    while (true) {
-      console.clear();
-      this.show();
-      try {
-        const str = await input('Move: ');
-        const positions: Position[] = inputToMove(str, this.player);
-        this.movePlayer(positions);
-      } catch (error) {
-        continue;
-      }
+    console.clear();
+    this.show();
+    try {
+      const str = await input('Move: ');
+      const positions: Position[] = inputToMove(str, this.player);
+      this.movePlayer(positions);
+      this.turn++;
+    } catch (error) {
+      return;
     }
   }
 
@@ -49,6 +55,7 @@ export class Game {
   }
 
   show() {
+    console.log('Turn:', this.turn);
     const id: string[] = this.map.map((tile) =>
       Language.toId(tile.language).toString(),
     );
@@ -57,5 +64,22 @@ export class Game {
       console.log(id.slice(i * mapSize, (i + 1) * mapSize).join(' '));
     }
     console.log(this.player);
+  }
+
+  static fromJson(json: GameJSON): Game {
+    const game = new Game(
+      json.turn,
+      json.map.map(Tile.fromJson),
+      Player.fromJson(json.player),
+    );
+    return game;
+  }
+
+  toJson(): GameJSON {
+    return {
+      turn: this.turn,
+      map: this.map.map((tile) => tile.toJson()),
+      player: this.player.toJson(),
+    };
   }
 }

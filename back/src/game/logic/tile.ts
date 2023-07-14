@@ -27,6 +27,8 @@ export class Language {
 
 export type TileLanguage = typeof Language.data[number];
 
+export type TileJSON = { language: TileLanguage };
+
 export class Tile {
   constructor(public language: TileLanguage) {}
 
@@ -36,5 +38,13 @@ export class Tile {
 
   static random(): Tile {
     return new Tile(Language.random());
+  }
+
+  static fromJson(json: TileJSON): Tile {
+    return new Tile(json.language);
+  }
+
+  toJson(): TileJSON {
+    return { language: this.language };
   }
 }

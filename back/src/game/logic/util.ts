@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common';
 import { randomInt } from 'crypto';
 import { createInterface } from 'readline';
 import { Position } from './move';
@@ -44,7 +45,7 @@ export function inputToMove(input: string, player: Player): Position[] {
         positions.push(new Position(pos.x, pos.y + 1));
         break;
       default:
-        break;
+        throw new ForbiddenException('Invalid input');
     }
   }
   return positions;

@@ -1,10 +1,19 @@
-import { Position } from './move';
+import { Position, PositionJSON } from './move';
 import { Language, TileLanguage } from './tile';
 
 type PlayerProperty = {
   move: number;
   level: { [key in TileLanguage]: number };
 };
+
+export type PlayerJSON = {
+  position: PositionJSON;
+  property: {
+    move: number;
+    level: { [key in TileLanguage]: number };
+  };
+};
+
 export class Player {
   public property: PlayerProperty;
   constructor(public position: Position) {
@@ -18,5 +27,18 @@ export class Player {
 
   static random(): Player {
     return new Player(Position.random());
+  }
+
+  static fromJson(json: PlayerJSON): Player {
+    const player = new Player(Position.fromJson(json.position));
+    player.property = json.property;
+    return player;
+  }
+
+  toJson(): PlayerJSON {
+    return {
+      position: this.position.toJson(),
+      property: this.property,
+    };
   }
 }
