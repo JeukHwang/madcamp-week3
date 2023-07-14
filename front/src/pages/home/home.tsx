@@ -9,17 +9,20 @@ import axios from "axios";
 const HomePage = () => {
     const movePage = useNavigate();
     const handleButtonClick = () => {
-      axios.get('https://madcamp-week3-production.up.railway.app/auth', { withCredentials: true })
+      window.open('https://madcamp-week3-production.up.railway.app/auth');
+/*       axios.get('https://madcamp-week3-production.up.railway.app/auth', { withCredentials: true })
         .then(response => {
           // API 호출에 성공한 경우 실행될 로직을 작성합니다.
+          
           console.log(response);
-          throw new Error('Network response was not ok.');
+          window.open('https://madcamp-week3-production.up.railway.app/auth');
         })
         .catch(error => {
           // API 호출에 실패한 경우 실행될 로직을 작성합니다.
           console.error('API 호출에 실패했습니다.', error);
-        });
+        }); */
     };
+    
     
       
     function main(){
@@ -38,6 +41,10 @@ const HomePage = () => {
           <Button onClick ={handleButtonClick} variant={ButtonVariant.outlined}>
             <Text size="3.0rem" font={Font.Bold}>구글 로그인</Text>
           </Button>
+
+          <a href="https://madcamp-week3-production.up.railway.app/auth">
+            googlelogin
+          </a>
         </Background>
 
       </Area>
