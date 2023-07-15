@@ -7,6 +7,14 @@ import { UserService } from 'src/user/user.service';
 import { JwtPayload } from './payload';
 dotenv.config();
 
+const cookieBase = {
+  domain: process.env.JWT_DOMAIN,
+  path: '/',
+  sameSite: 'none' as const,
+  secure: true,
+  httpOnly: true,
+};
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -27,13 +35,6 @@ export class AuthService {
     user: User,
     type: 'access' | 'refresh',
   ): Promise<void> {
-    const base = {
-      domain: process.env.JWT_DOMAIN,
-      path: '/',
-      sameSite: 'none' as const,
-      secure: true,
-      httpOnly: true,
-    };
     const payload: JwtPayload = { id: user.id };
     const isRefresh = type === 'refresh';
     const secret = isRefresh
@@ -47,28 +48,18 @@ export class AuthService {
       expiresIn: `${expiresIn}s`,
     });
     const name = isRefresh ? 'Refresh' : 'Authentication';
-    res.cookie(name, token, { ...base, maxAge: Number(expiresIn) * 1000 });
+    res.cookie(name, token, {
+      ...cookieBase,
+      maxAge: Number(expiresIn) * 1000,
+    });
     if (isRefresh) {
       await this.userService.setRefreshToken(user.id, token);
     }
   }
 
   async removeCookies(res: Response, user: User): Promise<void> {
-    const base = {
-      domain: process.env.JWT_DOMAIN,
-      path: '/',
-      sameSite: 'none' as const,
-      secure: true,
-      httpOnly: true,
-    };
-    res.cookie('Authentication', '', {
-      ...base,
-      maxAge: 0,
-    });
-    res.cookie('Refresh', '', {
-      ...base,
-      maxAge: 0,
-    });
+    res.cookie('Authentication', '', { ...cookieBase, maxAge: 0 });
+    res.cookie('Refresh', '', { ...cookieBase, maxAge: 0 });
     await this.userService.removeRefreshToken(user.id);
   }
 }
