@@ -3,7 +3,6 @@ import { Move, Position } from './move';
 import { Player, PlayerJSON } from './player';
 import { Language, Tile, TileJSON, TileLanguage } from './tile';
 import { count, getPositionsFromInput } from './util';
-export const mapSize = 5;
 
 export type GameInstanceJSON = {
   turn: number;
@@ -12,11 +11,13 @@ export type GameInstanceJSON = {
 };
 
 export class GameInstance {
+  static mapSize = 5;
+
   constructor(public turn: number, public map: Tile[], public player: Player) {}
 
   static new() {
     const turn = 1;
-    const map = Array(mapSize * mapSize)
+    const map = Array(GameInstance.mapSize * GameInstance.mapSize)
       .fill(null)
       .map(Tile.random);
     const player = Player.random();
@@ -64,8 +65,12 @@ export class GameInstance {
       .map((tile) => Language.toId(tile.language))
       .map((id) => colors[id](circle));
     id[this.player.position.toIndex()] = clc.white(circle);
-    for (let i = 0; i < mapSize; i++) {
-      console.log(id.slice(i * mapSize, (i + 1) * mapSize).join(' '));
+    for (let i = 0; i < GameInstance.mapSize; i++) {
+      console.log(
+        id
+          .slice(i * GameInstance.mapSize, (i + 1) * GameInstance.mapSize)
+          .join(' '),
+      );
     }
     // console.log(this.player);
     console.log(

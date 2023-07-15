@@ -1,9 +1,9 @@
 import { ForbiddenException } from '@nestjs/common';
 import { randomInt } from 'crypto';
-import { mapSize } from './game';
 import { Player } from './player';
 import { Tile } from './tile';
 import { isArrayUnique } from './util';
+import { GameInstance } from './game';
 
 export type PositionJSON = {
   x: number;
@@ -12,25 +12,35 @@ export type PositionJSON = {
 
 export class Position {
   constructor(public x: number, public y: number) {
-    if (0 <= x && x < mapSize && 0 <= y && y < mapSize) {
+    if (
+      0 <= x &&
+      x < GameInstance.mapSize &&
+      0 <= y &&
+      y < GameInstance.mapSize
+    ) {
       return;
     }
     throw new ForbiddenException('Invalid x, y to make position');
   }
 
   toIndex(): number {
-    return this.x * mapSize + this.y;
+    return this.x * GameInstance.mapSize + this.y;
   }
 
   static fromIndex(index: number) {
-    if (0 <= index && index < mapSize * mapSize) {
-      return new Position(Math.floor(index / mapSize), index % mapSize);
+    if (0 <= index && index < GameInstance.mapSize * GameInstance.mapSize) {
+      return new Position(
+        Math.floor(index / GameInstance.mapSize),
+        index % GameInstance.mapSize,
+      );
     }
     throw new ForbiddenException('Invalid index to make position');
   }
 
   static random() {
-    return Position.fromIndex(randomInt(0, mapSize * mapSize));
+    return Position.fromIndex(
+      randomInt(0, GameInstance.mapSize * GameInstance.mapSize),
+    );
   }
 
   static fromJson(json: PositionJSON): Position {
