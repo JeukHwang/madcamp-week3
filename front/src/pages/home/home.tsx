@@ -28,7 +28,7 @@ const HomePage = () => {
         .then(response => {
           // API 호출에 성공한 경우 실행될 로직을 작성합니다.
           
-          console.log(response);
+         // console.log(response);
           movePage("/ready");
         })
         .catch(error => {

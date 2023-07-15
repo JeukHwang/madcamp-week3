@@ -122,6 +122,7 @@ const handleCellClick = (row: number, col: number) => {
 
     // Add the "bounce" class to the clicked cell
     const cell = document.getElementById(`cell-${row}-${col}`);
+    console.log("ce;;", cell);
     if (cell) {
       cell.classList.add("bounce");
 
