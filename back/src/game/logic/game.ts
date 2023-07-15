@@ -1,8 +1,8 @@
+import * as clc from 'cli-color';
 import { Move, Position } from './move';
 import { Player, PlayerJSON } from './player';
 import { Language, Tile, TileJSON, TileLanguage } from './tile';
 import { count, getPositionsFromInput } from './util';
-
 export const mapSize = 7;
 
 export type GameInstanceJSON = {
@@ -50,15 +50,30 @@ export class GameInstance {
   }
 
   show() {
+    const circle = '\u2B24';
+    const colors = [
+      clc.red,
+      clc.green,
+      clc.blue,
+      clc.yellow,
+      clc.magenta,
+      clc.cyan,
+    ];
     console.log('Turn:', this.turn);
-    const id: string[] = this.map.map((tile) =>
-      Language.toId(tile.language).toString(),
-    );
-    id[this.player.position.toIndex()] = 'P';
+    const id = this.map
+      .map((tile) => Language.toId(tile.language))
+      .map((id) => colors[id](circle));
+    id[this.player.position.toIndex()] = clc.white(circle);
     for (let i = 0; i < mapSize; i++) {
       console.log(id.slice(i * mapSize, (i + 1) * mapSize).join(' '));
     }
-    console.log(this.player);
+    // console.log(this.player);
+    console.log(
+      Language.data.map(
+        (lang, i) =>
+          `${colors[i](circle)} : ${this.player.property.level[lang]}`,
+      ),
+    );
   }
 
   static fromJson(json: GameInstanceJSON): GameInstance {

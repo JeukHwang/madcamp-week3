@@ -3,7 +3,6 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from 'exception.filter';
 import { AppModule } from './app.module';
-import { playGameFromCLI } from './game/logic/game';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +20,6 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Server start: http://localhost:${port}`);
 }
-// bootstrap();
+bootstrap();
 
-playGameFromCLI();
+// playGameFromCLI();
