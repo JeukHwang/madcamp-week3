@@ -54,7 +54,7 @@ export async function getPositionsFromInput(
   return positions;
 }
 
-export function count<T>(data: T[]): { name: T; count: number }[] {
+export function countArray<T>(data: T[]): { name: T; count: number }[] {
   return Array.from(new Set(data)).map((value) => ({
     name: value,
     count: data.filter((v) => v === value).length,

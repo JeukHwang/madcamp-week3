@@ -2,7 +2,7 @@ import * as clc from 'cli-color';
 import { Move, Position } from './move';
 import { Player, PlayerJSON } from './player';
 import { Language, Tile, TileJSON, TileLanguage } from './tile';
-import { count, getPositionsFromInput } from './util';
+import { countArray, getPositionsFromInput } from './util';
 
 export type GameInstanceJSON = {
   turn: number;
@@ -12,6 +12,8 @@ export type GameInstanceJSON = {
 
 export class GameInstance {
   static mapSize = 5;
+  static defaultHealth = 5;
+  static experienceThreshold = 2;
 
   constructor(public turn: number, public map: Tile[], public player: Player) {}
 
@@ -38,20 +40,22 @@ export class GameInstance {
   }
 
   movePlayer(move: Move) {
-    const collectedTile: { name: TileLanguage; count: number }[] = count(
-      move.tiles.map((tile) => tile.language),
-    );
-    collectedTile.forEach((group) => {
-      if (group.count >= 3) {
-        this.player.property.level[group.name]++;
-      }
-    });
+    const collectedTile = move.tiles.map((tile) => tile.language);
+    this.updateExperience(collectedTile);
     move.tiles.forEach((tile) => tile.reset()),
       (this.player.position = move.positions[move.positions.length - 1]);
   }
 
+  updateExperience(collectedTile: TileLanguage[]) {
+    const { experience } = this.player.property;
+    countArray(collectedTile).forEach(({ name, count }) => {
+      experience[name] = Math.floor(count / GameInstance.experienceThreshold);
+    });
+  }
+
   show() {
-    const circle = '\u2B24';
+    const smallCircle = ' \u25CF';
+    const circle = '\u2B24 ';
     const colors = [
       clc.red,
       clc.green,
@@ -60,25 +64,40 @@ export class GameInstance {
       clc.magenta,
       clc.cyan,
     ];
-    console.log('Turn:', this.turn);
+    console.log(
+      `${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
+        this.turn % 4
+      }분기`,
+    );
+    console.log('');
     const id = this.map
       .map((tile) => Language.toId(tile.language))
       .map((id) => colors[id](circle));
-    id[this.player.position.toIndex()] = clc.white(circle);
+    id[this.player.position.toIndex()] = clc.white(smallCircle);
     for (let i = 0; i < GameInstance.mapSize; i++) {
       console.log(
         id
           .slice(i * GameInstance.mapSize, (i + 1) * GameInstance.mapSize)
-          .join(' '),
+          .join(''),
       );
     }
     // console.log(this.player);
+    console.log('');
+    const { experience: exp, level } = this.player.property;
     console.log(
-      Language.data.map(
-        (lang, i) =>
-          `${colors[i](circle)} : ${this.player.property.level[lang]}`,
-      ),
+      Language.data
+        .map((lang, i) => {
+          const language = `${circle} ${lang.padEnd(10)}`;
+          const experience_ = `경험치 ${exp[lang].toString().padStart(2)}`;
+          const level_ =
+            level[lang] === 0
+              ? ''
+              : `${level[lang].toString().padStart(2)}년차 개발자`;
+          return colors[i](`${language} : ${experience_} ${level_}`);
+        })
+        .join('\n'),
     );
+    console.log('');
   }
 
   static fromJson(json: GameInstanceJSON): GameInstance {
