@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import java from "../../assets/icon/8bit_java.png";
-import javaScript from "../../assets/icon/jss.png";
-import python from "../../assets/icon/py.png";
-import typeScript from "../../assets/icon/ts.png";
-import dart from "../../assets/icon/8bit.png";
-import c from "../../assets/icon/c.png";
-import cpp from "../../assets/icon/cpp.png";
+import javaIcon from "../../assets/icon/8bit_java.png";
+import javaScriptIcon from "../../assets/icon/jss.png";
+import pythonIcon from "../../assets/icon/py.png";
+import typeScriptIcon from "../../assets/icon/ts.png";
+import dartIcon from "../../assets/icon/8bit.png";
+import cIcon from "../../assets/icon/c.png";
+import cppIcon from "../../assets/icon/cpp.png";
 import { ToastContainer, toast } from "react-toastify";
 import Background from "../../atoms/containers/background/background";
 import Area from "../../atoms/containers/area/Area";
 const width=7;
 const iconimage = [
-  java
-  ,javaScript
-    ,python
-    ,typeScript
-    , dart
-    , c
-    , cpp
-    
-]
+    javaIcon,
+    javaScriptIcon,
+    pythonIcon,
+    typeScriptIcon,
+    dartIcon,
+    cIcon,
+    cppIcon,
+  ];
 const Ready = () => {
   const history = useNavigate();
   const [currentColorArrangement, setCurrentColorArrangement] = useState<string[]>([]);
@@ -118,10 +117,8 @@ const isCellSelected = (row: number, col: number) => {
   return selectedCells.some(([r, c]) => r === row && c === col);
 };
 useEffect(() => {
-createBoard()
-}, [width])
-
-
+    createBoard();
+  }, [width]);
 
   useEffect(() => {
     axios
@@ -132,22 +129,17 @@ createBoard()
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
         if (error.response && error.response.status === 403 && error.response.data.message.startsWith("Game exist")) {
-            axios.get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
+          axios
+            .get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
             .then(response => {
-              // Accessing the array within the data object
               const arrayData = response.data.json.map;
               setArrayData(arrayData);
-              console.log(arrayData);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
             });
-          
-          
-          // 사용자 ID를 가진 게임 페이지로 이동
         } else {
-          // 다른 에러 메시지인 경우나 메시지가 없는 경우에 대한 처리
-          // 일반적인 에러 메시지를 표시하거나 다른 작업을 수행합니다.
+          // Handle other error messages or perform other actions
         }
       });
   }, [history]);
@@ -158,7 +150,7 @@ createBoard()
     <div className="app">
           <div className="game">
             {arrayData.map((data, index) => {
-              const languageIcon = iconimage[data.language];
+              const languageIcon = iconimage[data.language.toLowerCase()];
               if (!languageIcon) return null; // Skip unknown language
 
               return (
