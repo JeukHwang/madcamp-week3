@@ -147,6 +147,7 @@ useEffect(() => {
   return (
     <Area>
     <Background color="white">
+        <h1>?</h1>
     <div className="app">
           <div className="game">
             {arrayData.map((data, index) => {
