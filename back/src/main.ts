@@ -1,7 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import { AllExceptionsFilter } from 'exception.filter';
 import { AppModule } from './app.module';
+import { playGameFromCLI } from './game/logic/game';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
@@ -13,10 +16,11 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Server start: http://localhost:${port}`);
 }
-bootstrap();
+// bootstrap();
 
-// playGameFromCLI();
+playGameFromCLI();

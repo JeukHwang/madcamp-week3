@@ -33,14 +33,14 @@ export class PrismaService
       const after = Date.now();
       const time = after - before;
       console.log(
-        `Database 1/2 | ${params.model}.${params.action}\n${JSON.stringify(
-          params.args,
-          null,
-          2,
-        )}`,
+        `Database 1/2 | ${params.model}.${params.action}\n${
+          process.env.LOG_OBJECTS ? JSON.stringify(params.args, null, 2) : null
+        }`,
       );
       console.log(
-        `Database 2/2 | ${time}ms\n${JSON.stringify(result, null, 2)}`,
+        `Database 2/2 | ${time}ms\n${
+          process.env.LOG_OBJECTS ? JSON.stringify(result, null, 2) : null
+        }`,
       );
       console.trace();
       return result;
