@@ -1,5 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { Public } from 'src/auth/decorator/public.decorator';
 import { CurrentUser } from './decorator/current.decorator';
 import { UserProfile, UserService, toUserProfile } from './user.service';
 
@@ -18,6 +19,8 @@ export class UserController {
     return user ? toUserProfile(user) : null;
   }
 
+  // Temporarily public
+  @Public()
   @Get('leaderboard')
   async getLeaderboard(): Promise<UserProfile[]> {
     return await this.userService.getLeaderboard();
