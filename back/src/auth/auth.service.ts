@@ -8,6 +8,7 @@ import { JwtPayload } from './payload';
 dotenv.config();
 
 const cookieBase = {
+  domain: process.env.JWT_DOMAIN,
   sameSite: 'none' as const,
   secure: true,
   httpOnly: true,
