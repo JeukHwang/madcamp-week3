@@ -135,6 +135,7 @@ createBoard()
             .then(response => {
               // Accessing the array within the data object
               const arrayData = response.data.json.map;
+              setArrayData(arrayData);
               console.log(arrayData);
             })
             .catch(error => {
@@ -152,7 +153,7 @@ createBoard()
 
   return (
     <Area>
-    <Background>
+    <Background backgroundColor="white">
     <div className="app">
     <div className="game">
       {currentColorArrangement.map((iconPath, index)=>(
