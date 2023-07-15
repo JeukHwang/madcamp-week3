@@ -40,11 +40,17 @@ export class PrismaService
       const after = Date.now();
       const time = after - before;
       const showObjects = process.env.LOG_OBJECTS === 'true';
-      this.logger.log(
-        `${params.model}.${params.action} ${time}ms\n${
-          showObjects ? JSON.stringify(params.args, null, 2) : null
-        }\n${showObjects ? JSON.stringify(result, null, 2) : null}`,
-      );
+      if (showObjects) {
+        this.logger.log(
+          `${params.model}.${params.action} ${time}ms\n${JSON.stringify(
+            params.args,
+            null,
+            2,
+          )}\n${JSON.stringify(result, null, 2)}`,
+        );
+      } else {
+        this.logger.log(`${params.model}.${params.action} ${time}ms`);
+      }
       return result;
     }
     this.$use(queryResultLogger.bind(this));
