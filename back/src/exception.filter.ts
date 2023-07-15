@@ -27,7 +27,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const contentLength = response.get('content-length');
 
     this.logger.log(
-      `${method} ${originalUrl} ${statusCode} | ${exception.name}, ${exception.message}, ${exception.cause} | ${contentLength} ${userAgent} ${ip}`,
+      `${exception.name}, ${exception.message}, ${exception.cause} | ${method} ${originalUrl} ${statusCode} | ${contentLength} ${userAgent} ${ip}`,
     );
 
     const httpStatus =
