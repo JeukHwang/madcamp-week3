@@ -31,9 +31,9 @@ export class PrismaService
       console.log('Timestamp: ' + event.timestamp + 'ms');
     });
 
-    this.$use(async function queryResultLogger(
+    async function queryResultLogger(
       params: Prisma.MiddlewareParams,
-      next,
+      next: any,
     ) {
       const before = Date.now();
       const result = await next(params);
@@ -46,7 +46,8 @@ export class PrismaService
         }\n${showObjects ? JSON.stringify(result, null, 2) : null}`,
       );
       return result;
-    });
+    }
+    this.$use(queryResultLogger.bind(this));
   }
 
   async onModuleInit() {
