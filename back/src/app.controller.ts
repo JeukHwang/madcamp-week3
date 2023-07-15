@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { AppService } from './app.service';
-import { CurrentUser } from './user/decorator/current.decorator';
-import { UserProfile } from './user/user.service';
 import { Public } from './auth/decorator/public.decorator';
+import { CurrentUser } from './user/decorator/current.decorator';
 
 @Controller()
 export class AppController {
@@ -15,7 +15,7 @@ export class AppController {
   }
 
   @Get('/test/private')
-  getDatePrivately(@CurrentUser() user: UserProfile): string {
+  getDatePrivately(@CurrentUser() user: User): string {
     return this.appService.getDatePrivately(user);
   }
 }

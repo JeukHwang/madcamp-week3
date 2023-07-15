@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserProfile } from './user/user.service';
+import { User } from '@prisma/client';
+import { toUserProfile } from './user/user.service';
 
 @Injectable()
 export class AppService {
@@ -7,9 +8,9 @@ export class AppService {
     return `Public Date | ${new Date().toISOString()}`;
   }
 
-  getDatePrivately(user: UserProfile): string {
+  getDatePrivately(user: User): string {
     return `Private Date | ${new Date().toISOString()} | ${JSON.stringify(
-      user,
+      toUserProfile(user),
     )}}`;
   }
 }
