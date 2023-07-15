@@ -77,7 +77,8 @@ export class Move {
       const { x: x2, y: y2 } = positions[i];
       return Math.abs(x1 - x2) + Math.abs(y1 - y2) === 1;
     });
-    const isPossibleMoveNum = this.indices.length <= this.player.property.move;
+    const isPossibleMoveNum =
+      this.indices.length <= this.player.property.health;
     return isUnique && isAdjacentMoving && isPossibleMoveNum;
   }
 }
