@@ -151,6 +151,7 @@ createBoard()
         <div className="app">
           <div className="game">
             {currentColorArrangement.map((iconPath, index)=>(
+              
                 <img
                 key={index}
                 id={`cell-${Math.floor(index / width)}-${index % width}`} // Unique ID for each cell

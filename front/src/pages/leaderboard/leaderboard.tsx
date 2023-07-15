@@ -36,16 +36,16 @@ const LeaderBoard: React.FC = () => {
     <Background  color={"white"} style={{ padding: "50px" }}>
     <div className="leaderboard">
       <div className="leaderboard__title">
-        <Text size={"3.0rem"} font={Font.Bold}>냠냠냠</Text>
+        <Text size={"3.0rem"} font={Font.Bold}>랭킹보드</Text>
       </div>
       <div className="leaderboard__table">
-        <table>
+      <table style={{ fontFamily: "DungGeunMo" }}>
           <thead>
             <tr>
-              <th>Rank</th>
-              <th>Username</th>
-              <th>Score</th>
-              <th>Photo</th>
+              <th>랭킹</th>
+              <th>이름</th>
+              <th>점수</th>
+              <th>사진</th>
             </tr>
           </thead>
           <tbody>

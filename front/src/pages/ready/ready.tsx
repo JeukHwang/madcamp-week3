@@ -1,27 +1,45 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import javaIcon from "../../assets/icon/8bit_java.png";
-import javaScriptIcon from "../../assets/icon/jss.png";
-import pythonIcon from "../../assets/icon/py.png";
-import typeScriptIcon from "../../assets/icon/ts.png";
-import dartIcon from "../../assets/icon/8bit.png";
-import cIcon from "../../assets/icon/c.png";
-import cppIcon from "../../assets/icon/cpp.png";
+import Java from "../../assets/icon/8bit_java.png";
+import JavaScript from "../../assets/icon/jss.png";
+import Python from "../../assets/icon/py.png";
+import TypeScript from "../../assets/icon/ts.png";
+import Dart from "../../assets/icon/8bit.png";
+import C from "../../assets/icon/c.png";
+import Cpp from "../../assets/icon/cpp.png";
 import { ToastContainer, toast } from "react-toastify";
 import Background from "../../atoms/containers/background/background";
 import Area from "../../atoms/containers/area/Area";
 const width=7;
 const iconimage = [
-    javaIcon,
-    javaScriptIcon,
-    pythonIcon,
-    typeScriptIcon,
-    dartIcon,
-    cIcon,
-    cppIcon,
-  ];
+    Java,
+    JavaScript,
+    Python,
+    TypeScript,
+    Dart,
+    C,
+    Cpp,
+];
+const iconimage2 = {
+    Java,
+    JavaScript,
+    Python,
+    TypeScript,
+    Dart,
+    C,
+    Cpp,
+};
 const Ready = () => {
+    const iconimage2: Record<string, string> = {
+        Java,
+        JavaScript,
+        Python,
+        TypeScript,
+        Dart,
+        C,
+        Cpp,
+      };
   const history = useNavigate();
   const [currentColorArrangement, setCurrentColorArrangement] = useState<string[]>([]);
   const [selectedCells, setSelectedCells] = useState<[number, number][]>([]);
@@ -122,25 +140,26 @@ useEffect(() => {
 
   useEffect(() => {
     axios
-      .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
+      .get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
       .then(response => {
+        const arrayData = response.data.json.map;
+             // console.log(arrayData);
+              setArrayData(arrayData);
         console.log(response);
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
-        if (error.response && error.response.status === 403 && error.response.data.message.startsWith("Game exist")) {
+        
           axios
-            .get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
+            .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
             .then(response => {
-              const arrayData = response.data.json.map;
-              setArrayData(arrayData);
+                const arrayData = response.data.json.map;
+                // console.log(arrayData);
+                 setArrayData(arrayData);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
             });
-        } else {
-          // Handle other error messages or perform other actions
-        }
       });
   }, [history]);
 
@@ -151,9 +170,10 @@ useEffect(() => {
     <div className="app">
           <div className="game">
             {arrayData.map((data, index) => {
-              const languageIcon = iconimage[data.language.toLowerCase()];
-              if (!languageIcon) return null; // Skip unknown language
-
+                  const languageIcon = iconimage2[data.language];
+                console.log(data.language);
+                console.log(languageIcon);
+                  if (!languageIcon) return null; // Skip unknown language                
               return (
                 <div
                   key={index}
