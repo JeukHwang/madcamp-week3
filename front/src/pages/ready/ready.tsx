@@ -153,7 +153,7 @@ createBoard()
 
   return (
     <Area>
-    <Background backgroundColor="white">
+    <Background color="white">
     <div className="app">
           <div className="game">
             {arrayData.map((data, index) => (
