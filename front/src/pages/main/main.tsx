@@ -11,13 +11,12 @@ import JavaScript from "../../assets/icon/jss.png";
 import Python from "../../assets/icon/py.png";
 import TypeScript from "../../assets/icon/ts.png";
 import Dart from "../../assets/icon/8bit.png";
-import "../../assets/effect/bouncingAnimation.css";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from "axios";
 import C from "../../assets/icon/c.png";
 import Cpp from "../../assets/icon/cpp.png";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "../../assets/effect/bouncingAnimation.css";
+import axios from "axios";
 const width=7;
 const iconimage = [
   Java
