@@ -8,10 +8,7 @@ type PlayerProperty = {
 
 export type PlayerJSON = {
   position: PositionJSON;
-  property: {
-    move: number;
-    level: { [key in TileLanguage]: number };
-  };
+  property: PlayerProperty;
 };
 
 export class Player {
