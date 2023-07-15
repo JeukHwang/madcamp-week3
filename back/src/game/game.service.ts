@@ -4,12 +4,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { GameInstance, GameInstanceJSON } from './logic/game';
 import { Move, Position } from './logic/move';
 
-export type GameProfile = Pick<Game, 'id' | 'userId' | 'turn' | 'json'>;
+export type GameProfile = Pick<
+  Game,
+  'id' | 'userId' | 'turn' | 'json' | 'isFinished'
+>;
 export const toGameProfile = (game: Game): GameProfile => ({
   id: game.id,
   userId: game.userId,
   turn: game.turn,
   json: game.json,
+  isFinished: game.isFinished,
 });
 
 @Injectable()
