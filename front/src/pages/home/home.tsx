@@ -4,13 +4,12 @@ import Font from "../../styles/font";
 import Background from "../../atoms/containers/background/background";
 import Button, {ButtonVariant} from "../../atoms/button/button";
 import { useNavigate } from "react-router-dom";
-import GameBoard from "../../atoms/gameBoard/gameBoard";
 import axios from "axios";
 const HomePage = () => {
     const movePage = useNavigate();
-    const handleButtonClick = () => {
+/*     const handleButtonClick = () => {
       window.open('https://madcamp-week3-production.up.railway.app/auth');
-/*       axios.get('https://madcamp-week3-production.up.railway.app/auth', { withCredentials: true })
+    axios.get('https://madcamp-week3-production.up.railway.app/auth', { withCredentials: true })
         .then(response => {
           // API 호출에 성공한 경우 실행될 로직을 작성합니다.
           
@@ -20,10 +19,22 @@ const HomePage = () => {
         .catch(error => {
           // API 호출에 실패한 경우 실행될 로직을 작성합니다.
           console.error('API 호출에 실패했습니다.', error);
-        }); */
-    };
+        }); 
+    }; */
     
-    
+    const moveto = () => {
+
+      axios.get('https://madcamp-week3-production.up.railway.app/test/private', { withCredentials: true })
+        .then(response => {
+          // API 호출에 성공한 경우 실행될 로직을 작성합니다.
+          
+          console.log(response);
+        })
+        .catch(error => {
+          // API 호출에 실패한 경우 실행될 로직을 작성합니다.
+          console.error('API 호출에 실패했습니다.', error);
+        }); 
+    }
       
     function main(){
         movePage('/main');
@@ -38,10 +49,9 @@ const HomePage = () => {
           <Button onClick={main} variant={ButtonVariant.contained}>
             <Text size="3.0rem" font={Font.Medium}>지원하기</Text>
           </Button>
-          <Button onClick ={handleButtonClick} variant={ButtonVariant.outlined}>
-            <Text size="3.0rem" font={Font.Bold}>구글로그인</Text>
+          <Button onClick ={moveto} variant={ButtonVariant.outlined}>
+            <Text size="3.0rem" font={Font.Bold}>테스트</Text>
           </Button>
-
           <a href="https://madcamp-week3-production.up.railway.app/auth">
             googlelogin
           </a>

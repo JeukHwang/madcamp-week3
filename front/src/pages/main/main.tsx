@@ -3,20 +3,20 @@ import Text from "../../atoms/containers/text/text";
 import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import Background from "../../atoms/containers/background/background";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import Button, { ButtonVariant } from "../../atoms/button/button";
-import Icon from "../../assets/icon/Icon";
 import Java from "../../assets/icon/8bit_java.png";
 import JavaScript from "../../assets/icon/jss.png";
 import Python from "../../assets/icon/py.png";
 import TypeScript from "../../assets/icon/ts.png";
 import Dart from "../../assets/icon/8bit.png";
-import Check from '../../assets/icon/programming.png';
 import "../../assets/effect/bouncingAnimation.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import C from "../../assets/icon/c.png";
+import Cpp from "../../assets/icon/cpp.png";
 
 const width=7;
 const iconimage = [
@@ -25,10 +25,30 @@ const iconimage = [
   ,Python
   ,TypeScript
   , Dart
+  , C
+  , Cpp
 ]
 const Main = () => {
   const [currentColorArrangement, setCurrentColorArrangement] = useState<string[]>([]);
   const [selectedCells, setSelectedCells] = useState<[number, number][]>([]);
+  const createGame = () => {
+    const token = "$2b$10$ur/nbbrGfFtpbPn79gz0F.V5Y6wFMJnDpXS5pRu0/pb4gNW/HSHxy"
+    // Replace with your actual authorization token
+    axios.get('https://madcamp-week3-production.up.railway.app/game/create',{
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      // Handle the response data
+      console.log(response.data);
+    })
+    .catch(error => {
+      // Handle the error
+      console.error(error);
+    });
+
+  }
 
   const sendSelectedCells = async () => {
     if (selectedCells.length === 0) {
@@ -78,8 +98,6 @@ const handleCellClick = (row: number, col: number) => {
     }
   }
 
-  const firstCell = selectedCells[0];
-  const lastCell = selectedCells[selectedCells.length - 1];
 
   const cellIndex = selectedCells.findIndex(([r, c]) => r === row && c === col);
 
@@ -154,6 +172,13 @@ createBoard()
             Commit Changes
           </Text>
         </Button>
+        
+        <Button variant={ButtonVariant.contained} onClick={createGame}>
+          <Text font={Font.Bold} size={"2.1rem"} color={colorSet.white}>
+            Create Game
+          </Text>
+        </Button>
+
         <ToastContainer position="top-center" 
         style={{ width: "400px" }}
         className="custom-toast-container"
