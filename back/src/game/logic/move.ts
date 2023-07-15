@@ -71,7 +71,10 @@ export class Move {
   }
 
   isValid(): boolean {
-    const isUnique = isArrayUnique([this.player.position, this.indices]);
+    const isUnique = isArrayUnique([
+      this.player.position.toIndex(),
+      ...this.indices,
+    ]);
     const isAdjacentMoving = this.positions.every((index, i, positions) => {
       const { x: x1, y: y1 } = positions[i - 1] || this.player.position;
       const { x: x2, y: y2 } = positions[i];
