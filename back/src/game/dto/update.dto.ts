@@ -1,10 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsDefined,
-  IsNotEmptyObject,
-  IsNumber,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsNumber, ValidateNested } from 'class-validator';
 
 export class PositionDto {
   @IsNumber()
@@ -14,9 +9,8 @@ export class PositionDto {
 }
 
 export class UpdateDto {
-  @IsDefined()
-  @IsNotEmptyObject()
-  @ValidateNested()
+  @IsArray()
+  @ValidateNested({ each: true })
   @Type(() => PositionDto)
   positions: PositionDto[];
 }
