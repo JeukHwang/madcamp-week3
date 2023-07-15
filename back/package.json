@@ -22,7 +22,7 @@
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "railway:build": "pnpm prisma:generate && pnpm build",
     "railway:start": "pnpm start",
-    "game": "pnpm build && node dist/src/main-game.js"
+    "game": "pnpm build && node dist/main-game.js"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
