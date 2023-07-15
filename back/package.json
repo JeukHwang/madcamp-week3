@@ -21,7 +21,7 @@
     "style": "pnpm lint && pnpm format",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "railway:build": "pnpm prisma:generate && pnpm build",
-    "railway:start": "pnpm start:prod",
+    "railway:start": "pnpm start",
     "game": "pnpm build && node dist/src/main-game.js"
   },
   "dependencies": {
