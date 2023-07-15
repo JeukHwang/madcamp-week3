@@ -34,6 +34,7 @@ export class AuthService {
     user: User,
     type: 'access' | 'refresh',
   ): Promise<void> {
+    console.log(res.req.baseUrl, JSON.stringify(res.req, null, 2));
     const payload: JwtPayload = { id: user.id };
     const isRefresh = type === 'refresh';
     const secret = isRefresh
