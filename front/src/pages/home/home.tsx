@@ -29,6 +29,7 @@ const HomePage = () => {
           // API 호출에 성공한 경우 실행될 로직을 작성합니다.
           
           console.log(response);
+          movePage("/ready");
         })
         .catch(error => {
           // API 호출에 실패한 경우 실행될 로직을 작성합니다.
@@ -38,6 +39,10 @@ const HomePage = () => {
       
     function main(){
         movePage('/main');
+    }
+    const board = () => {
+     movePage('/board'); 
+
     }
   
     return (
@@ -51,6 +56,9 @@ const HomePage = () => {
           </Button>
           <Button onClick ={moveto} variant={ButtonVariant.outlined}>
             <Text size="3.0rem" font={Font.Bold}>테스트</Text>
+          </Button>
+          <Button onClick ={board} variant={ButtonVariant.outlined}>
+            <Text size="3.0rem" font={Font.Bold}>리더보드</Text>
           </Button>
           <a href="https://madcamp-week3-production.up.railway.app/auth">
             googlelogin
