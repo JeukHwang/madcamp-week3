@@ -4,7 +4,7 @@
 // I will hide googleId, google accessToken, google refreshToken to prevent the possible threat
 // Instead, I will use id to find user in database since I just need to use value that I can identify specific user
 
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 // Also, if I only use service id, I can easily change or add other auth provider like facebook, github, etc.
 export type JwtPayload = {

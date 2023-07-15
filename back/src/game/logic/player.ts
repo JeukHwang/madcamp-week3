@@ -1,6 +1,9 @@
-import { Inventory, InventoryItem } from './intventory';
-import { Position, PositionJSON } from './move';
-import { Language, TileLanguage } from './tile';
+import type { InventoryItem } from './intventory';
+import { Inventory } from './intventory';
+import type { PositionJSON } from './move';
+import { Position } from './move';
+import type { TileLanguage } from './tile';
+import { Language } from './tile';
 
 type PlayerProperty = {
   health: number;

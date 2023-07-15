@@ -1,8 +1,9 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Game, User } from '@prisma/client';
+import type { Game, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GameInstance, GameInstanceJSON } from './logic/game';
-import { Move, Position } from './logic/move';
+import type { GameInstanceJSON } from './logic/game';
+import { GameInstance } from './logic/game';
+import type { Move, Position } from './logic/move';
 
 export type GameProfile = Pick<
   Game,

@@ -2,7 +2,8 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { CurrentUser } from './decorator/current.decorator';
-import { UserProfile, UserService, toUserProfile } from './user.service';
+import type { UserProfile } from './user.service';
+import { UserService, toUserProfile } from './user.service';
 
 @Controller('user')
 export class UserController {

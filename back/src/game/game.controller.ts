@@ -1,8 +1,10 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Game, User } from '@prisma/client';
+import type { Game } from '@prisma/client';
+import { User } from '@prisma/client';
 import { CurrentUser } from 'src/user/decorator/current.decorator';
 import { UpdateDto } from './dto/update.dto';
-import { GameProfile, GameService, toGameProfile } from './game.service';
+import type { GameProfile } from './game.service';
+import { GameService, toGameProfile } from './game.service';
 import { Position } from './logic/move';
 
 @Controller('game')
