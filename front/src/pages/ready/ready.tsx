@@ -18,6 +18,7 @@ import Text from "../../atoms/containers/text/text";
 import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import { ButtonVariant } from "../../atoms/button/button";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 const width=7;
 type Position = {x:number, y:number}
 const Ready = () => {
@@ -101,9 +102,6 @@ const Ready = () => {
       console.log(selectedCells);
   
       const { x: currentX, y: currentY } = playerPosition;
-  
-      const diffX = targetX - currentX;
-      const diffY = targetY - currentY;
   
       // Calculate the new player position
       const newPosition: Position = { x: targetX, y: targetY };
@@ -270,6 +268,7 @@ useEffect(() => {
     <Background color="white">
     <div className="app">
   <div className="game">
+    
     {arrayData.map((data, index) => {
       const languageIcon = iconimage2[data.language];
       const [cellX, cellY] = [Math.floor(index / width), index % width];
@@ -281,17 +280,29 @@ useEffect(() => {
       if (!languageIcon) return null; // Skip unknown language
 
       return (
-        <div
-          key={index}
-          style={{
-            backgroundColor: selectedCells.some(({x:r, y:c}) => r === cellX && c === cellY)
-              ? "black"
-              : "transparent",
-          }}
-          onClick={() => handleCellClick(cellX, cellY)}
-        >
-          {isPlayerCell ? <img src={Player} alt="Player" /> : <img src={languageIcon} alt={data.language} />}
-        </div>
+        <TransitionGroup className="board" key={index}>
+        <CSSTransition classNames="cell-transition" timeout={500}>
+          <div
+            className={`cell${isPlayerCell ? " player-cell" : ""}`}
+            id={`cell-${cellX}-${cellY}`}
+            key={index}
+            style={{
+              backgroundColor: selectedCells.some(({x:r, y:c}) => r === cellX && c === cellY)
+                ? "black"
+                : "transparent",
+            }}
+            onClick={() => handleCellClick(cellX, cellY)}
+          >
+            <div className="cell-content">
+              {isPlayerCell ? (
+                <img src={Player} alt="Player" />
+              ) : (
+                <img src={languageIcon} alt={data.language} />
+              )}
+            </div>
+          </div>
+        </CSSTransition>
+      </TransitionGroup>
       );
     })}
   </div>
