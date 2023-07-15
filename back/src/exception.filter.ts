@@ -4,23 +4,31 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { Request, Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private logger = new Logger('Exception');
+
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: HttpException, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
 
-    const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const time = new Date().toISOString();
-    console.log(`[${time}] ${request.method} ${request.url} ${status}`);
-    console.log(exception);
+    const { ip, method, originalUrl } = request;
+    const userAgent = request.get('user-agent') || ''; // from header
+    const response = ctx.getResponse<Response>();
+    const { statusCode } = response;
+    const contentLength = response.get('content-length');
+
+    this.logger.log(
+      `${method} ${originalUrl} ${statusCode} | ${exception.name}, ${exception.message}, ${exception.cause} | ${contentLength} ${userAgent} ${ip}`,
+    );
 
     const httpStatus =
       exception instanceof HttpException

@@ -1,4 +1,9 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  INestApplication,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { isDev } from 'src/util';
@@ -9,6 +14,8 @@ export class PrismaService
   extends PrismaClient<Prisma.PrismaClientOptions, 'query' | 'beforeExit'>
   implements OnModuleInit
 {
+  private logger = new Logger('Prisma');
+
   constructor() {
     const dbUrl = isDev
       ? process.env.MYSQL_URL_DEV
@@ -32,17 +39,12 @@ export class PrismaService
       const result = await next(params);
       const after = Date.now();
       const time = after - before;
-      console.log(
-        `Database 1/2 | ${params.model}.${params.action}\n${
-          process.env.LOG_OBJECTS ? JSON.stringify(params.args, null, 2) : null
-        }`,
+      const showObjects = process.env.LOG_OBJECTS === 'true';
+      this.logger.log(
+        `${params.model}.${params.action} ${time}ms\n${
+          showObjects ? JSON.stringify(params.args, null, 2) : null
+        }\n${showObjects ? JSON.stringify(result, null, 2) : null}`,
       );
-      console.log(
-        `Database 2/2 | ${time}ms\n${
-          process.env.LOG_OBJECTS ? JSON.stringify(result, null, 2) : null
-        }`,
-      );
-      console.trace();
       return result;
     });
   }
