@@ -3,7 +3,7 @@ import { Move, Position } from './move';
 import { Player, PlayerJSON } from './player';
 import { Language, Tile, TileJSON, TileLanguage } from './tile';
 import { count, getPositionsFromInput } from './util';
-export const mapSize = 7;
+export const mapSize = 5;
 
 export type GameInstanceJSON = {
   turn: number;
