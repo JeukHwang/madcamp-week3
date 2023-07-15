@@ -155,23 +155,22 @@ createBoard()
     <Area>
     <Background backgroundColor="white">
     <div className="app">
-    <div className="game">
-      {currentColorArrangement.map((iconPath, index)=>(
-          <img
-          key={index}
-          id={`cell-${Math.floor(index / width)}-${index % width}`} // Unique ID for each cell
-          src={iconPath}
-          style={{
-            backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width)
-              ? "black"
-              : "transparent",
-          }}
-          onClick={() => handleCellClick(Math.floor(index / width), index % width)}
-        />
-      ))}
-
-    </div>
-  </div>
+          <div className="game">
+            {arrayData.map((data, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width)
+                    ? "black"
+                    : "transparent",
+                }}
+                onClick={() => handleCellClick(Math.floor(index / width), index % width)}
+              >
+                <img src={iconimage[index % iconimage.length]} alt={data.language} />
+              </div>
+            ))}
+          </div>
+        </div>
   <div>
           {arrayData.map((data, index) => (
             <div key={index}>{data.language}</div>
