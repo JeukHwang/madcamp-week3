@@ -55,9 +55,29 @@ const Ready = () => {
       const positions = selectedCells.map(({ x, y }) => ({ x, y }));
         console.log("position", positions);
       // Make a POST request to the backend API with the selected cells data
-      await axios.post("https://madcamp-week3-production.up.railway.app/game/update", {
-        positions: positions,
+      
+      axios({
+        method: "post",
+        url: "https://madcamp-week3-production.up.railway.app/game/update",
+        data: {
+            positions: positions,
+        },
+        withCredentials: true,
+
+      }).then((res)=> {
+        console.log(res);
       });
+      
+      await axios.post(
+        "https://madcamp-week3-production.up.railway.app/game/update",
+        {
+          positions: positions,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      
       // Handle the success response or perform any necessary actions
       console.log("Selected cells sent successfully");
     } catch (error) {
