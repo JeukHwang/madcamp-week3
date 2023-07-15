@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3001', // for frontend in development
-      'https://madcamp-week3-front.up.railway.app/', // for frontend in production
+      'https://madcamp-week3-front.up.railway.app', // for frontend in production
     ],
     credentials: true,
   });
