@@ -30,6 +30,7 @@ export class AuthService {
     const base = {
       domain: process.env.JWT_DOMAIN,
       path: '/',
+      sameSite: 'none' as const,
       httpOnly: true,
     };
     const payload: JwtPayload = { id: user.id };
@@ -55,6 +56,7 @@ export class AuthService {
     const base = {
       domain: process.env.JWT_DOMAIN,
       path: '/',
+      sameSite: 'none' as const,
       httpOnly: true,
     };
     res.cookie('Authentication', '', {
