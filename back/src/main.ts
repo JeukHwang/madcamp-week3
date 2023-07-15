@@ -21,5 +21,3 @@ async function bootstrap() {
   console.log(`Server start: http://localhost:${port}`);
 }
 bootstrap();
-
-// playGameFromCLI();
