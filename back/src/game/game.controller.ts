@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import { CurrentUser } from 'src/user/decorator/current.decorator';
 import { UpdateDto } from './dto/update.dto';
@@ -26,7 +26,7 @@ export class GameController {
     return game ? toGameProfile(game) : null;
   }
 
-  @Get('update')
+  @Post('update')
   async update(
     @CurrentUser() user: User,
     @Body() body: UpdateDto,
