@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Java from "../../assets/icon/8bit_java.png";
-import JavaScript from "../../assets/icon/jss.png";
-import Python from "../../assets/icon/py.png";
-import TypeScript from "../../assets/icon/ts.png";
-import Dart from "../../assets/icon/8bit.png";
-import C from "../../assets/icon/c.png";
-import Cpp from "../../assets/icon/cpp.png";
+import java from "../../assets/icon/8bit_java.png";
+import javaScript from "../../assets/icon/jss.png";
+import python from "../../assets/icon/py.png";
+import typeScript from "../../assets/icon/ts.png";
+import dart from "../../assets/icon/8bit.png";
+import c from "../../assets/icon/c.png";
+import cpp from "../../assets/icon/cpp.png";
 import { ToastContainer, toast } from "react-toastify";
 import Background from "../../atoms/containers/background/background";
 import Area from "../../atoms/containers/area/Area";
 const width=7;
 const iconimage = [
-  Java
-  ,JavaScript
-  ,Python
-  ,TypeScript
-  , Dart
-  , C
-  , Cpp
+  java
+  ,javaScript
+    ,python
+    ,typeScript
+    , dart
+    , c
+    , cpp
+    
 ]
 const Ready = () => {
   const history = useNavigate();
@@ -156,25 +157,25 @@ createBoard()
     <Background color="white">
     <div className="app">
           <div className="game">
-            {arrayData.map((data, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width)
-                    ? "black"
-                    : "transparent",
-                }}
-                onClick={() => handleCellClick(Math.floor(index / width), index % width)}
-              >
-                <img src={iconimage[index % iconimage.length]} alt={data.language} />
-              </div>
-            ))}
+            {arrayData.map((data, index) => {
+              const languageIcon = iconimage[data.language];
+              if (!languageIcon) return null; // Skip unknown language
+
+              return (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: selectedCells.some(([r, c]) => r === Math.floor(index / width) && c === index % width)
+                      ? "black"
+                      : "transparent",
+                  }}
+                  onClick={() => handleCellClick(Math.floor(index / width), index % width)}
+                >
+                  <img src={languageIcon} alt={data.language} />
+                </div>
+              );
+            })}
           </div>
-        </div>
-  <div>
-          {arrayData.map((data, index) => (
-            <div key={index}>{data.language}</div>
-          ))}
         </div>
 <ToastContainer position="top-center" 
 style={{ width: "400px" }}
