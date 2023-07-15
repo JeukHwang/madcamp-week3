@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Java from "../../assets/icon/8bit_java.png";
@@ -19,15 +19,6 @@ import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import { ButtonVariant } from "../../atoms/button/button";
 const width=7;
-const iconimage = [
-    Java,
-    JavaScript,
-    Python,
-    TypeScript,
-    Dart,
-    C,
-    Cpp,
-];
 type Position = {x:number, y:number}
 const Ready = () => {
     const iconimage2: Record<string, string> = {
@@ -66,6 +57,15 @@ const Ready = () => {
 
       }).then((res)=> {
         console.log(res);
+        movePlayerToSelectedCells();
+
+        setSelectedCells([]);
+        
+
+        
+        
+        
+        
       });
       
       await axios.post(
@@ -87,6 +87,69 @@ const Ready = () => {
   };
   
 
+  const movePlayerToSelectedCells = async () => {
+    const delay = 500; // Delay between each move in milliseconds
+  
+    if (!playerPosition || selectedCells.length === 0) {
+      return;
+    }
+  
+    const startIndex = 0; // Starting index in the selectedCells array
+  
+    for (let i = startIndex; i < selectedCells.length; i++) {
+      const { x: targetX, y: targetY } = selectedCells[i];
+      console.log(selectedCells);
+  
+      const { x: currentX, y: currentY } = playerPosition;
+  
+      const diffX = targetX - currentX;
+      const diffY = targetY - currentY;
+  
+      // Calculate the new player position
+      const newPosition: Position = { x: targetX, y: targetY };
+      console.log(newPosition);
+  
+      // Update the player position state
+      setPlayerPosition(newPosition);
+  
+      // Wait for the delay before moving to the next cell
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  
+    // Fetch the updated arrayData for the target cell
+    const { x: targetX, y: targetY } = selectedCells[selectedCells.length - 1];
+    fetchUpdatedArrayData(targetX, targetY);
+  };
+  
+  const fetchUpdatedArrayData = (targetX: number, targetY: number) => {
+    axios
+      .get("https://madcamp-week3-production.up.railway.app/game/current", {
+        withCredentials: true,
+      })
+      .then((response) => {
+        const arrayData = response.data.json.map;
+        const player = response.data.json.player.position;
+        setArrayData((prevArrayData) => {
+          const updatedArrayData = prevArrayData.map((data) => {
+            if (data.x === targetX && data.y === targetY) {
+              // Update the specific cell with new data
+              // For example:
+              return {
+                ...data,
+                // Update the necessary properties
+              };
+            }
+            return data;
+          });
+          return updatedArrayData;
+        });
+        setPlayerPosition(player);
+      })
+      .catch((error) => {
+        console.error("API 호출에 실패했습니다.", error.response);
+      });
+  };
+  
   const createBoard = () => {
   for (let i = 0; i < width*width; i++) {
   }
