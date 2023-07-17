@@ -12,6 +12,8 @@ import Setting from './pages/setting/setting';
 function App() {
   return (
     <BrowserRouter>
+    <audio src="https://madcamp-week3-front.up.railway.app/mysteriousSmell.mp3" autoPlay loop preload="auto" controls>
+    </audio>
     <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/main" element={<Main/>} />
@@ -20,6 +22,7 @@ function App() {
       <Route path="/setting" element={<Setting/>} />
       
    </Routes>
+
     </BrowserRouter>
     
   );
