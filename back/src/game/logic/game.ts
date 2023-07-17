@@ -17,26 +17,33 @@ type RequestInput =
   | { type: 'positions' };
 type ResponseInput = number | Position[];
 
-export type GameInstanceJSON = {
+type GameProperty = {
   turn: number;
   isFinished: boolean;
+};
+
+export type GameInstanceJSON = {
+  property: GameProperty;
   map: TileJSON[];
   player: PlayerJSON;
 };
 
 export class GameInstance {
   public isFinished: boolean;
-  constructor(public turn: number, public map: Tile[], public player: Player) {
+  constructor(
+    public property: GameProperty,
+    public map: Tile[],
+    public player: Player,
+  ) {
     this.isFinished = false;
   }
 
   static new() {
-    const turn = 0;
     const map = Array(GameConstant.mapSize * GameConstant.mapSize)
       .fill(null)
       .map(Tile.random);
     const player = Player.random();
-    return new GameInstance(turn, map, player);
+    return new GameInstance({ turn: 0, isFinished: false }, map, player);
   }
 
   async getMoveFromPositions(positions: Position[]) {
@@ -87,7 +94,7 @@ export class GameInstance {
         }) as Position[];
         const move = await this.getMoveFromPositions(positions);
         this.movePlayer(move);
-        this.turn++;
+        this.property.turn++;
         break;
       } catch (error) {
         continue;
@@ -167,7 +174,7 @@ export class GameInstance {
 
   static fromJson(json: GameInstanceJSON): GameInstance {
     const game = new GameInstance(
-      json.turn,
+      json.property,
       json.map.map(Tile.fromJson),
       Player.fromJson(json.player),
     );
@@ -176,8 +183,7 @@ export class GameInstance {
 
   toJson(): GameInstanceJSON {
     return {
-      turn: this.turn,
-      isFinished: this.isFinished ? true : false,
+      property: this.property,
       map: this.map.map((tile) => tile.toJson()),
       player: this.player.toJson(),
     };
