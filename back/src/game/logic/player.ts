@@ -9,6 +9,7 @@ type PlayerProperty = {
   health: number;
   experience: { [key in TileLanguage]: number };
   level: { [key in TileLanguage]: number };
+  levelEnabled: { [key in TileLanguage]: boolean };
   inventory: { [key in InventoryItem]: number };
 };
 
@@ -27,6 +28,11 @@ export class Player {
       },
       level: Object.fromEntries(Language.data.map((s) => [s, 0])) as {
         [k in TileLanguage]: number;
+      },
+      levelEnabled: Object.fromEntries(
+        Language.data.map((s) => [s, false]),
+      ) as {
+        [k in TileLanguage]: boolean;
       },
       inventory: Object.fromEntries(Inventory.data.map((s) => [s, 0])) as {
         [k in InventoryItem]: number;

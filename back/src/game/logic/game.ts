@@ -19,12 +19,16 @@ type ResponseInput = number | Position[];
 
 export type GameInstanceJSON = {
   turn: number;
+  isFinished: boolean;
   map: TileJSON[];
   player: PlayerJSON;
 };
 
 export class GameInstance {
-  constructor(public turn: number, public map: Tile[], public player: Player) {}
+  public isFinished: boolean;
+  constructor(public turn: number, public map: Tile[], public player: Player) {
+    this.isFinished = false;
+  }
 
   static new() {
     const turn = 0;
@@ -74,9 +78,6 @@ export class GameInstance {
   }
 
   async *playStep(): AsyncGenerator<RequestInput, void, ResponseInput> {
-    if (this.turn % 4 === 0) {
-      yield* this.tryApplyEvent('새로운 시작');
-    }
 
     console.clear();
     this.show();
@@ -95,7 +96,10 @@ export class GameInstance {
     }
 
     if (this.turn % 4 === 0) {
-      yield* this.tryApplyEvent('한 해의 마무리');
+      const eventResult = yield* this.tryApplyEvent('한 해의 마무리와 시작');
+      if (!eventResult.applied || !eventResult.optionApplied) {
+        this.finish();
+      }
     }
   }
 
@@ -143,17 +147,20 @@ export class GameInstance {
     }
     // logAndPrint(this.player);
     logAndPrint('');
-    const { experience: exp, level } = this.player.property;
+    const { experience: exp, level, levelEnabled } = this.player.property;
     logAndPrint(
       Language.data
         .map((lang, i) => {
           const language = `${circle} ${lang.padEnd(10)}`;
           const experience_ = `경험치 ${exp[lang].toString().padStart(2)}`;
+          const levelColor = levelEnabled[lang] ? colors[i] : clc.blackBright;
           const level_ =
             level[lang] === 0
               ? ''
-              : `${level[lang].toString().padStart(2)}년차 개발자`;
-          return colors[i](`${language} : ${experience_} ${level_}`);
+              : `| ${level[lang].toString().padStart(2)}년차 개발자`;
+          return colors[i](
+            `${language} : ${experience_} ${levelColor(level_)}`,
+          );
         })
         .join('\n'),
     );
@@ -172,8 +179,16 @@ export class GameInstance {
   toJson(): GameInstanceJSON {
     return {
       turn: this.turn,
+      isFinished: this.isFinished ? true : false,
       map: this.map.map((tile) => tile.toJson()),
       player: this.player.toJson(),
     };
+  }
+
+  finish() {
+    this.isFinished = true;
+    this.show();
+    logAndPrint('개발자로 활동할 수 없게 되었습니다...');
+    process.exit();
   }
 }
