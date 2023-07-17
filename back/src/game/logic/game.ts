@@ -78,7 +78,6 @@ export class GameInstance {
   }
 
   async *playStep(): AsyncGenerator<RequestInput, void, ResponseInput> {
-
     console.clear();
     this.show();
     while (true) {
@@ -131,9 +130,8 @@ export class GameInstance {
     logAndPrint(
       `[ ${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
         (this.turn % 4) + 1
-      }분기 ]`,
+      }분기 ]\n`,
     );
-    logAndPrint('');
     const id = this.map
       .map((tile) => Language.toId(tile.language))
       .map((id) => colors[id](circle));
