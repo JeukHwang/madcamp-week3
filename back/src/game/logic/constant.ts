@@ -3,4 +3,5 @@ export const GameConstant = {
   defaultHealth: 5,
   experienceThreshold: 2,
   preserveLog: true,
+  bigTurn: 7,
 };

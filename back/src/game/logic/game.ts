@@ -101,7 +101,7 @@ export class GameInstance {
       }
     }
 
-    if (this.turn % 4 === 0) {
+    if (this.property.turn % GameConstant.bigTurn === 0) {
       const eventResult = yield* this.tryApplyEvent('한 해의 마무리와 시작');
       if (!eventResult.applied || !eventResult.optionApplied) {
         this.finish();
@@ -134,10 +134,13 @@ export class GameInstance {
       clc.magenta,
       clc.cyan,
     ];
+    const day = ['월', '화', '수', '목', '금', '토', '일'][
+      this.property.turn % GameConstant.bigTurn
+    ];
     logAndPrint(
-      `[ ${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
-        (this.turn % 4) + 1
-      }분기 ]\n`,
+      `[ ${
+        Math.floor(this.property.turn / GameConstant.bigTurn) + 1
+      }주차 ${day}요일 ]\n`,
     );
     const id = this.map
       .map((tile) => Language.toId(tile.language))
