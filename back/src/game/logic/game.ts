@@ -102,7 +102,7 @@ export class GameInstance {
     }
 
     if (this.property.turn % GameConstant.bigTurn === 0) {
-      const eventResult = yield* this.tryApplyEvent('한 해의 마무리와 시작');
+      const eventResult = yield* this.tryApplyEvent('한 주의 마무리와 시작');
       if (!eventResult.applied || !eventResult.optionApplied) {
         this.finish();
       }
@@ -165,7 +165,7 @@ export class GameInstance {
           const level_ =
             level[lang] === 0
               ? ''
-              : `| ${level[lang].toString().padStart(2)}년차 개발자`;
+              : `| ${level[lang].toString().padStart(2)}주차 개발자`;
           return colors[i](
             `${language} : ${experience_} ${levelColor(level_)}`,
           );

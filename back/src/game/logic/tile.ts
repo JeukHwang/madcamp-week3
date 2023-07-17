@@ -30,8 +30,7 @@ export class Language {
     return Object.fromEntries(
       Language.data.map((lang) => [
         lang,
-        game.player.property.experience[lang] >=
-          GameConstant.experienceThreshold,
+        game.player.property.experience[lang] >= GameConstant.levelThreshold,
       ]),
     ) as {
       [key in TileLanguage]: boolean;

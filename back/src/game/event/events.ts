@@ -7,20 +7,20 @@ import { Language } from '../logic/tile';
 const eventList: GameEvent[] = [
   new EventInstance(
     NoCondition,
-    '한 해의 마무리',
-    '지난 1년 간의 배움이 개발자로 살아남기에 충분했을지 알아보자.',
+    '한 주의 마무리',
+    '지난 1주 간의 배움이 개발자로 살아남기에 충분했을지 알아보자.',
     [
       new OptionInstance(
         (game) => Object.values(Language.checkUpdate(game)).some((v) => v),
         '경력을 인정받자',
-        `${GameConstant.experienceThreshold} 이상의 경험치가 있는 언어에 대해 1년의 경력이 인정된다.`,
+        `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어에 대해 1주의 경력이 인정된다.`,
         (game) => {
           const prop = game.player.property;
           let flag = false;
           Language.data.forEach((lang) => {
-            if (prop.experience[lang] >= GameConstant.experienceThreshold) {
+            if (prop.experience[lang] >= GameConstant.levelThreshold) {
               prop.level[lang] += 1;
-              prop.experience[lang] -= GameConstant.experienceThreshold;
+              prop.experience[lang] -= GameConstant.levelThreshold;
               flag = true;
             }
           });
@@ -59,13 +59,13 @@ const eventList: GameEvent[] = [
   ),
   new EventInstance(
     NoCondition,
-    '한 해의 마무리와 시작',
-    '지난 1년 간의 배움이 개발자로 살아남기에 충분했을지 알아보자.\n다만 각종 신기술의 등장과 구기술의 변화로 기존의 지식이 쓸모없어졌다. 배울 것은 다시 많아졌지만 새로운 기회가 열리려나.',
+    '한 주의 마무리와 시작',
+    '지난 1주 간의 배움이 개발자로 살아남기에 충분했을지 알아보자.\n다만 각종 신기술의 등장과 구기술의 변화로 기존의 지식이 쓸모없어졌다. 배울 것은 다시 많아졌지만 새로운 기회가 열리려나.',
     [
       new OptionInstance(
         NoCondition,
-        '한 해의 노력을 정산해보자.',
-        `${GameConstant.experienceThreshold} 이상의 경험치가 있는 언어에 대해 1년의 경력이 인정된 후 모든 경험치가 0이 된다.`,
+        '한 주의 노력을 정산해보자.',
+        `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어에 대해 1주의 경력이 인정된 후 모든 경험치가 0이 된다.`,
         (game) => {
           const prop = game.player.property;
           const update = Language.checkUpdate(game);
