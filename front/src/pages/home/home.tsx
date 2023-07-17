@@ -6,6 +6,7 @@ import Button, {ButtonVariant} from "../../atoms/button/button";
 import { useNavigate } from "react-router-dom";
 import "../../atoms/containers/background/macTerminal.css";
 import axios from "axios";
+import colorSet from "../../styles/colorSet";
 const HomePage = () => {
     const movePage = useNavigate();
 /*     const handleButtonClick = () => {
@@ -68,13 +69,14 @@ const HomePage = () => {
           <Button onClick ={board} variant={ButtonVariant.outlined}>
             <Text size="1.5rem" font={Font.Bold}>리더보드</Text>
           </Button>
-          <Button onClick ={board} variant={ButtonVariant.outlined}>
-          <Text size="1.5rem" font={Font.Bold}>
-          <a href="https://madcamp-week3-production.up.railway.app/auth">
-            googlelogin
-          </a>
-          </Text >
-          </Button>
+          <Button variant={ButtonVariant.outlined}>
+            <Text color={colorSet.white} size="1.5rem" font={Font.Bold} >
+              <a id="a" style={{ color: 'white' }} href="https://madcamp-week3-production.up.railway.app/auth">
+                googlelogin
+              </a>
+            </Text>
+        </Button>
+
           </div>
 
 

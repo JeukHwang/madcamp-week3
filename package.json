@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/uuid": "^9.0.2"
+  },
+  "dependencies": {
+    "@types/react-bootstrap": "^0.32.32"
+  }
 }
