@@ -125,9 +125,9 @@ export class GameInstance {
       clc.cyan,
     ];
     logAndPrint(
-      `${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
+      `[ ${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
         (this.turn % 4) + 1
-      }분기`,
+      }분기 ]`,
     );
     logAndPrint('');
     const id = this.map

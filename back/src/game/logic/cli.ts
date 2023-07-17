@@ -11,7 +11,7 @@ export async function getPositionsFromInput(
   while (true) {
     try {
       const str = await input(
-        `\nWASD키를 눌러 최대 ${GameConstant.defaultHealth}칸을 움직이세요. : `,
+        `WASD키를 눌러 최대 ${GameConstant.defaultHealth}칸을 움직이세요. : `,
       );
       const positions: Position[] = [];
       const chars = str.split('');
