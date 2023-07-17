@@ -12,12 +12,7 @@ const eventList: GameEvent[] = [
     '지난 1년 간의 배움이 개발자로 살아남기에 충분했을지 알아보자.',
     [
       new OptionInstance(
-        (game) =>
-          Language.data.some(
-            (lang) =>
-              game.player.property.experience[lang] >=
-              GameConstant.experienceThreshold,
-          ),
+        (game) => Object.values(Language.checkUpdate(game)).some((v) => v),
         '경력을 인정받자',
         `${GameConstant.experienceThreshold} 이상의 경험치가 있는 언어에 대해 1년의 경력이 인정된다.`,
         (game) => {
@@ -34,12 +29,7 @@ const eventList: GameEvent[] = [
         },
       ),
       new OptionInstance(
-        (game) =>
-          !Language.data.some(
-            (lang) =>
-              game.player.property.experience[lang] >=
-              GameConstant.experienceThreshold,
-          ),
+        (game) => !Object.values(Language.checkUpdate(game)).some((v) => v),
         '아쉽지만 포기하자',
         `개발자를 그만둔다.`,
         () => {
