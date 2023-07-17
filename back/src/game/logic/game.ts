@@ -9,15 +9,15 @@ import type { TileJSON, TileLanguage } from './tile';
 import { Language, Tile } from './tile';
 import { countArray, logAndPrint } from './util';
 
-type EventApplyResult =
+export type EventApplyResult =
   | { applied: false }
   | { applied: true; optionApplied: boolean };
-type RequestInput =
+export type RequestInput =
   | { type: 'number'; min: number; max: number }
   | { type: 'positions' };
-type ResponseInput = number | Position[];
 
-type GameProperty = {
+export type ResponseInput = number | Position[];
+export type GameProperty = {
   turn: number;
   isFinished: boolean;
 };
