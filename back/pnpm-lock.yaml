@@ -23,6 +23,9 @@ dependencies:
   '@prisma/client':
     specifier: ^5.0.0
     version: 5.0.0(prisma@5.0.0)
+  '@toss/hangul':
+    specifier: ^1.5.0
+    version: 1.5.0
   '@types/bcrypt':
     specifier: ^5.0.0
     version: 5.0.0
@@ -1092,6 +1095,10 @@ packages:
     dependencies:
       '@sinonjs/commons': 3.0.0
     dev: true
+
+  /@toss/hangul@1.5.0:
+    resolution: {integrity: sha512-DpQuwdka729sprXm1Xd9sXhTwWF0ktlWbVVFETPVeOMd/5UrgZYKIIdnySWlnEV7kosiaL1ToqwW1k6LA9LBow==}
+    dev: false
 
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
