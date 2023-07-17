@@ -13,6 +13,7 @@ import Background from "../../atoms/containers/background/background";
 import Area from "../../atoms/containers/area/Area";
 import Player from "../../assets/icon/programming.png";
 import "../../assets/effect/bouncingAnimation.css";
+
 import "../../assets/effect/fadeIn.css";
 import "../../assets/effect/fadeOut.css";
 import Button from "../../atoms/button/button";
@@ -20,6 +21,8 @@ import Text from "../../atoms/containers/text/text";
 import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import { ButtonVariant } from "../../atoms/button/button";
+import "../../atoms/containers/background/macTerminal.css";
+//import "../../atoms/containers/background/macT.css";
 //import { TransitionGroup, CSSTransition } from "react-transition-group";
 const width=7;
 type Position = {x:number, y:number}
@@ -320,28 +323,40 @@ const isCellSelected = (row: number, col: number) => {
   return (
     <Area>
     <Background color="white">
+    <div id="bar2">
+            <div id="red">
+            </div>
+            <div id="yellow">
+            </div>
+            <div id="green">
+            </div>
+        </div>
+    <div id="screen2">
         <div>
             {turnPlayer && (
                 <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
-                    <ul>
-                        <li>Turn: {turnPlayer}</li>
-                    </ul>   
+                        <Text color={colorSet.white} >Turn: {turnPlayer}</Text>
+                    
                 </div>
             )}
         </div>
         <div>
           {levelPlayer && (
-            <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
+            <div style={{display:"flex", justifyContent:"space-between", fontFamily:"DungGeunMo", fontSize:"1.5rem", color:colorSet.white}}>
               <ul>
                 <li>C: {levelPlayer.C}</li>
                 <li>Java: {levelPlayer.Java}</li>
                 <li>Python: {levelPlayer.Python}</li>
+              </ul>
+              <ul>
                 <li>JavaScript: {levelPlayer.JavaScript}</li>
                 <li>TypeScript: {levelPlayer.TypeScript}</li>
               </ul>
             </div>
+
           )}
         </div>
+    </div>
     <div className="app">
   <div className="game">
     

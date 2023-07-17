@@ -4,6 +4,8 @@ import Area from "../../atoms/containers/area/Area";
 import Background from "../../atoms/containers/background/background";
 import Font from "../../styles/font";
 import Text from "../../atoms/containers/text/text";
+
+
 interface User {
   id: string;
   name: string;
