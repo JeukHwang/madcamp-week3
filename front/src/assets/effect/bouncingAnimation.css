@@ -14,3 +14,21 @@
     animation: bounce 0.5s;
   }
   
+  .cell-transition-enter {
+    opacity: 0;
+  }
+  
+  .cell-transition-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+  }
+  
+  .cell-transition-exit {
+    opacity: 1;
+  }
+  
+  .cell-transition-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+  }
+  

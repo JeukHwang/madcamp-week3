@@ -4,6 +4,7 @@ import Font from "../../styles/font";
 import Background from "../../atoms/containers/background/background";
 import Button, {ButtonVariant} from "../../atoms/button/button";
 import { useNavigate } from "react-router-dom";
+import "../../atoms/containers/background/macTerminal.css";
 import axios from "axios";
 const HomePage = () => {
     const movePage = useNavigate();
@@ -48,21 +49,36 @@ const HomePage = () => {
     return (
       <Area>
         <Background style={{ padding: "50px" }}>
+        <div id="bar">
+            <div id="red">
+            </div>
+            <div id="yellow">
+            </div>
+            <div id="green">
+            </div>
+        </div>
+        <div id="screen">
           <Text size="5.0rem" color="white" font={Font.Bold} style={{padding:"50px"}}
           dangerouslySetInnerHTML={{ __html: "&lt;취업하자/&gt;" }}
           />
-          <Button onClick={main} variant={ButtonVariant.contained}>
-            <Text size="3.0rem" font={Font.Medium}>지원하기</Text>
-          </Button>
+          <div id="buttonAlign">
           <Button onClick ={moveto} variant={ButtonVariant.outlined}>
-            <Text size="3.0rem" font={Font.Bold}>테스트</Text>
+            <Text size="1.5rem" font={Font.Bold}>코딩테스트</Text>
           </Button>
           <Button onClick ={board} variant={ButtonVariant.outlined}>
-            <Text size="3.0rem" font={Font.Bold}>리더보드</Text>
+            <Text size="1.5rem" font={Font.Bold}>리더보드</Text>
           </Button>
+          <Button onClick ={board} variant={ButtonVariant.outlined}>
+          <Text size="1.5rem" font={Font.Bold}>
           <a href="https://madcamp-week3-production.up.railway.app/auth">
             googlelogin
           </a>
+          </Text >
+          </Button>
+          </div>
+
+
+        </div>
         </Background>
 
       </Area>

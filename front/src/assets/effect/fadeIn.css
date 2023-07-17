@@ -1,0 +1,28 @@
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+  .fadein {
+    animation: fadein 0.5s ease-in;
+  }
+
+
+ /* Define the keyframes for the shrinking animation */
+@keyframes shrink {
+  from {
+    transform: scale(1); /* Starting scale: 100% */
+  }
+  to {
+    transform: scale(0); /* Ending scale: 0% (completely shrunk) */
+  }
+}
+
+/* Apply the shrinking animation to the element */
+.shrinking-element {
+  animation: shrink 1s ease-in-out; /* Animation duration: 1 second */
+}

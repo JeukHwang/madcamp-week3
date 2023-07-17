@@ -31,7 +31,7 @@ const Button = styled.button<ButtonProps>`
     switch (variant) {
       case ButtonVariant.outlined:
         return css`
-          border: 10px solid ${colorSet.gray};
+          border: 5px solid ${colorSet.white};
           border-radius: 5px;
           padding: 10px 20px;
           color: ${colorSet.white};

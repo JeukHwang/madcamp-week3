@@ -13,14 +13,18 @@ import Background from "../../atoms/containers/background/background";
 import Area from "../../atoms/containers/area/Area";
 import Player from "../../assets/icon/programming.png";
 import "../../assets/effect/bouncingAnimation.css";
+import "../../assets/effect/fadeIn.css";
+import "../../assets/effect/fadeOut.css";
 import Button from "../../atoms/button/button";
 import Text from "../../atoms/containers/text/text";
 import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import { ButtonVariant } from "../../atoms/button/button";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+//import { TransitionGroup, CSSTransition } from "react-transition-group";
 const width=7;
 type Position = {x:number, y:number}
+type Turn = null;
+type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 const Ready = () => {
     const iconimage2: Record<string, string> = {
         Java,
@@ -35,7 +39,8 @@ const Ready = () => {
   const [selectedCells, setSelectedCells] = useState<Position[]>([]);
   const [arrayData, setArrayData] = useState<any[]>([]);
   const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
-
+  const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
+  const [turnPlayer, SetTurnPlayer] = useState<Turn | null>(null);
   const sendSelectedCells = async () => {
     if (selectedCells.length === 0) {
       toast.warning("아무 것도 선택되지 않았습니다.", { autoClose: 1000 });
@@ -45,7 +50,7 @@ const Ready = () => {
     try {
       // Make a POST request to the backend API with the selected cells data
       const positions = selectedCells.map(({ x, y }) => ({ x, y }));
-        console.log("position", positions);
+        //console.log("position", positions);
       // Make a POST request to the backend API with the selected cells data
       
       axios({
@@ -57,16 +62,9 @@ const Ready = () => {
         withCredentials: true,
 
       }).then((res)=> {
-        console.log(res);
+       // console.log(res);
         movePlayerToSelectedCells();
-
         setSelectedCells([]);
-        
-
-        
-        
-        
-        
       });
       
       await axios.post(
@@ -80,7 +78,7 @@ const Ready = () => {
       );
       
       // Handle the success response or perform any necessary actions
-      console.log("Selected cells sent successfully");
+      //console.log("Selected cells sent successfully");
     } catch (error) {
       // Handle any errors that occurred during the API request
       console.error("Error sending selected cells:", error);
@@ -89,7 +87,7 @@ const Ready = () => {
   
 
   const movePlayerToSelectedCells = async () => {
-    const delay = 500; // Delay between each move in milliseconds
+    const delay =600; // Delay between each move in milliseconds
   
     if (!playerPosition || selectedCells.length === 0) {
       return;
@@ -99,19 +97,56 @@ const Ready = () => {
   
     for (let i = startIndex; i < selectedCells.length; i++) {
       const { x: targetX, y: targetY } = selectedCells[i];
-      console.log(selectedCells);
-  
+      if(i>0){
+      //const {x: pevX, y: prevY} = selectedCells[i-1];
+      //console.log(selectedCells);
+/*       const cell2 = document.getElementById(`cell-${pevX}-${prevY}`);
+      if(cell2){
+        cell2.classList.add("fadein");
+        console.log("cell2",cell2.classList);
+        setTimeout(() => {
+            cell2.classList.remove("fadein");
+          }, 500);
+      } */
+      if(i<selectedCells.length-1){
+        const {x: nextX, y: nextY} = selectedCells[i+1];
+        const cell3 = document.getElementById(`cell-${nextX}-${nextY}`);
+        if(cell3){
+            cell3.classList.add("fadeout");
+            cell3.style.opacity = "0";
+           // console.log("cell3",cell3.classList);
+        }
+
+      }
+
+      }
+        // Fetch the updated arrayData for the target cell
       const { x: currentX, y: currentY } = playerPosition;
   
       // Calculate the new player position
       const newPosition: Position = { x: targetX, y: targetY };
-      console.log(newPosition);
+      //console.log(newPosition);
   
       // Update the player position state
       setPlayerPosition(newPosition);
-  
       // Wait for the delay before moving to the next cell
       await new Promise((resolve) => setTimeout(resolve, delay));
+
+
+ // Wait for the remaining delay before moving to the next cell
+    await new Promise((resolve) => setTimeout(resolve, delay - 200));
+        
+    // Restore the next cell's appearance after the player moves
+    if (i < selectedCells.length - 1) {
+    const { x: nextX, y: nextY } = selectedCells[i + 1];
+    const cell3 = document.getElementById(`cell-${nextX}-${nextY}`);
+    if (cell3) {
+        cell3.style.opacity = "1"; // Set the opacity back to 1 to make the cell visible again
+        cell3.classList.remove("fadeout"); // Remove the "fadeout" class to restore the original appearance
+    }
+ }
+
+
     }
   
     // Fetch the updated arrayData for the target cell
@@ -127,20 +162,7 @@ const Ready = () => {
       .then((response) => {
         const arrayData = response.data.json.map;
         const player = response.data.json.player.position;
-        setArrayData((prevArrayData) => {
-          const updatedArrayData = prevArrayData.map((data) => {
-            if (data.x === targetX && data.y === targetY) {
-              // Update the specific cell with new data
-              // For example:
-              return {
-                ...data,
-                // Update the necessary properties
-              };
-            }
-            return data;
-          });
-          return updatedArrayData;
-        });
+        setArrayData(arrayData);
         setPlayerPosition(player);
       })
       .catch((error) => {
@@ -206,19 +228,19 @@ const handleCellClick = (row: number, col: number) => {
     const updatedSelectedCells = [...selectedCells, {x: row, y: col}];
     setSelectedCells(updatedSelectedCells);
     //console.log(setSelectedCells);
-    console.log(updatedSelectedCells);
-    console.log("row col", row,col);
+    //console.log(updatedSelectedCells);
+    //console.log("row col", row,col);
 
     // Add the "bounce" class to the clicked cell
     const cell = document.getElementById(`cell-${row}-${col}`);
     //console.log(cell);
     if (cell) {
-      cell.classList.add("bounce");
-      //console.log("cell",cell);
+      cell.classList.add("fadein");
+      //console.log("cell",cell.classList);
 
       // Remove the "bounce" class after the animation completes
       setTimeout(() => {
-        cell.classList.remove("bounce");
+        cell.classList.remove("fadein");
       }, 500);
     }
 
@@ -230,9 +252,6 @@ const handleCellClick = (row: number, col: number) => {
 const isCellSelected = (row: number, col: number) => {
   return selectedCells.some(({x: r, y: c}) => r === row && c === col);
 };
-useEffect(() => {
-    createBoard();
-  }, [width]);
 
   useEffect(() => {
     axios
@@ -240,10 +259,8 @@ useEffect(() => {
       .then(response => {
         const arrayData = response.data.json.map;
         const player = response.data.json.player.position;
-             // console.log("player",player);
               setArrayData(arrayData);
               setPlayerPosition(player);
-             // console.log("playerPosition",playerPosition);
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
@@ -252,10 +269,13 @@ useEffect(() => {
             .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
             .then(response => {
                 const arrayData = response.data.json.map;
-                // console.log(arrayData);
                  setArrayData(arrayData);
                  const player = response.data.json.player.position;
                  setPlayerPosition(player);
+                    const level = response.data.json.player.property.level;
+                    setLevelPlayer(level);
+                    const turn = response.data.json.turn;
+                    SetTurnPlayer(turn);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
@@ -263,9 +283,65 @@ useEffect(() => {
       });
   }, [history]);
 
+
+
+  useEffect(() => {
+    // Fetch the updated levelPlayer score from the server
+    axios
+      .get("https://madcamp-week3-production.up.railway.app/game/current", {
+        withCredentials: true,
+      })
+      .then(response => {
+        const level = response.data.json.player.property.level;
+        setLevelPlayer(level); // Update the levelPlayer state with the new score
+      })
+      .catch(error => {
+        console.error("API 호출에 실패했습니다.", error.response);
+      });
+  }, [levelPlayer]); 
+  useEffect(() => {
+    axios.
+        get("https://madcamp-week3-production.up.railway.app/game/current", {
+            withCredentials: true,
+            })
+            .then(response => {
+                const turn = response.data.json.turn;
+                SetTurnPlayer(turn);
+                console.log(turnPlayer);
+            })
+            .catch(error => {
+                console.error("API 호출에 실패했습니다.", error.response);
+            });
+}, [turnPlayer]);
+  useEffect(() => {
+    createBoard();
+  }, [width]);
+
   return (
     <Area>
     <Background color="white">
+        <div>
+            {turnPlayer && (
+                <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
+                    <ul>
+                        <li>Turn: {turnPlayer}</li>
+                    </ul>   
+                </div>
+            )}
+        </div>
+        <div>
+          {levelPlayer && (
+            <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
+              <ul>
+                <li>C: {levelPlayer.C}</li>
+                <li>Java: {levelPlayer.Java}</li>
+                <li>Python: {levelPlayer.Python}</li>
+                <li>JavaScript: {levelPlayer.JavaScript}</li>
+                <li>TypeScript: {levelPlayer.TypeScript}</li>
+              </ul>
+            </div>
+          )}
+        </div>
     <div className="app">
   <div className="game">
     
@@ -280,10 +356,10 @@ useEffect(() => {
       if (!languageIcon) return null; // Skip unknown language
 
       return (
-        <TransitionGroup className="board" key={index}>
-        <CSSTransition classNames="cell-transition" timeout={500}>
+        <div>
+
           <div
-            className={`cell${isPlayerCell ? " player-cell" : ""}`}
+            className={`${isPlayerCell ? "" : ""}`}
             id={`cell-${cellX}-${cellY}`}
             key={index}
             style={{
@@ -293,6 +369,7 @@ useEffect(() => {
             }}
             onClick={() => handleCellClick(cellX, cellY)}
           >
+            
             <div className="cell-content">
               {isPlayerCell ? (
                 <img src={Player} alt="Player" />
@@ -301,8 +378,7 @@ useEffect(() => {
               )}
             </div>
           </div>
-        </CSSTransition>
-      </TransitionGroup>
+          </div>
       );
     })}
   </div>
