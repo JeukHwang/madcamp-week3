@@ -14,9 +14,9 @@
     background-color: #DAD9D9;
     margin: 0 auto;
     font-family: monospace;
-    padding: auto;
+    padding: 1px;
     float: none;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
 }
 #bar {
     text-align: center;
@@ -25,9 +25,9 @@
     background-color: #DAD9D9;
     margin: 0 auto;
     font-family: monospace;
-    padding: auto;
+    padding: 1px;
     float: none;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
 }
 #red {
     background-color: #E94B35;
@@ -70,7 +70,7 @@
     : #33485E;
     width: 750px;
     height: 450px;
-    border-radius: 2%;
+    border-radius: 0 0 2% 2%;
     margin: 0 auto;
     padding: 1px;
 }
@@ -82,7 +82,7 @@
     background-color
     : #33485E;
     width: 560px;
-    border-radius: 2%;
+    border-radius: 0 0 2% 2%;
     margin: 0 auto;
     padding: 1px;
 }

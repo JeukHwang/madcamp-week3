@@ -59,8 +59,8 @@ const HomePage = () => {
             </div>
         </div>
         <div id="screen">
-          <Text size="5.0rem" color="white" font={Font.Bold} style={{padding:"50px"}}
-          dangerouslySetInnerHTML={{ __html: "&lt;취업하자/&gt;" }}
+          <Text size="3.5rem" color="white" font={Font.Bold} style={{padding:"50px"}}
+          dangerouslySetInnerHTML={{ __html: "&lt;개발자로 살아남기/&gt;" }}
           />
           <div id="buttonAlign">
           <Button onClick ={moveto} variant={ButtonVariant.outlined}>

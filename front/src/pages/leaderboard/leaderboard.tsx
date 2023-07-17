@@ -4,6 +4,7 @@ import Area from "../../atoms/containers/area/Area";
 import Background from "../../atoms/containers/background/background";
 import Font from "../../styles/font";
 import Text from "../../atoms/containers/text/text";
+import "../../atoms/containers/background/macTerminal.css";
 
 
 interface User {
@@ -36,12 +37,21 @@ const LeaderBoard: React.FC = () => {
   return (
     <Area>
     <Background  color={"white"} style={{ padding: "50px" }}>
+    <div id="bar2">
+            <div id="red">
+            </div>
+            <div id="yellow">
+            </div>
+            <div id="green">
+            </div>
+    </div>
+    <div id="screen2" style={{font:"Font.Regular",color:"white"}}>
     <div className="leaderboard">
-      <div className="leaderboard__title">
-        <Text size={"3.0rem"} font={Font.Bold}>랭킹보드</Text>
-      </div>
-      <div className="leaderboard__table">
-      <table style={{ fontFamily: "DungGeunMo" }}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "0px" }} className="leaderboard__title">
+  <Text size="3.0rem" color="white" font={Font.Bold} style={{ alignItems: "center", padding: "30px" }} dangerouslySetInnerHTML={{ __html: "&lt;랭킹보드/&gt;" }} />
+</div>
+<div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "15px" }} className="leaderboard__table">
+      <table style={{gap:"10px", padding:"15px",width:"400px",fontFamily: "DungGeunMo" }}>
           <thead>
             <tr>
               <th>랭킹</th>
@@ -50,20 +60,21 @@ const LeaderBoard: React.FC = () => {
               <th>사진</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{  fontSize:"1.3rem",justifyContent: "center", alignItems: "center"}}>
             {users.map((user, index) => (
               <tr key={user.id}>
-                <td>{index + 1}</td>
-                <td>{user.name}</td>
-                <td>{user.score}</td>
-                <td>
-                  <img src={user.photo} alt="User" />
+              <td style={{ textAlign: "center" }}>{index + 1}</td>
+              <td style={{ textAlign: "center" }}>{user.name}</td>
+              <td style={{ textAlign: "center" }}>{user.score}</td>
+              <td style={{ textAlign: "center" }}>
+                  <img style={{width:"80px", borderRadius: "50%"}} src={user.photo} alt="User" />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    </div>
     </div>
     </Background>
     </Area>

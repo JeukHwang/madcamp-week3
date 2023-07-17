@@ -44,6 +44,8 @@ const Ready = () => {
   const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
   const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
   const [turnPlayer, SetTurnPlayer] = useState<Turn | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const sendSelectedCells = async () => {
     if (selectedCells.length === 0) {
       toast.warning("아무 것도 선택되지 않았습니다.", { autoClose: 1000 });
@@ -301,7 +303,7 @@ const isCellSelected = (row: number, col: number) => {
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
       });
-  }, [levelPlayer]); 
+  }, [levelPlayer, turnPlayer]); 
   useEffect(() => {
     axios.
         get("https://madcamp-week3-production.up.railway.app/game/current", {
@@ -310,12 +312,11 @@ const isCellSelected = (row: number, col: number) => {
             .then(response => {
                 const turn = response.data.json.turn;
                 SetTurnPlayer(turn);
-                console.log(turnPlayer);
             })
             .catch(error => {
                 console.error("API 호출에 실패했습니다.", error.response);
             });
-}, [turnPlayer]);
+}, [turnPlayer, levelPlayer]);
   useEffect(() => {
     createBoard();
   }, [width]);
