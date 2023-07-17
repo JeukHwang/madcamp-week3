@@ -1,5 +1,5 @@
 import { randomInt } from 'crypto';
-import { createWriteStream, mkdirSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { clearLine, createInterface, moveCursor } from 'readline';
 import { GameConstant } from './constant';
@@ -21,6 +21,7 @@ export function input(msg: string): Promise<string> {
   return new Promise((resolve) =>
     rl.question(msg, (ans) => {
       rl.close();
+      logAndPrint(msg + ans);
       resolve(ans);
     }),
   );
@@ -42,12 +43,10 @@ export function countArray<T>(data: T[]): { name: T; count: number }[] {
 const fileName = `log_${new Date().toISOString()}.txt`;
 const filePath = path.join(__dirname, '../../../log', fileName);
 mkdirSync(path.join(__dirname, '../../../log'), { recursive: true });
-const stream = createWriteStream(filePath, {
-  flags: 'a+',
-});
+
 export function logAndPrint(msg: string) {
   if (GameConstant.preserveLog) {
-    stream.write(msg + '\n');
+    writeFileSync(filePath, msg + '\n', { flag: 'a' });
   }
   console.log(msg);
 }
