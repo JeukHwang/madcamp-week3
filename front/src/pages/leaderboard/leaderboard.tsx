@@ -36,7 +36,7 @@ const LeaderBoard: React.FC = () => {
 
   return (
     <Area>
-    <Background  color={"white"} style={{ padding: "50px" }}>
+    <Background  color={"black"} style={{ padding: "50px" }}>
     <div id="bar2">
             <div id="red">
             </div>
