@@ -42,7 +42,7 @@ export class OptionInstance implements AppliableGameOption {
     const color = this.canApply(game) ? clc.white : clc.blackBright;
     logAndPrint(
       color(
-        `[ 선택지: ${this.title} ] (${index.toString()}을 눌러 선택]\n${
+        `[ 선택지: ${this.title} ] (${index.toString()}을 눌러 선택)\n${
           this.subtitle
         }`,
       ),
