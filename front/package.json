@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.2.7",
     "axios": "^1.4.0",
     "http-proxy-middleware": "^2.0.6",
+    "i8-icon": "^0.9.4",
     "react": "^18.2.0",
     "react-audio-player": "^0.17.0",
     "react-dom": "^18.2.0",
