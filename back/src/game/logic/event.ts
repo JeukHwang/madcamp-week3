@@ -88,7 +88,7 @@ export class EventInstance implements AppliableGameEvent {
     private condition: GameCondition,
     public title: string,
     public subtitle: string,
-    public options: OptionInstance[],
+    public options: GameOption[],
   ) {}
 
   toJson(): GameEventJSON {
