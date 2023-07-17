@@ -1,8 +1,8 @@
-import { ForbiddenException } from '@nestjs/common';
 import { randomInt } from 'crypto';
-import { createInterface } from 'readline';
-import { Position } from './move';
-import { Player } from './player';
+import { createWriteStream, mkdirSync } from 'fs';
+import * as path from 'path';
+import { clearLine, createInterface, moveCursor } from 'readline';
+import { GameConstant } from './constant';
 
 export function isArrayUnique<T>(array: Array<T>): boolean {
   return new Set(array).size === array.length;
@@ -26,32 +26,9 @@ export function input(msg: string): Promise<string> {
   );
 }
 
-export async function getPositionsFromInput(
-  player: Player,
-): Promise<Position[]> {
-  const str = await input('Move: ');
-  const positions: Position[] = [];
-  const chars = str.split('');
-  for (const char of chars) {
-    const pos = positions[positions.length - 1] || player.position;
-    switch (char) {
-      case 'w':
-        positions.push(new Position(pos.x - 1, pos.y));
-        break;
-      case 'a':
-        positions.push(new Position(pos.x, pos.y - 1));
-        break;
-      case 's':
-        positions.push(new Position(pos.x + 1, pos.y));
-        break;
-      case 'd':
-        positions.push(new Position(pos.x, pos.y + 1));
-        break;
-      default:
-        throw new ForbiddenException('Invalid input');
-    }
-  }
-  return positions;
+export function erase() {
+  moveCursor(process.stdout, 0, -1); // up one line
+  clearLine(process.stdout, 1); // from cursor to end
 }
 
 export function countArray<T>(data: T[]): { name: T; count: number }[] {
@@ -59,4 +36,18 @@ export function countArray<T>(data: T[]): { name: T; count: number }[] {
     name: value,
     count: data.filter((v) => v === value).length,
   }));
+}
+
+// https://stackoverflow.com/questions/3459476/how-to-append-to-a-file-in-node/43370201#43370201
+const fileName = `log_${new Date().toISOString()}.txt`;
+const filePath = path.join(__dirname, '../../../log', fileName);
+mkdirSync(path.join(__dirname, '../../../log'), { recursive: true });
+const stream = createWriteStream(filePath, {
+  flags: 'a+',
+});
+export function logAndPrint(msg: string) {
+  if (GameConstant.preserveLog) {
+    stream.write(msg + '\n');
+  }
+  console.log(msg);
 }

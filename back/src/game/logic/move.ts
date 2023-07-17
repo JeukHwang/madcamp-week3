@@ -1,9 +1,9 @@
 import { ForbiddenException } from '@nestjs/common';
 import { randomInt } from 'crypto';
-import { Player } from './player';
-import { Tile } from './tile';
+import type { Player } from './player';
+import type { Tile } from './tile';
 import { isArrayUnique } from './util';
-import { GameInstance } from './game';
+import { GameConstant } from './constant';
 
 export type PositionJSON = {
   x: number;
@@ -14,9 +14,9 @@ export class Position {
   constructor(public x: number, public y: number) {
     if (
       0 <= x &&
-      x < GameInstance.mapSize &&
+      x < GameConstant.mapSize &&
       0 <= y &&
-      y < GameInstance.mapSize
+      y < GameConstant.mapSize
     ) {
       return;
     }
@@ -24,14 +24,14 @@ export class Position {
   }
 
   toIndex(): number {
-    return this.x * GameInstance.mapSize + this.y;
+    return this.x * GameConstant.mapSize + this.y;
   }
 
   static fromIndex(index: number) {
-    if (0 <= index && index < GameInstance.mapSize * GameInstance.mapSize) {
+    if (0 <= index && index < GameConstant.mapSize * GameConstant.mapSize) {
       return new Position(
-        Math.floor(index / GameInstance.mapSize),
-        index % GameInstance.mapSize,
+        Math.floor(index / GameConstant.mapSize),
+        index % GameConstant.mapSize,
       );
     }
     throw new ForbiddenException('Invalid index to make position');
@@ -39,7 +39,7 @@ export class Position {
 
   static random() {
     return Position.fromIndex(
-      randomInt(0, GameInstance.mapSize * GameInstance.mapSize),
+      randomInt(0, GameConstant.mapSize * GameConstant.mapSize),
     );
   }
 
@@ -71,6 +71,7 @@ export class Move {
   }
 
   isValid(): boolean {
+    const isNotEmpty = this.indices.length > 0;
     const isUnique = isArrayUnique([
       this.player.position.toIndex(),
       ...this.indices,
@@ -82,6 +83,6 @@ export class Move {
     });
     const isPossibleMoveNum =
       this.indices.length <= this.player.property.health;
-    return isUnique && isAdjacentMoving && isPossibleMoveNum;
+    return isNotEmpty && isUnique && isAdjacentMoving && isPossibleMoveNum;
   }
 }

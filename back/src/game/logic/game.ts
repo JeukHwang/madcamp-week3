@@ -1,8 +1,21 @@
 import * as clc from 'cli-color';
-import { Move, Position } from './move';
-import { Player, PlayerJSON } from './player';
-import { Language, Tile, TileJSON, TileLanguage } from './tile';
-import { countArray, getPositionsFromInput } from './util';
+import { findEventByName } from '../event/events';
+import { GameConstant } from './constant';
+import type { Position } from './move';
+import { Move } from './move';
+import type { PlayerJSON } from './player';
+import { Player } from './player';
+import type { TileJSON, TileLanguage } from './tile';
+import { Language, Tile } from './tile';
+import { countArray, logAndPrint } from './util';
+
+type EventApplyResult =
+  | { applied: false }
+  | { applied: true; optionApplied: boolean };
+type RequestInput =
+  | { type: 'number'; min: number; max: number }
+  | { type: 'positions' };
+type ResponseInput = number | Position[];
 
 export type GameInstanceJSON = {
   turn: number;
@@ -11,15 +24,11 @@ export type GameInstanceJSON = {
 };
 
 export class GameInstance {
-  static mapSize = 5;
-  static defaultHealth = 5;
-  static experienceThreshold = 2;
-
   constructor(public turn: number, public map: Tile[], public player: Player) {}
 
   static new() {
-    const turn = 1;
-    const map = Array(GameInstance.mapSize * GameInstance.mapSize)
+    const turn = 0;
+    const map = Array(GameConstant.mapSize * GameConstant.mapSize)
       .fill(null)
       .map(Tile.random);
     const player = Player.random();
@@ -34,9 +43,60 @@ export class GameInstance {
     );
   }
 
-  async playStep(move: Move) {
-    this.movePlayer(move);
-    this.turn++;
+  *tryApplyEvent(
+    eventName: string,
+  ): Generator<RequestInput, EventApplyResult, ResponseInput> {
+    const event = findEventByName(eventName);
+    if (event.canApply(this)) {
+      console.clear();
+      this.show();
+      event.show(this);
+      while (true) {
+        //   const choice = await getIntegerFromInput(0, event.options.length - 1);
+        const choice: number = (yield {
+          type: 'number',
+          min: 0,
+          max: event.options.length - 1,
+        }) as number;
+        const result = event.apply(this, choice);
+        if (result === null) {
+          continue;
+        }
+        return { applied: true, optionApplied: result };
+        // yield {
+        //   type: 'return',
+        //   data: { applied: true, optionApplied: result },
+        // };
+      }
+    }
+    // yield { type: 'return', data: { applied: false } };
+    return { applied: false };
+  }
+
+  async *playStep(): AsyncGenerator<RequestInput, void, ResponseInput> {
+    if (this.turn % 4 === 0) {
+      yield* this.tryApplyEvent('새로운 시작');
+    }
+
+    console.clear();
+    this.show();
+    while (true) {
+      try {
+        const positions: Position[] = (yield {
+          type: 'positions',
+        }) as Position[];
+        const move = await this.getMoveFromPositions(positions);
+        this.movePlayer(move);
+        this.turn++;
+        break;
+      } catch (error) {
+        continue;
+      }
+    }
+
+    if (this.turn % 4 === 0) {
+      yield* this.tryApplyEvent('한 해의 마무리');
+    }
   }
 
   movePlayer(move: Move) {
@@ -49,7 +109,7 @@ export class GameInstance {
   updateExperience(collectedTile: TileLanguage[]) {
     const { experience } = this.player.property;
     countArray(collectedTile).forEach(({ name, count }) => {
-      experience[name] = Math.floor(count / GameInstance.experienceThreshold);
+      experience[name] += Math.floor(count / GameConstant.experienceThreshold);
     });
   }
 
@@ -64,27 +124,27 @@ export class GameInstance {
       clc.magenta,
       clc.cyan,
     ];
-    console.log(
+    logAndPrint(
       `${new Date().getFullYear() + Math.floor(this.turn / 4)}년도 ${
-        this.turn % 4
+        (this.turn % 4) + 1
       }분기`,
     );
-    console.log('');
+    logAndPrint('');
     const id = this.map
       .map((tile) => Language.toId(tile.language))
       .map((id) => colors[id](circle));
     id[this.player.position.toIndex()] = clc.white(smallCircle);
-    for (let i = 0; i < GameInstance.mapSize; i++) {
-      console.log(
+    for (let i = 0; i < GameConstant.mapSize; i++) {
+      logAndPrint(
         id
-          .slice(i * GameInstance.mapSize, (i + 1) * GameInstance.mapSize)
+          .slice(i * GameConstant.mapSize, (i + 1) * GameConstant.mapSize)
           .join(''),
       );
     }
-    // console.log(this.player);
-    console.log('');
+    // logAndPrint(this.player);
+    logAndPrint('');
     const { experience: exp, level } = this.player.property;
-    console.log(
+    logAndPrint(
       Language.data
         .map((lang, i) => {
           const language = `${circle} ${lang.padEnd(10)}`;
@@ -97,7 +157,7 @@ export class GameInstance {
         })
         .join('\n'),
     );
-    console.log('');
+    logAndPrint('');
   }
 
   static fromJson(json: GameInstanceJSON): GameInstance {
@@ -115,22 +175,5 @@ export class GameInstance {
       map: this.map.map((tile) => tile.toJson()),
       player: this.player.toJson(),
     };
-  }
-}
-
-export async function playGameFromCLI() {
-  let game = GameInstance.new();
-  while (true) {
-    console.clear();
-    game.show();
-    let move: Move;
-    try {
-      const positions = await getPositionsFromInput(game.player);
-      move = await game.getMoveFromPositions(positions);
-    } catch (e) {
-      continue;
-    }
-    await game.playStep(move);
-    game = GameInstance.fromJson(game.toJson());
   }
 }

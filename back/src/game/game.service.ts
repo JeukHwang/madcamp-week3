@@ -44,7 +44,8 @@ export class GameService {
       }
       const game = GameInstance.fromJson(game_.json as GameInstanceJSON);
       const move: Move = await game.getMoveFromPositions(positions);
-      await game.playStep(move);
+      // TODO
+      //   await game.playStep(move);
       const newGame: Game = await this.prismaService.game.update({
         where: { id: game_.id },
         data: { json: game.toJson() },
