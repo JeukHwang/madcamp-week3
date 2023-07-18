@@ -23,7 +23,7 @@ export class UserController {
   // Temporarily public
   @Public()
   @Get('leaderboard')
-  async getLeaderboard(): Promise<UserProfile[]> {
+  async getLeaderboard(): Promise<{ user: UserProfile; score: number }[]> {
     return await this.userService.getLeaderboard();
   }
 }
