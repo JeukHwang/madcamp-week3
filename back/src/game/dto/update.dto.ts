@@ -8,9 +8,14 @@ export class PositionDto {
   y: number;
 }
 
-export class UpdateDto {
+export class UpdatePositionsDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PositionDto)
   positions: PositionDto[];
+}
+
+export class UpdateNumberDto {
+  @IsNumber()
+  number: number;
 }

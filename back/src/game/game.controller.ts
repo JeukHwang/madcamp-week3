@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import type { Game } from '@prisma/client';
 import { User } from '@prisma/client';
 import { CurrentUser } from 'src/user/decorator/current.decorator';
-import { UpdateDto } from './dto/update.dto';
+import { UpdateNumberDto, UpdatePositionsDto } from './dto/update.dto';
 import type { GameProfile } from './game.service';
 import { GameService, toGameProfile } from './game.service';
 import { Position } from './logic/move';
@@ -28,15 +28,30 @@ export class GameController {
     return game ? toGameProfile(game) : null;
   }
 
-  @Post('update')
-  async update(
+  @Post('update-positions')
+  async updatePositions(
     @CurrentUser() user: User,
-    @Body() body: UpdateDto,
+    @Body() body: UpdatePositionsDto,
   ): Promise<GameProfile | null> {
     const positions: Position[] = body.positions.map(
       ({ x, y }) => new Position(x, y),
     );
-    const game: Game | null = await this.gameService.update(user, positions);
+    const game: Game | null = await this.gameService.update(user, {
+      type: 'positions',
+      data: positions.map((p) => p.toJson()),
+    });
+    return game ? toGameProfile(game) : null;
+  }
+
+  @Post('update-number')
+  async updateNumber(
+    @CurrentUser() user: User,
+    @Body() body: UpdateNumberDto,
+  ): Promise<GameProfile | null> {
+    const game: Game | null = await this.gameService.update(user, {
+      type: 'number',
+      data: body.number,
+    });
     return game ? toGameProfile(game) : null;
   }
 }

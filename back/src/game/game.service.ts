@@ -1,9 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import type { Game, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import type { GameInstanceJSON } from './logic/game';
+import type { GameInstanceJSON, ResponseInput } from './logic/game';
 import { GameInstance } from './logic/game';
-import type { Move, Position } from './logic/move';
 
 export type GameProfile = Pick<
   Game,
@@ -26,9 +25,10 @@ export class GameService {
       if (existGame) {
         throw new ForbiddenException(`Game exist ${user.id}`);
       }
-      const gameObj = GameInstance.new().toJson();
+      const gameInstance = GameInstance.new();
+      gameInstance.playStep();
       const game = await this.prismaService.game.create({
-        data: { userId: user.id, json: gameObj },
+        data: { userId: user.id, json: gameInstance.toJson() },
       });
       return game;
     } catch (e) {
@@ -36,23 +36,24 @@ export class GameService {
     }
   }
 
-  async update(user: User, positions: Position[]): Promise<Game> {
+  async update(user: User, data: ResponseInput): Promise<Game> {
     try {
       const game_: Game | null = await this.findCurrent(user);
       if (!game_) {
         throw new ForbiddenException(`Game not exist ${user.id}`);
       }
-      const game = GameInstance.fromJson(game_.json as GameInstanceJSON);
-      const move: Move = await game.getMoveFromPositions(positions);
-      // TODO
-      //   await game.playStep(move);
-      const newGame: Game = await this.prismaService.game.update({
+      const gameInstance = GameInstance.fromJson(
+        game_.json as GameInstanceJSON,
+      );
+      gameInstance.setResponse(data);
+      gameInstance.playStep();
+      const game = await this.prismaService.game.update({
         where: { id: game_.id },
-        data: { json: game.toJson() },
+        data: { json: gameInstance.toJson() },
       });
-      return newGame;
+      return game;
     } catch (e) {
-      throw new ForbiddenException(`Invalid move ${user.id}`);
+      throw e;
     }
   }
 
