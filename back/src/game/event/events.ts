@@ -59,13 +59,6 @@ function weeklyGoalEvent(): GameEvent {
     const levelEnabled = game.player.property.levelEnabled;
     switch (game.property.weeklyGoalData.type) {
       case 'language':
-        console.log(
-          (game.property.weeklyGoalData.include.every(
-            (lang) => levelEnabled[lang],
-          ),
-          Object.values(levelEnabled).filter((v) => v === true).length >=
-            game.property.weeklyGoalData.number),
-        );
         return (
           game.property.weeklyGoalData.include.every(
             (lang) => levelEnabled[lang],
@@ -148,6 +141,5 @@ const eventList: GameEvent[] = [
 
 export function findEventByName(name: string): GameEvent {
   // TODO : find 결과가 undefined일 때 처리 or add type for title
-  console.log(eventList.map((e) => e.title));
   return eventList.find((e) => e.title === name) as GameEvent;
 }

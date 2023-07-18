@@ -25,7 +25,6 @@ export type ResponseInput =
   | { type: 'number'; data: number }
   | { type: 'positions'; data: PositionJSON[] };
 export type GameInput = number | Position[];
-export type GameInputQueue = ResponseInput[];
 
 export type GameProperty = {
   turn: number;
@@ -33,22 +32,20 @@ export type GameProperty = {
   requestInput: RequestInput;
   weeklyGoalData: WeeklyGoalData;
   status: { type: string; data: string }[];
+  input: ResponseInput | null;
 };
 
 export type GameInstanceJSON = {
-  inputQueue: GameInputQueue;
   property: GameProperty;
   map: TileJSON[];
   player: PlayerJSON;
 };
 
 export class GameInstance {
-  public inputQueueIndex = 0;
   constructor(
     public property: GameProperty,
     public map: Tile[],
     public player: Player,
-    public inputQueue: GameInputQueue,
   ) {}
 
   static new() {
@@ -63,10 +60,10 @@ export class GameInstance {
         requestInput: null as unknown as RequestInput,
         weeklyGoalData: null as unknown as WeeklyGoalData,
         status: [],
+        input: null,
       },
       map,
       player,
-      [],
     );
   }
 
@@ -93,7 +90,6 @@ export class GameInstance {
       }
       const result = event.apply(this, response as number);
       if (result === null) {
-        this.inputQueue.pop();
         this.setRequest(requestInput);
         return { applied: true, responseApplied: false };
       }
@@ -116,9 +112,6 @@ export class GameInstance {
       const item = this.property.status.shift()!;
       switch (item.type) {
         case 'beginTurn': {
-          // Begin turn
-          this.inputQueueIndex = 0;
-
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
@@ -137,7 +130,6 @@ export class GameInstance {
             const move = this.getMoveFromPositions(response as Position[]);
             this.movePlayer(move);
           } catch (error) {
-            this.inputQueue.pop();
             this.setRequest({ type: 'positions' });
             this.property.status.unshift(item);
             return 'movePlaye invalid response';
@@ -146,7 +138,6 @@ export class GameInstance {
         }
         case 'applyEvent': {
           // Apply event
-          console.log(item.data, findEventByName(item.data));
           const eventResult = this.tryApplyEvent(findEventByName(item.data));
           if (eventResult.applied && eventResult.responseApplied !== true) {
             this.property.status.unshift(item);
@@ -157,7 +148,6 @@ export class GameInstance {
         case 'endTurn': {
           // End turn
           this.property.turn++;
-          this.inputQueue = [];
           break;
         }
         case 'endGame': {
@@ -258,7 +248,6 @@ export class GameInstance {
       json.property,
       json.map.map(Tile.fromJson),
       Player.fromJson(json.player),
-      json.inputQueue,
     );
     return game;
   }
@@ -268,7 +257,6 @@ export class GameInstance {
       property: this.property,
       map: this.map.map((tile) => tile.toJson()),
       player: this.player.toJson(),
-      inputQueue: this.inputQueue,
     };
   }
 
@@ -286,21 +274,20 @@ export class GameInstance {
     if (!isValid) {
       throw new Error('Invalid Response');
     }
-    this.inputQueue.push(input);
+    this.property.input = input;
   }
 
   private getResponse(): GameInput | null {
-    if (this.inputQueueIndex >= this.inputQueue.length) {
+    const input = this.property.input;
+    this.property.input = null;
+    if (input === null) {
       return null;
     }
-    const response = this.inputQueue[this.inputQueueIndex++];
-    switch (response.type) {
+    switch (input.type) {
       case 'positions':
-        return (response.data as PositionJSON[]).map((p) =>
-          Position.fromJson(p),
-        );
+        return (input.data as PositionJSON[]).map((p) => Position.fromJson(p));
       case 'number':
-        return response.data as number;
+        return input.data as number;
     }
   }
 }
