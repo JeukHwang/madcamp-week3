@@ -31,6 +31,7 @@ type Position = {x:number, y:number}
 type Turn = 0;
 type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 const Ready = () => {
+
     const iconimage2: Record<string, string> = {
         Java,
         JavaScript,
@@ -48,6 +49,7 @@ const Ready = () => {
   const [turnPlayer, SetTurnPlayer] = useState<Turn|null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [request, setRequest] = useState <string>("");
+  const [weeklyGoal, setWeeklyGoal] = useState <string>("");
   const HandleModalShow = () => {
     setModalOpen(false);
   };
@@ -75,7 +77,7 @@ const Ready = () => {
         withCredentials: true,
 
       }).then((response)=> {
-        console.log(response.data.json);
+        //console.log(response.data.json);
        const arrayData = response.data.json.map;
        const player = response.data.json.player.position;
        const level = response.data.json.player.property.experience;
@@ -289,15 +291,21 @@ useEffect(() => {
         const level = response.data.json.player.property.experience;
         const require = response.data.json.property.requestInput.type;
         const turn = response.data.turn;
+        const weekly = response.data.json.property.weeklyGoalData.string;
+        
         //console.log(require);
-        //console.log(response);
+        //console.log(response.data);
         //console.log(level);
         setRequest(require);
         setArrayData(arrayData);
         setPlayerPosition(player);
         setLevelPlayer(level);
-        
+        setWeeklyGoal(weekly);
         SetTurnPlayer(turn);
+
+        if(require==="number"){
+            HandleModalOpen();
+        }
         //console.log(turn);
       })
       .catch(error => {
@@ -308,13 +316,19 @@ useEffect(() => {
               
                 const arrayData = response.data.json.map;
                  setArrayData(arrayData);
+
                  const player = response.data.json.player.position;
                  setPlayerPosition(player);
+
                     const level = response.data.json.player.property.level;
                     setLevelPlayer(level);
+
                     const turn = response.data.turn;
-                    console.log(turn);
+                    //console.log(turn);
                     SetTurnPlayer(turn);
+
+                    const weekly = response.data.json.property.weeklyGoalData.string;
+                    setWeeklyGoal(weekly);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
@@ -369,14 +383,16 @@ useEffect(() => {
             </div>
         </div>
     <div id="screen2">
-        <div>
-            {turnPlayer!== null && (
-                <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
-                <Text color={colorSet.white} >Turn: {turnPlayer}</Text>
-                    
-                </div>
-            )}
-        </div>
+      <div>
+        {weeklyGoal && (
+          <div style={{fontFamily:"DungGeunMo",  fontSize:"1rem", color:colorSet.white}}>
+          
+            <Text style={{textAlign:"center",padding:"10px"}} color={colorSet.white}>▶ {weeklyGoal}</Text>
+            <Text style={{textAlign:"center", fontSize:"2rem"}} color={colorSet.white}>----------------</Text>
+          </div>
+        )}
+      </div>
+
         <div>
           {levelPlayer && (
             <div style={{display:"flex", justifyContent:"space-between", fontFamily:"DungGeunMo", fontSize:"1.5rem", color:colorSet.white}}>
@@ -392,6 +408,14 @@ useEffect(() => {
             </div>
 
           )}
+        </div>
+        <div>
+            {turnPlayer!== null && (
+                <div style={{padding:"10px",fontFamily:"DungGeunMo", fontSize:"1.3rem"}}>
+                <Text color={colorSet.white} > ▶ {turnPlayer} 회 이동</Text>
+                    
+                </div>
+            )}
         </div>
     </div>
     <div className="app">

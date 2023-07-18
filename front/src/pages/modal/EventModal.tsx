@@ -1,20 +1,41 @@
 import axios from "axios";
 import { Console } from "console";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "../../atoms/button/button";
-
+import { ToastContainer, toast } from "react-toastify";
+import ModalPortal from "../../atoms/containers/background/ModalPortal";
+type Position = {x:number, y:number}
+type Turn = 0;
+type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 type event = {title: string, subtitle: string};
 const EventModal = ({ onClose }: any) => {
+    const [selectedCells, setSelectedCells] = useState<Position[]>([]);
+    const [arrayData, setArrayData] = useState<any[]>([]);
+    const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
+    const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
+    const [turnPlayer, SetTurnPlayer] = useState<Turn|null>(null);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [request, setRequest] = useState <string>("");
+    const [weeklyGoal, setWeeklyGoal] = useState <string>("");
+
     const [eventtitle, setEventtitle] = useState<string>("");
     const [evensubtitle,setEventsubtitle]=useState<string>("");
     const [eventoptions,setEventoptions]=useState<any[]>();
+    const [visibleOption, setVisibleOption] = useState<any[]>([]);
+    const isVisibleOption = (index: number) => {
+        console.log("선택 가능한지 확인", index);
+        console.log(visibleOption.includes(index));
+        return visibleOption.includes(index);
+      };
     const sellect = (index: any) => {
-        onClose();
+        //onClose();
         console.log("선택");
         console.log(index);
         console.log(typeof index);
-
+        if(isVisibleOption(index)===true){
+            console.log("선택 가능");
+            
         axios({
             method: "post",
             url: "https://madcamp-week3-production.up.railway.app/game/update-number",
@@ -25,10 +46,29 @@ const EventModal = ({ onClose }: any) => {
     
           }).then((response)=> {
             console.log(response);
+            const isFinished = response.data.json.property.isFinished;
+            const require = response.data.json.property.requestInput.type;
+            if (require==="number"){
+                onClose();
+                console.log("숫자 선택");
+                
+            }
+            if(isFinished===true){
+                console.log("게임 끝");
+                onClose();
+                window.location.reload();
+                
+
+            }
+
         })
         .catch(error => {
             console.error("API 호출에 실패했습니다.", error.response);
             });
+        }
+        else{
+        toast.warning("선택할 수 없습니다.");
+        }
     }
 
     
@@ -43,6 +83,10 @@ const EventModal = ({ onClose }: any) => {
             setEventsubtitle(evensubtitle);
             const length = response.data.json.property.requestInput.event.options.length;
             //console.log(length);
+
+            const visisbleOption = response.data.json.property.requestInput.event.appliableOptions;
+            setVisibleOption(visisbleOption);
+            console.log(visisbleOption);
             const eventoptions = new Array(length);
             for(var i=0;i<length;i++){
                 eventoptions[i]=[response.data.json.property.requestInput.event.options[i].title, response.data.json.property.requestInput.event.options[i].subtitle];
@@ -68,25 +112,64 @@ const EventModal = ({ onClose }: any) => {
         <Title>{eventtitle}</Title>
         <Subtitle>{evensubtitle}</Subtitle>
         <Option>선택지를 골라보자</Option>
-        <div >
-            {eventoptions?.map((option, index) => (
-
-                <OptionButton onClick={() => sellect(index)} key={index}>
-                    <OptionTitle>{option[0]}</OptionTitle>
-                    <OptionSubtitle>{option[1]}</OptionSubtitle>
-                </OptionButton>
-            ))}
-        </div>
+        <div>
+      {eventoptions?.map((option, index) => (
+        // Conditionally applying the styles based on the isVisibleOption function
+        <StyledButton
+          onClick={() => sellect(index)}
+          key={index}
+          visible={isVisibleOption(index)}
+        >
+          <OptionTitle>{option[0]}</OptionTitle>
+          <OptionSubtitle>{option[1]}</OptionSubtitle>
+        </StyledButton>
+        
+        
+      ))}
+    </div>
       </div>
     </div>
-    
+
     </ThemedBoxRound>
+
+
     </Content>
     </Background>
+
   );
 };
 
 export default EventModal;
+
+
+const StyledButton = styled.button<{ visible: boolean }>`
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 80%;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 10px;
+  color: #333;
+
+  &:hover {
+    ${(props) =>
+      props.visible &&
+      css`
+        background: #888;
+        color: #333;
+        cursor: pointer;
+      `}
+  }
+
+  ${(props) =>
+    !props.visible &&
+    css`
+      background: #ddd;
+      color: #888; /* Light gray color for text */
+      cursor: default; /* Disable hover effect */
+    `}
+`;
+
 const EventData = styled.div`
   margin-top: 20px;
   background: #f7f7f7;
@@ -109,6 +192,16 @@ const OptionButton = styled.button`
         cursor: pointer;
     }
 `;
+const noneOptionButton = styled.button`
+margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+    background: #ddd;
+    border: 1px solid #ddd;
+    padding: 10px;
+    color: #000000;
+    `;
+
 const PopButton = styled.button`
     margin-left: 10%;
     margin-right: 10%;
