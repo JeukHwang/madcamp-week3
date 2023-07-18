@@ -49,7 +49,11 @@ export class GameService {
       gameInstance.playStep();
       const game = await this.prismaService.game.update({
         where: { id: game_.id },
-        data: { json: gameInstance.toJson() },
+        data: {
+          json: gameInstance.toJson(),
+          turn: gameInstance.property.turn,
+          isFinished: gameInstance.property.isFinished,
+        },
       });
       return game;
     } catch (e) {

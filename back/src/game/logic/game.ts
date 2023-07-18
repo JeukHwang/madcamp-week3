@@ -1,6 +1,7 @@
 import * as clc from 'cli-color';
 import { findEventByName } from '../event/events';
 import { GameConstant } from './constant';
+import type { GameEventJSON } from './event';
 import type { PositionJSON } from './move';
 import { Move, Position } from './move';
 import type { PlayerJSON } from './player';
@@ -14,7 +15,7 @@ export type EventApplyResult =
   | { applied: true; optionApplied: boolean };
 
 export type RequestInput =
-  | { type: 'number'; min: number; max: number }
+  | { type: 'number'; min: number; max: number; event: GameEventJSON }
   | { type: 'positions' };
 export type ResponseInput =
   | { type: 'number'; data: number }
@@ -81,6 +82,7 @@ export class GameInstance {
           type: 'number',
           min: 0,
           max: event.options.length - 1,
+          event: event.toJson(this),
         });
         return null;
       }
@@ -91,6 +93,7 @@ export class GameInstance {
           type: 'number',
           min: 0,
           max: event.options.length - 1,
+          event: event.toJson(this),
         });
         return null;
       }
