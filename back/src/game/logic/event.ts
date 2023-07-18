@@ -8,8 +8,15 @@ export type GameEffect = (game: GameInstance) => boolean;
 export const NoCondition: GameCondition = () => true;
 export const StartOfWeek: GameCondition = (game) =>
   game.property.turn % GameConstant.bigTurn === 0;
+export const MiddleOfWeek: GameCondition = (game) =>
+  game.property.turn % GameConstant.bigTurn ===
+  Math.floor(GameConstant.bigTurn / 2);
 export const EndOfWeek: GameCondition = (game) =>
   game.property.turn % GameConstant.bigTurn === GameConstant.bigTurn - 1;
+export const WeekDay: (...array: number[]) => GameCondition =
+  (...array) =>
+  (game) =>
+    array.some((a) => a === game.property.turn % GameConstant.bigTurn);
 export const NoEffect: GameEffect = () => true;
 
 export type GameOptionJSON = {

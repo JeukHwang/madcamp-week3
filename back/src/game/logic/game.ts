@@ -10,7 +10,7 @@ import type { PlayerJSON } from './player';
 import { Player } from './player';
 import type { TileJSON, TileLanguage } from './tile';
 import { Language, Tile } from './tile';
-import { countArray, logAndPrint } from './util';
+import { countArray, logAndPrint, weightedRandom } from './util';
 
 export type EventApplyResult =
   | { applied: false }
@@ -103,6 +103,7 @@ export class GameInstance {
       if (this.property.status.length === 0) {
         this.property.status = [
           { type: 'beginTurn', data: '' },
+          { type: 'randomEvent', data: '' },
           { type: 'movePlayer', data: '' },
           { type: 'applyEvent', data: '성장' },
           { type: 'applyEvent', data: '주간 목표' },
@@ -135,6 +136,27 @@ export class GameInstance {
             this.property.status.unshift(item);
             return 'movePlaye invalid response';
           }
+          break;
+        }
+        case 'randomEvent': {
+          const weight: [string, number][] = [
+            ['변화의 물결', 0.5],
+            ['밥은 먹고 다니니', 1],
+          ];
+          // Random event
+          const appliableEvents = weight
+            .map((e): [GameEvent, number] => [findEventByName(e[0]), e[1]])
+            .filter((e) => e[0].canApply(this));
+          if (appliableEvents.length === 0) {
+            break;
+          }
+          const eventTitle =
+            appliableEvents[weightedRandom(appliableEvents.map((e) => e[1]))][0]
+              .title;
+          this.property.status.unshift({
+            type: 'applyEvent',
+            data: eventTitle,
+          });
           break;
         }
         case 'applyEvent': {

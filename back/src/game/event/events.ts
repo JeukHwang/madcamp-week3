@@ -3,9 +3,11 @@ import type { GameCondition, GameEvent } from '../logic/event';
 import {
   EndOfWeek,
   EventInstance,
+  MiddleOfWeek,
   NoCondition,
   NoEffect,
   OptionInstance,
+  WeekDay,
 } from '../logic/event';
 import type { GameInstance } from '../logic/game';
 import type { TileLanguage } from '../logic/tile';
@@ -127,7 +129,7 @@ const eventList: GameEvent[] = [
   ]),
 
   new EventInstance(
-    NoCondition,
+    MiddleOfWeek,
     '변화의 물결',
     '각종 신기술의 등장과 구기술의 변화로 기존의 지식이 쓸모없어졌다.\n배울 것이 많아졌지만 새로운 기회가 열릴지도 모르겠다.',
     [
@@ -153,6 +155,26 @@ const eventList: GameEvent[] = [
     ],
   ),
   weeklyGoalEvent(),
+  new EventInstance(
+    (game) =>
+      WeekDay(2, 3, 4)(game) &&
+      game.property.turn > 3 &&
+      game.player.property.money === 0,
+    '밥은 먹고 다니니',
+    '개발만 하니 딱해보였는지 부모님이 용돈을 보내주셨다.',
+    [
+      new OptionInstance(
+        NoCondition,
+        '감사합니다.',
+        `돈 3을 얻는다.`,
+        (game) => {
+          const prop = game.player.property;
+          prop.money += 3;
+          return true;
+        },
+      ),
+    ],
+  ),
 ];
 
 export function findEventByName(name: string): GameEvent {
