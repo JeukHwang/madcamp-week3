@@ -65,7 +65,7 @@ export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
       ', ',
     )}를 포함하여 ${
       this.property.weeklyGoalData.number
-    }개 이상의 언어를 활동할 수 있는 개발자가 되자.`;
+    }개 이상의 언어로 활동할 수 있는 개발자가 되자.`;
   }
   return option;
 }
