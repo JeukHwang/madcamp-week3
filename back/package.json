@@ -31,6 +31,7 @@
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@prisma/client": "^5.0.0",
+    "@toss/hangul": "^1.5.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cli-color": "^2.0.2",
     "@types/cookie-parser": "^1.4.3",

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { UserService } from 'src/user/user.service';
-import { JwtPayload } from './payload';
+import type { JwtPayload } from './payload';
 dotenv.config();
 
 const cookieBase = {

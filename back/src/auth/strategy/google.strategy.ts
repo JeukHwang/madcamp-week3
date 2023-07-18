@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import { Profile, Strategy } from 'passport-google-oauth20';
+import type { Profile } from 'passport-google-oauth20';
+import { Strategy } from 'passport-google-oauth20';
 import { UserService } from 'src/user/user.service';
 dotenv.config();
 

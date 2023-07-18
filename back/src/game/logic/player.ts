@@ -1,26 +1,41 @@
-import { Position, PositionJSON } from './move';
-import { Language, TileLanguage } from './tile';
+import type { InventoryItem } from './intventory';
+import { Inventory } from './intventory';
+import type { PositionJSON } from './move';
+import { Position } from './move';
+import type { TileLanguage } from './tile';
+import { Language } from './tile';
 
 type PlayerProperty = {
-  move: number;
+  health: number;
+  experience: { [key in TileLanguage]: number };
   level: { [key in TileLanguage]: number };
+  levelEnabled: { [key in TileLanguage]: boolean };
+  inventory: { [key in InventoryItem]: number };
 };
 
 export type PlayerJSON = {
   position: PositionJSON;
-  property: {
-    move: number;
-    level: { [key in TileLanguage]: number };
-  };
+  property: PlayerProperty;
 };
 
 export class Player {
   public property: PlayerProperty;
   constructor(public position: Position) {
     this.property = {
-      move: 5,
+      health: 5,
+      experience: Object.fromEntries(Language.data.map((s) => [s, 0])) as {
+        [k in TileLanguage]: number;
+      },
       level: Object.fromEntries(Language.data.map((s) => [s, 0])) as {
         [k in TileLanguage]: number;
+      },
+      levelEnabled: Object.fromEntries(
+        Language.data.map((s) => [s, false]),
+      ) as {
+        [k in TileLanguage]: boolean;
+      },
+      inventory: Object.fromEntries(Inventory.data.map((s) => [s, 0])) as {
+        [k in InventoryItem]: number;
       },
     };
   }

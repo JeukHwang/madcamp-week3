@@ -1,10 +1,7 @@
-import {
-  INestApplication,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import type { INestApplication, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import type { Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { isDev } from 'src/util';
 dotenv.config();

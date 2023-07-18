@@ -1,3 +1,5 @@
+import { GameConstant } from './constant';
+import type { GameInstance } from './game';
 import { getRandomElement } from './util';
 
 export class Language {
@@ -22,6 +24,19 @@ export class Language {
 
   static toId(language: TileLanguage): number {
     return Language.data.indexOf(language);
+  }
+
+  static experienceUpdatable(
+    game: GameInstance,
+  ): { [key in TileLanguage]: boolean } {
+    return Object.fromEntries(
+      Language.data.map((lang) => [
+        lang,
+        game.player.property.experience[lang] >= GameConstant.levelThreshold,
+      ]),
+    ) as {
+      [key in TileLanguage]: boolean;
+    };
   }
 }
 

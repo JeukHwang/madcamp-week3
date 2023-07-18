@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDto } from './dto/create.dto';
+import type { CreateDto } from './dto/create.dto';
 
 export type UserProfile = Pick<User, 'id' | 'name' | 'photo' | 'score'>;
 export const toUserProfile = (user: User): UserProfile => ({
