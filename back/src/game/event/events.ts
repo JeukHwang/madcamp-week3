@@ -16,6 +16,7 @@ export type WeeklyGoalData = {
   type: 'language';
   include: TileLanguage[];
   number: number;
+  string: string;
 };
 
 export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
@@ -32,6 +33,7 @@ export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
     type: 'language',
     include: [],
     number: 0,
+    string: '',
   };
   while (currentLevel >= 0) {
     if (option.number === Language.data.length) {
@@ -50,6 +52,20 @@ export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
       option.number += 1;
       currentLevel -= 0.8;
     }
+  }
+
+  if (option.include.length === 0) {
+    option.string = `${option.number}개 이상의 언어로 활동할 수 있는 개발자가 되자.`;
+  } else if (option.include.length === option.number) {
+    option.string = `${option.include.join(
+      ', ',
+    )}로 활동할 수 있는 개발자가 되자.`;
+  } else {
+    option.string = `${this.property.weeklyGoalData.include.join(
+      ', ',
+    )}를 포함하여 ${
+      this.property.weeklyGoalData.number
+    }개 이상의 언어를 활동할 수 있는 개발자가 되자.`;
   }
   return option;
 }
