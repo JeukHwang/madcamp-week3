@@ -1,16 +1,16 @@
 import {
   EventInstance,
-  MiddleOfWeek,
   NoCondition,
   OptionInstance,
+  WeekDay,
 } from '../logic/event';
 import type { TileLanguage } from '../logic/tile';
 import { getRandomElement } from '../logic/util';
 
 export const 변화의_물결 = new EventInstance(
-  MiddleOfWeek,
+  (game) => WeekDay(2, 3)(game) && game.property.turn > 7,
   '변화의 물결',
-  '각종 신기술의 등장과 구기술의 변화로 기존의 지식이 쓸모없어졌다.\n배울 것이 많아졌지만 새로운 기회가 열릴지도 모르겠다.',
+  '각종 신기술이 등장하여 기존의 지식이 쓸모없어졌다.\n배울 것이 많아졌지만 새로운 기회가 열릴지도 모르겠다.',
   [
     new OptionInstance(
       NoCondition,
