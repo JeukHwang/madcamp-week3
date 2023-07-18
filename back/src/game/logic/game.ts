@@ -1,18 +1,22 @@
 import * as clc from 'cli-color';
-import { findEventByName } from '../event/events';
+import type { WeeklyGoalData } from '../event/events';
+import { findEventByName, randomWeeklyGoal } from '../event/events';
 import { GameConstant } from './constant';
-import type { GameEventJSON } from './event';
+import type { GameEvent, GameEventJSON } from './event';
+import { StartOfWeek } from './event';
 import type { PositionJSON } from './move';
 import { Move, Position } from './move';
 import type { PlayerJSON } from './player';
 import { Player } from './player';
 import type { TileJSON, TileLanguage } from './tile';
 import { Language, Tile } from './tile';
-import { countArray, logAndPrint } from './util';
+import { countArray, log, logAndPrint } from './util';
 
 export type EventApplyResult =
   | { applied: false }
-  | { applied: true; optionApplied: boolean };
+  | { applied: true; responseApplied: null }
+  | { applied: true; responseApplied: false }
+  | { applied: true; responseApplied: true; optionApplied: boolean };
 
 export type RequestInput =
   | { type: 'number'; min: number; max: number; event: GameEventJSON }
@@ -27,6 +31,8 @@ export type GameProperty = {
   turn: number;
   isFinished: boolean;
   requestInput: RequestInput;
+  weeklyGoalData: WeeklyGoalData;
+  status: { type: string; data: string }[];
 };
 
 export type GameInstanceJSON = {
@@ -55,7 +61,9 @@ export class GameInstance {
         turn: 0,
         isFinished: false,
         requestInput: null as unknown as RequestInput,
-      }, // TODO: neededInputType
+        weeklyGoalData: null as unknown as WeeklyGoalData,
+        status: [],
+      },
       map,
       player,
       [],
@@ -70,79 +78,95 @@ export class GameInstance {
     );
   }
 
-  tryApplyEvent(eventName: string): EventApplyResult | null {
-    const event = findEventByName(eventName);
+  tryApplyEvent(event: GameEvent): EventApplyResult {
+    const requestInput: RequestInput = {
+      type: 'number',
+      min: 0,
+      max: event.options.length - 1,
+      event: event.toJson(this),
+    };
     if (event.canApply(this)) {
-      console.clear();
-      this.show();
-      event.show(this);
       const response = this.getResponse();
       if (response === null) {
-        this.setRequest({
-          type: 'number',
-          min: 0,
-          max: event.options.length - 1,
-          event: event.toJson(this),
-        });
-        return null;
+        this.setRequest(requestInput);
+        return { applied: true, responseApplied: null };
       }
       const result = event.apply(this, response as number);
       if (result === null) {
         this.inputQueue.pop();
-        this.setRequest({
-          type: 'number',
-          min: 0,
-          max: event.options.length - 1,
-          event: event.toJson(this),
-        });
-        return null;
+        this.setRequest(requestInput);
+        return { applied: true, responseApplied: false };
       }
-      return { applied: true, optionApplied: result };
+      return { applied: true, responseApplied: true, optionApplied: result };
     }
     return { applied: false };
   }
 
   playStep() {
     while (true) {
-      const backup = this.toJson();
-      this.inputQueueIndex = 0;
-      console.clear();
-      this.show();
-      try {
-        const response = this.getResponse();
-        if (!response) {
-          this.rewind(backup);
-          this.setRequest({
-            type: 'positions',
-          });
-          return 1;
-        }
-        const move = this.getMoveFromPositions(response as Position[]);
-        this.movePlayer(move);
-      } catch (error) {
-        this.rewind(backup);
-        this.inputQueue.pop();
-        this.setRequest({
-          type: 'positions',
-        });
-        return 2;
+      if (this.property.status.length === 0) {
+        this.property.status = [
+          { type: 'beginTurn', data: '' },
+          { type: 'movePlayer', data: '' },
+          { type: 'applyEvent', data: '성장' },
+          { type: 'applyEvent', data: '주간 목표' },
+          { type: 'endTurn', data: '' },
+        ];
       }
+      const item = this.property.status.shift()!;
+      switch (item.type) {
+        case 'beginTurn': {
+          // Begin turn
+          this.inputQueueIndex = 0;
 
-      if (
-        this.property.turn % GameConstant.bigTurn ===
-        GameConstant.bigTurn - 1
-      ) {
-        const eventResult = this.tryApplyEvent('한 주의 마무리와 시작');
-        if (eventResult === null) {
-          this.rewind(backup);
-          return 3;
-        } else if (!eventResult.applied || !eventResult.optionApplied) {
-          this.finish();
-          return 4;
+          // Set random weekly goal at the start of the week
+          if (StartOfWeek(this)) {
+            this.property.weeklyGoalData = randomWeeklyGoal(this);
+          }
+          break;
         }
+        case 'movePlayer': {
+          // Move player
+          const response = this.getResponse();
+          if (response === null) {
+            this.setRequest({ type: 'positions' });
+            this.property.status.unshift(item);
+            return 'movePlayer no response';
+          }
+          try {
+            const move = this.getMoveFromPositions(response as Position[]);
+            this.movePlayer(move);
+          } catch (error) {
+            this.inputQueue.pop();
+            this.setRequest({ type: 'positions' });
+            this.property.status.unshift(item);
+            return 'movePlaye invalid response';
+          }
+          break;
+        }
+        case 'applyEvent': {
+          // Apply event
+          const eventResult = this.tryApplyEvent(findEventByName(item.data));
+          if (eventResult.applied && eventResult.responseApplied !== true) {
+            this.property.status.unshift(item);
+            return 'event needs response';
+          }
+          break;
+        }
+        case 'endTurn': {
+          // End turn
+          this.property.turn++;
+          this.inputQueue = [];
+          break;
+        }
+        case 'endGame': {
+          // End game
+          this.property.isFinished = true;
+          return 'endGame';
+        }
+        default:
+          break;
       }
-      this.property.turn++;
-      this.inputQueue = [];
     }
   }
 
@@ -161,7 +185,22 @@ export class GameInstance {
   }
 
   show() {
-    logAndPrint('[ 핵심 규칙 ]');
+    log(JSON.stringify(this.toJson(), null, 2));
+    // logAndPrint('[  규칙 ]');
+    // logAndPrint('');
+    logAndPrint('[ 금주의 목표 ]');
+    if (this.property.weeklyGoalData.include.length === 0) {
+      console.log(
+        `${this.property.weeklyGoalData.number}개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
+      );
+    } else {
+      console.log(
+        `${this.property.weeklyGoalData.include.join(', ')}를 포함하여 ${
+          this.property.weeklyGoalData.number
+        }개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
+      );
+    }
+    logAndPrint('');
     const smallCircle = ' \u25CF';
     const circle = '\u2B24 ';
     const colors = [
@@ -232,13 +271,6 @@ export class GameInstance {
     };
   }
 
-  finish() {
-    this.property.isFinished = true;
-    this.show();
-    logAndPrint('개발자로 활동할 수 없게 되었습니다...');
-    process.exit();
-  }
-
   private setRequest(requestInput: RequestInput): void {
     this.property.requestInput = requestInput;
   }
@@ -255,6 +287,7 @@ export class GameInstance {
     }
     this.inputQueue.push(input);
   }
+
   private getResponse(): GameInput | null {
     if (this.inputQueueIndex >= this.inputQueue.length) {
       return null;
@@ -268,15 +301,5 @@ export class GameInstance {
       case 'number':
         return response.data as number;
     }
-  }
-
-  private rewind(backup: GameInstanceJSON) {
-    // do not handle, inputQueue and property.requestInput
-    this.property = {
-      ...backup.property,
-      requestInput: this.property.requestInput,
-    };
-    this.map = backup.map.map((tile) => Tile.fromJson(tile));
-    this.player = Player.fromJson(backup.player);
   }
 }

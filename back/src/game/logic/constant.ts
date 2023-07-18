@@ -4,6 +4,6 @@ export const GameConstant = {
   experienceThreshold: 2,
   levelThreshold: 4,
   preserveLog: true,
-  uniqueLog: false,
+  uniqueLog: true,
   bigTurn: 7,
 } as const;
