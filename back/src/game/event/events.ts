@@ -54,7 +54,7 @@ export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
   return option;
 }
 
-export function weeklyGoalEvent(): GameEvent {
+function weeklyGoalEvent(): GameEvent {
   const succeed: GameCondition = (game: GameInstance): boolean => {
     const levelEnabled = game.player.property.levelEnabled;
     switch (game.property.weeklyGoalData.type) {
@@ -148,5 +148,6 @@ const eventList: GameEvent[] = [
 
 export function findEventByName(name: string): GameEvent {
   // TODO : find 결과가 undefined일 때 처리 or add type for title
+  console.log(eventList.map((e) => e.title));
   return eventList.find((e) => e.title === name) as GameEvent;
 }

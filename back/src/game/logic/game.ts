@@ -146,6 +146,7 @@ export class GameInstance {
         }
         case 'applyEvent': {
           // Apply event
+          console.log(item.data, findEventByName(item.data));
           const eventResult = this.tryApplyEvent(findEventByName(item.data));
           if (eventResult.applied && eventResult.responseApplied !== true) {
             this.property.status.unshift(item);
