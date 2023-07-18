@@ -26,7 +26,9 @@ export class Language {
     return Language.data.indexOf(language);
   }
 
-  static checkUpdate(game: GameInstance): { [key in TileLanguage]: boolean } {
+  static experienceUpdatable(
+    game: GameInstance,
+  ): { [key in TileLanguage]: boolean } {
     return Object.fromEntries(
       Language.data.map((lang) => [
         lang,
