@@ -128,7 +128,7 @@ const eventList: GameEvent[] = [
 
   new EventInstance(
     NoCondition,
-    '급변',
+    '변화의 물결',
     '각종 신기술의 등장과 구기술의 변화로 기존의 지식이 쓸모없어졌다.\n배울 것이 많아졌지만 새로운 기회가 열릴지도 모르겠다.',
     [
       new OptionInstance(
