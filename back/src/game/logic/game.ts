@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import * as clc from 'cli-color';
 import type { EventTitle } from '../event/events';
 import { findEventByName } from '../event/events';
@@ -41,6 +42,9 @@ export type GameProperty = {
   weeklyGoalData: WeeklyGoalData;
   status: GameStatus[];
   input: ResponseInput | null;
+  eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
+    '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
+  };
 };
 
 export type GameInstanceJSON = {
@@ -69,6 +73,7 @@ export class GameInstance {
         weeklyGoalData: null as unknown as WeeklyGoalData,
         status: [],
         input: null,
+        eventData: { '버티컬 마우스가 필요해': { has: false, count: 0 } },
       },
       map,
       player,
@@ -122,6 +127,12 @@ export class GameInstance {
       switch (item.type) {
         case 'beginTurn': {
           this.player.property.health = GameConstant.defaultHealth;
+          if (!this.property.eventData['버티컬 마우스가 필요해'].has) {
+            this.player.property.health -=
+              this.property.eventData['버티컬 마우스가 필요해'].count;
+          }
+          // TODO: check if player has positive health before moving, if not, end game by event 과로사
+
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
@@ -148,8 +159,9 @@ export class GameInstance {
         }
         case 'randomEvent': {
           const weight: [EventTitle, number][] = [
-            ['변화의 물결', 0.5],
-            ['밥은 먹고 다니니', 1],
+            ['변화의 물결', 0.2],
+            ['밥은 먹고 다니니', 0.8],
+            ['버티컬 마우스가 필요해', 0.5],
           ];
           // Random event
           const appliableEvents = weight
