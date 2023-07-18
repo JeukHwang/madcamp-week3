@@ -6,10 +6,7 @@ import {
 } from '../logic/event';
 
 export const 개발자님 = new EventInstance(
-  (game) =>
-    !game.property.eventData['개발자님!'].isDone &&
-    WeekDay(4)(game) &&
-    game.property.turn > 21,
+  (game) => !game.property.eventData['개발자님!'].isDone && WeekDay(4)(game),
   '개발자님!',
   '이 버튼이랑 저 표랑 정렬해주세요. 바로 되죠?',
   [

@@ -1,7 +1,7 @@
 import { EventInstance, NoCondition, OptionInstance } from '../logic/event';
 
 export const CORS = new EventInstance(
-  (game) => !game.property.eventData['CORS'].isDone && game.property.turn > 21,
+  (game) => !game.property.eventData['CORS'].isDone && game.property.turn > 4,
   'CORS',
   '으아아아! CORS 에러가 났어요!',
   [
