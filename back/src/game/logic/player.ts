@@ -7,6 +7,7 @@ import { Language } from './tile';
 
 type PlayerProperty = {
   health: number;
+  money: number;
   experience: { [key in TileLanguage]: number };
   level: { [key in TileLanguage]: number };
   levelEnabled: { [key in TileLanguage]: boolean };
@@ -23,6 +24,7 @@ export class Player {
   constructor(public position: Position) {
     this.property = {
       health: 0,
+      money: 0,
       experience: Object.fromEntries(Language.data.map((s) => [s, 0])) as {
         [k in TileLanguage]: number;
       },

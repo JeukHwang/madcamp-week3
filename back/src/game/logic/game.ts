@@ -251,7 +251,9 @@ export class GameInstance {
         .join('\n'),
     );
     logAndPrint('');
-    logAndPrint(`체력 : ${this.player.property.health}`);
+    logAndPrint(
+      `체력 : ${this.player.property.health} | 돈 : ${this.player.property.money}`,
+    );
     logAndPrint('');
   }
 
