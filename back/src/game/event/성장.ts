@@ -11,7 +11,7 @@ import { Language } from '../logic/tile';
 export const 성장 = new EventInstance(
   NoCondition,
   '성장',
-  '한 주의 노력을 정산해보자.',
+  '한 주간 배운 결과를 정리해보자.',
   [
     new OptionInstance(
       EndOfWeek,
