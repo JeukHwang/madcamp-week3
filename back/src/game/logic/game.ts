@@ -46,6 +46,7 @@ export type GameProperty = {
     '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
     '개발자님!': { isDone: boolean };
     '불이야!': { data: TileLanguage[] };
+    CORS: { isDone: boolean };
   };
 };
 
@@ -79,6 +80,7 @@ export class GameInstance {
           '버티컬 마우스가 필요해': { has: false, count: 0 },
           '개발자님!': { isDone: false },
           '불이야!': { data: [] },
+          CORS: { isDone: false },
         },
       },
       map,
@@ -168,6 +170,8 @@ export class GameInstance {
             ['변화의 물결', 0.1],
             ['밥은 먹고 다니니', 0.8],
             ['버티컬 마우스가 필요해', 0.5],
+            ['개발자님!', 0.5],
+            ['CORS', 0.5],
           ];
           // Random event
           const appliableEvents = weight

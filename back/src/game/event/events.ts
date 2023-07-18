@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import type { GameEvent } from '../logic/event';
+import { CORS, CORS_문제 } from './CORS';
 import { 개발자님 } from './개발자님';
 import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
@@ -16,6 +17,8 @@ const eventList: GameEvent[] = [
   버티컬_마우스가_필요해,
   개발자님,
   불이야,
+  CORS,
+  CORS_문제,
 ];
 const eventNameList = [
   '성장',
@@ -25,6 +28,8 @@ const eventNameList = [
   '버티컬 마우스가 필요해',
   '개발자님!',
   '불이야!',
+  'CORS',
+  'CORS 문제',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
