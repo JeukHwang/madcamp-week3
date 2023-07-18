@@ -165,7 +165,7 @@ export class GameInstance {
         }
         case 'randomEvent': {
           const weight: [EventTitle, number][] = [
-            ['변화의 물결', 0.2],
+            ['변화의 물결', 0.1],
             ['밥은 먹고 다니니', 0.8],
             ['버티컬 마우스가 필요해', 0.5],
           ];

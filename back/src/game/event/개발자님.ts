@@ -15,7 +15,7 @@ export const 개발자님 = new EventInstance(
   [
     new OptionInstance(
       NoCondition,
-      '디자이너님! 저번에 말씀하신 시안은 처음이 제일 나았어요.',
+      '디자이너님! 지난번 시안은 그냥 원래대로 바꿔주세요.',
       `체력을 1 잃는다.`,
       (game) => {
         game.player.property.health -= 1;
