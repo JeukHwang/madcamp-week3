@@ -44,6 +44,7 @@ export type GameProperty = {
   input: ResponseInput | null;
   eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
     '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
+    '개발자님!': { isDone: boolean };
   };
 };
 
@@ -73,7 +74,10 @@ export class GameInstance {
         weeklyGoalData: null as unknown as WeeklyGoalData,
         status: [],
         input: null,
-        eventData: { '버티컬 마우스가 필요해': { has: false, count: 0 } },
+        eventData: {
+          '버티컬 마우스가 필요해': { has: false, count: 0 },
+          '개발자님!': { isDone: false },
+        },
       },
       map,
       player,

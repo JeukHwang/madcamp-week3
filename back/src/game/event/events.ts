@@ -5,6 +5,7 @@ import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필�
 import { 변화의_물결 } from './변화의_물결';
 import { 성장 } from './성장';
 import { 주간_목표 } from './주간_목표';
+import { 개발자님 } from './개발자님';
 
 const eventList: GameEvent[] = [
   성장,
@@ -12,6 +13,7 @@ const eventList: GameEvent[] = [
   변화의_물결,
   밥은_먹고_다니니,
   버티컬_마우스가_필요해,
+  개발자님,
 ];
 const eventNameList = [
   '성장',
@@ -19,6 +21,7 @@ const eventNameList = [
   '변화의 물결',
   '밥은 먹고 다니니',
   '버티컬 마우스가 필요해',
+  '개발자님!',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
