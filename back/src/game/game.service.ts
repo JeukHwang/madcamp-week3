@@ -47,12 +47,24 @@ export class GameService {
       );
       gameInstance.setResponse(data);
       gameInstance.playStep();
+      if (gameInstance.property.isFinished) {
+        const score = gameInstance.property.turn;
+        const game = await this.prismaService.game.update({
+          where: { id: game_.id },
+          data: {
+            json: gameInstance.toJson(),
+            turn: gameInstance.property.turn,
+            isFinished: gameInstance.property.isFinished,
+            score: score,
+          },
+        });
+        return game;
+      }
       const game = await this.prismaService.game.update({
         where: { id: game_.id },
         data: {
           json: gameInstance.toJson(),
           turn: gameInstance.property.turn,
-          isFinished: gameInstance.property.isFinished,
         },
       });
       return game;
