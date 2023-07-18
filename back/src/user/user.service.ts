@@ -39,7 +39,7 @@ export class UserService {
     return user;
   }
 
-  async getLeaderboard(): Promise<UserProfile[]> {
+  async getLeaderboard(): Promise<{ user: UserProfile; score: number }[]> {
     const users = await this.prismaService.user.findMany({
       include: { games: { select: { score: true } } },
     });
@@ -48,7 +48,12 @@ export class UserService {
       const scoreB = Math.max(...b.games.map((game) => game.score));
       return scoreA > scoreB ? -1 : 1;
     });
-    return sortedUsers.map(toUserProfile);
+    return sortedUsers.map((user) => {
+      return {
+        user: toUserProfile(user),
+        score: Math.max(...user.games.map((game) => game.score)),
+      };
+    });
   }
 
   async getUserIfRefreshTokenMatches(

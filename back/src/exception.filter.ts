@@ -23,6 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     this.logger.log(
       `${exception.name}, ${exception.message}, ${exception.cause} | ${method} ${originalUrl} ${statusCode} | ${contentLength} ${userAgent} ${ip}`,
     );
+    this.logger.log(exception.stack);
 
     const httpStatus =
       exception instanceof HttpException
