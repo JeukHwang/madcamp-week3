@@ -1,10 +1,15 @@
 import * as clc from 'cli-color';
+import { GameConstant } from './constant';
 import type { GameInstance } from './game';
 import { logAndPrint } from './util';
 
 export type GameCondition = (game: GameInstance) => boolean;
 export type GameEffect = (game: GameInstance) => boolean;
 export const NoCondition: GameCondition = () => true;
+export const StartOfWeek: GameCondition = (game) =>
+  game.property.turn % GameConstant.bigTurn === 0;
+export const EndOfWeek: GameCondition = (game) =>
+  game.property.turn % GameConstant.bigTurn === GameConstant.bigTurn - 1;
 export const NoEffect: GameEffect = () => true;
 
 export type GameOptionJSON = {
@@ -43,9 +48,8 @@ export class OptionInstance implements AppliableGameOption {
     const color = this.canApply(game) ? clc.white : clc.blackBright;
     logAndPrint(
       color(
-        `[ 선택지: ${this.title} ] (${index.toString()}을 눌러 선택)\n${
-          this.subtitle
-        }`,
+        `${index.toString()} => ${this.title}`.padEnd(15) +
+          ` | ${this.subtitle}`,
       ),
     );
   }
@@ -104,6 +108,7 @@ export class EventInstance implements AppliableGameEvent {
   show(game: GameInstance): void {
     logAndPrint(`[ 이벤트: ${this.title} ]\n${this.subtitle}\n`);
     this.options.forEach((opt, i) => opt.show(game, i));
+    logAndPrint('');
   }
 
   canApply(game: GameInstance): this is AppliableGameEvent {

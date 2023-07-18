@@ -48,7 +48,6 @@ mkdirSync(path.join(__dirname, '../../../log'), { recursive: true });
 writeFileSync(filePath, '', { flag: 'w' });
 export function log(msg: string) {
   if (GameConstant.preserveLog) {
-    console.log(msg);
     writeFileSync(filePath, msg + '\n', { flag: 'a' });
   }
 }

@@ -3,11 +3,12 @@ import { josa } from '@toss/hangul';
 import { GameConstant } from './constant';
 import type { GameInstance } from './game';
 import { Position } from './move';
-import { erase, input } from './util';
+import { erase, input, logAndPrint } from './util';
 
 export async function getPositionsFromInput(
   game: GameInstance,
 ): Promise<Position[]> {
+  logAndPrint('[ 입력 ]');
   while (true) {
     try {
       const str = await input(
@@ -34,11 +35,12 @@ export async function getPositionsFromInput(
             throw new ForbiddenException('Invalid input');
         }
       }
+      erase();
+      erase();
       return positions;
     } catch (e) {
-      continue;
-    } finally {
       erase();
+      continue;
     }
   }
 }
@@ -49,6 +51,7 @@ export async function getIntegerFromInput(
   min: number,
   max: number,
 ): Promise<number> {
+  logAndPrint('[ 입력 ]');
   while (true) {
     try {
       const msg =
@@ -63,11 +66,12 @@ export async function getIntegerFromInput(
       if (!isValid || !isInteger || !isInRange) {
         continue;
       }
+      erase();
+      erase();
       return number;
     } catch (e) {
-      continue;
-    } finally {
       erase();
+      continue;
     }
   }
 }
