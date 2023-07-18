@@ -12,7 +12,7 @@ const eventList: GameEvent[] = [
     [
       new OptionInstance(
         (game) =>
-          Object.values(Language.experienceUpdatable(game)).some((v) => v),
+          Object.values(Language.levelUpdatable(game)).some((v) => v),
         '경력을 인정받자',
         `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어에 대해 1주의 경력이 인정된다.`,
         (game) => {
@@ -30,7 +30,7 @@ const eventList: GameEvent[] = [
       ),
       new OptionInstance(
         (game) =>
-          !Object.values(Language.experienceUpdatable(game)).some((v) => v),
+          !Object.values(Language.levelUpdatable(game)).some((v) => v),
         '아쉽지만 포기하자',
         `개발자를 그만둔다.`,
         (game) => {
@@ -70,7 +70,7 @@ const eventList: GameEvent[] = [
         `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어에 대해 1주의 경력이 인정된 후 모든 경험치가 0이 된다.`,
         (game) => {
           const prop = game.player.property;
-          const update = Language.experienceUpdatable(game);
+          const update = Language.levelUpdatable(game);
           prop.levelEnabled = update;
           Object.entries(update).forEach(
             ([lang, updatable]: [TileLanguage, boolean]) => {

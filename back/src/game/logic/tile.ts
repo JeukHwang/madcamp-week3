@@ -26,7 +26,7 @@ export class Language {
     return Language.data.indexOf(language);
   }
 
-  static experienceUpdatable(
+  static levelUpdatable(
     game: GameInstance,
   ): { [key in TileLanguage]: boolean } {
     return Object.fromEntries(
