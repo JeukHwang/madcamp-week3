@@ -23,8 +23,8 @@ export const 변화의_물결 = new EventInstance(
             number,
           ][]
         )
-          .filter(([string, number]) => number > 0)
-          .map(([string, number]) => string);
+          .filter(([, number]) => number > 0)
+          .map(([string]) => string);
         if (existLang.length > 0) {
           game.player.property.experience[getRandomElement(existLang)] = 0;
         }

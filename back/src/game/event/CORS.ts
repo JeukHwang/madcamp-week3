@@ -64,7 +64,7 @@ export const CORS_문제 = new EventInstance(
       NoCondition,
       'Lax',
       '정답이 아니면 체력을 2 잃는다.',
-      (game) => {
+      () => {
         return true;
       },
     ),

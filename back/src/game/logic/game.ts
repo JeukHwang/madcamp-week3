@@ -131,6 +131,7 @@ export class GameInstance {
           { type: 'endTurn' },
         ];
       }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const item = this.property.status.shift()!;
       switch (item.type) {
         case 'beginTurn': {
