@@ -1,4 +1,5 @@
 import * as clc from 'cli-color';
+import type { EventTitle } from '../event/events';
 import { GameConstant } from './constant';
 import type { GameInstance } from './game';
 import { logAndPrint } from './util';
@@ -25,7 +26,7 @@ export type GameOptionJSON = {
 };
 
 export type GameEventJSON = {
-  title: string;
+  title: EventTitle;
   subtitle: string;
   options: GameOptionJSON[];
   appliableOptions: number[];
@@ -82,7 +83,7 @@ export class OptionInstance implements AppliableGameOption {
 }
 
 export interface GameEvent {
-  title: string;
+  title: EventTitle;
   subtitle: string;
   options: GameOption[];
   toJson(game: GameInstance): GameEventJSON;
@@ -98,7 +99,7 @@ export interface AppliableGameEvent extends GameEvent {
 export class EventInstance implements AppliableGameEvent {
   constructor(
     private condition: GameCondition,
-    public title: string,
+    public title: EventTitle,
     public subtitle: string,
     public options: GameOption[],
   ) {}

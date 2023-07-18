@@ -1,6 +1,8 @@
 import * as clc from 'cli-color';
-import type { WeeklyGoalData } from '../event/events';
-import { findEventByName, randomWeeklyGoal } from '../event/events';
+import type { EventTitle } from '../event/events';
+import { findEventByName } from '../event/events';
+import type { WeeklyGoalData } from '../event/주간_목표';
+import { randomWeeklyGoal } from '../event/주간_목표';
 import { GameConstant } from './constant';
 import type { GameEvent, GameEventJSON } from './event';
 import { StartOfWeek } from './event';
@@ -26,12 +28,18 @@ export type ResponseInput =
   | { type: 'positions'; data: PositionJSON[] };
 export type GameInput = number | Position[];
 
+type GameStatus =
+  | {
+      type: 'beginTurn' | 'randomEvent' | 'movePlayer' | 'endTurn' | 'endGame';
+    }
+  | { type: 'applyEvent'; data: EventTitle };
+
 export type GameProperty = {
   turn: number;
   isFinished: boolean;
   requestInput: RequestInput;
   weeklyGoalData: WeeklyGoalData;
-  status: { type: string; data: string }[];
+  status: GameStatus[];
   input: ResponseInput | null;
 };
 
@@ -102,12 +110,12 @@ export class GameInstance {
     while (true) {
       if (this.property.status.length === 0) {
         this.property.status = [
-          { type: 'beginTurn', data: '' },
-          { type: 'randomEvent', data: '' },
-          { type: 'movePlayer', data: '' },
+          { type: 'beginTurn' },
+          { type: 'randomEvent' },
+          { type: 'movePlayer' },
           { type: 'applyEvent', data: '성장' },
           { type: 'applyEvent', data: '주간 목표' },
-          { type: 'endTurn', data: '' },
+          { type: 'endTurn' },
         ];
       }
       const item = this.property.status.shift()!;
@@ -139,7 +147,7 @@ export class GameInstance {
           break;
         }
         case 'randomEvent': {
-          const weight: [string, number][] = [
+          const weight: [EventTitle, number][] = [
             ['변화의 물결', 0.5],
             ['밥은 먹고 다니니', 1],
           ];
