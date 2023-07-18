@@ -21,6 +21,7 @@ const LeaderBoard: React.FC = () => {
     axios
       .get<User[]>("https://madcamp-week3-production.up.railway.app/user/leaderboard", { withCredentials: true })
       .then(response => {
+        console.log(response);
         const userData = response.data.map(user => ({
           id: user.id,
           name: user.name,

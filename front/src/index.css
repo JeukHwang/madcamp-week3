@@ -21,18 +21,21 @@ code {
 .app{
   display:flex;
   padding:30px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
 }
 .game{
-  width:560px;
-  height:560px;
+  width:400px;
+  height:400px;
   padding:10px;
   display:flex;
   flex-wrap:wrap;
 }
 @media (max-width:560px){
   .game{
-    width:350px;
-    height:350px;
+    width:300px;
+    height:300px;
   }
 }
 
@@ -44,7 +47,7 @@ code {
 
 @media (max-width:560px){
   .game img{
-    width:30px;
-    height:30px;
+    width:40px;
+    height:40px;
   }
 }

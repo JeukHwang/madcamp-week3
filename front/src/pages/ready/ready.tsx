@@ -22,11 +22,13 @@ import Font from "../../styles/font";
 import colorSet from "../../styles/colorSet";
 import { ButtonVariant } from "../../atoms/button/button";
 import "../../atoms/containers/background/macTerminal.css";
+import ModalPortal from "../../atoms/containers/background/ModalPortal";
+import EventModal from "../modal/EventModal";
 //import "../../atoms/containers/background/macT.css";
 //import { TransitionGroup, CSSTransition } from "react-transition-group";
-const width=7;
+const width=5;
 type Position = {x:number, y:number}
-type Turn = null;
+type Turn = 0;
 type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 const Ready = () => {
     const iconimage2: Record<string, string> = {
@@ -43,9 +45,15 @@ const Ready = () => {
   const [arrayData, setArrayData] = useState<any[]>([]);
   const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
   const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
-  const [turnPlayer, SetTurnPlayer] = useState<Turn | null>(null);
-  const [loading, setLoading] = useState(true);
-
+  const [turnPlayer, SetTurnPlayer] = useState<Turn|null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [request, setRequest] = useState <string>("");
+  const HandleModalShow = () => {
+    setModalOpen(false);
+  };
+  const HandleModalOpen = () => {
+    setModalOpen(true);
+  };
   const sendSelectedCells = async () => {
     if (selectedCells.length === 0) {
       toast.warning("아무 것도 선택되지 않았습니다.", { autoClose: 1000 });
@@ -57,30 +65,51 @@ const Ready = () => {
       const positions = selectedCells.map(({ x, y }) => ({ x, y }));
         //console.log("position", positions);
       // Make a POST request to the backend API with the selected cells data
-      
+      if(request === "positions"){
       axios({
         method: "post",
-        url: "https://madcamp-week3-production.up.railway.app/game/update",
+        url: "https://madcamp-week3-production.up.railway.app/game/update-positions",
         data: {
             positions: positions,
         },
         withCredentials: true,
 
-      }).then((res)=> {
+      }).then((response)=> {
        // console.log(res);
+       const arrayData = response.data.json.map;
+       const player = response.data.json.player.position;
+       const level = response.data.json.player.property.experience;
+       const require = response.data.json.property.requestInput.type;
+       const turn = response.data.turn;
+       //console.log(require);
+       //console.log(response);
+       //console.log(level);
+       setRequest(require);
+       setArrayData(arrayData);
+       setPlayerPosition(player);
+       setLevelPlayer(level);
+       
+       SetTurnPlayer(turn);
+       //console.log(turn);
         movePlayerToSelectedCells();
         setSelectedCells([]);
+    
       });
-      
+    }   
+    if(request==="number"){
+        HandleModalOpen();
+        setSelectedCells([]);
+    }
+/*       
       await axios.post(
-        "https://madcamp-week3-production.up.railway.app/game/update",
+        "https://madcamp-week3-production.up.railway.app/game/update-positions",
         {
           positions: positions,
         },
         {
           withCredentials: true,
         }
-      );
+      ); */
       
       // Handle the success response or perform any necessary actions
       //console.log("Selected cells sent successfully");
@@ -126,7 +155,7 @@ const Ready = () => {
 
       }
         // Fetch the updated arrayData for the target cell
-      const { x: currentX, y: currentY } = playerPosition;
+      //const { x: currentX, y: currentY } = playerPosition;
   
       // Calculate the new player position
       const newPosition: Position = { x: targetX, y: targetY };
@@ -232,9 +261,6 @@ const handleCellClick = (row: number, col: number) => {
     // Clicked on a new cell, add it to selected cells
     const updatedSelectedCells = [...selectedCells, {x: row, y: col}];
     setSelectedCells(updatedSelectedCells);
-    //console.log(setSelectedCells);
-    //console.log(updatedSelectedCells);
-    //console.log("row col", row,col);
 
     // Add the "bounce" class to the clicked cell
     const cell = document.getElementById(`cell-${row}-${col}`);
@@ -258,41 +284,54 @@ const isCellSelected = (row: number, col: number) => {
   return selectedCells.some(({x: r, y: c}) => r === row && c === col);
 };
 
-  useEffect(() => {
+useEffect(() => {
     axios
       .get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
       .then(response => {
         const arrayData = response.data.json.map;
         const player = response.data.json.player.position;
-              setArrayData(arrayData);
-              setPlayerPosition(player);
+        const level = response.data.json.player.property.experience;
+        const require = response.data.json.property.requestInput.type;
+        const turn = response.data.turn;
+        //console.log(require);
+        //console.log(response);
+        //console.log(level);
+        setRequest(require);
+        setArrayData(arrayData);
+        setPlayerPosition(player);
+        setLevelPlayer(level);
+        
+        SetTurnPlayer(turn);
+        //console.log(turn);
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
-        
           axios
             .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
             .then(response => {
+              
                 const arrayData = response.data.json.map;
                  setArrayData(arrayData);
                  const player = response.data.json.player.position;
                  setPlayerPosition(player);
                     const level = response.data.json.player.property.level;
                     setLevelPlayer(level);
-                    const turn = response.data.json.turn;
+                    const turn = response.data.turn;
+                    console.log(turn);
                     SetTurnPlayer(turn);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
             });
-      });
-  }, [history]);
+      }); 
+  }, []);
+  //console.log(turnPlayer);
 
 
 
-  useEffect(() => {
+//  useEffect(() => {
     // Fetch the updated levelPlayer score from the server
-    axios
+/*     axios
       .get("https://madcamp-week3-production.up.railway.app/game/current", {
         withCredentials: true,
       })
@@ -302,10 +341,10 @@ const isCellSelected = (row: number, col: number) => {
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error.response);
-      });
-  }, [levelPlayer, turnPlayer]); 
-  useEffect(() => {
-    axios.
+      }); */
+ // }, [levelPlayer, turnPlayer]); 
+//  useEffect(() => {
+/*     axios.
         get("https://madcamp-week3-production.up.railway.app/game/current", {
             withCredentials: true,
             })
@@ -315,15 +354,16 @@ const isCellSelected = (row: number, col: number) => {
             })
             .catch(error => {
                 console.error("API 호출에 실패했습니다.", error.response);
-            });
-}, [turnPlayer, levelPlayer]);
-  useEffect(() => {
+            }); */
+///}, [turnPlayer, levelPlayer]);
+/*   useEffect(() => {
     createBoard();
-  }, [width]);
+  }, [width]); */
 
   return (
     <Area>
     <Background color="white">
+    <div id="modal-root">
     <div id="bar2">
             <div id="red">
             </div>
@@ -334,9 +374,9 @@ const isCellSelected = (row: number, col: number) => {
         </div>
     <div id="screen2">
         <div>
-            {turnPlayer && (
+            {turnPlayer!== null && (
                 <div style={{fontFamily:"DungGeunMo", fontSize:"1.5rem"}}>
-                        <Text color={colorSet.white} >Turn: {turnPlayer}</Text>
+                <Text color={colorSet.white} >Turn: {turnPlayer}</Text>
                     
                 </div>
             )}
@@ -372,12 +412,12 @@ const isCellSelected = (row: number, col: number) => {
       if (!languageIcon) return null; // Skip unknown language
 
       return (
-        <div>
+        <div key={index} >
 
           <div
             className={`${isPlayerCell ? "" : ""}`}
             id={`cell-${cellX}-${cellY}`}
-            key={index}
+
             style={{
               backgroundColor: selectedCells.some(({x:r, y:c}) => r === cellX && c === cellY)
                 ? "black"
@@ -399,18 +439,23 @@ const isCellSelected = (row: number, col: number) => {
     })}
   </div>
 </div>
-
-<Button variant={ButtonVariant.commitchange} onClick={sendSelectedCells}>
+<div style={{alignContent:"center", display:"flex",justifyContent:"center"}}>
+<Button  variant={ButtonVariant.commitchange} onClick={sendSelectedCells}>
 <Text font={Font.Bold} size={"2.1rem"} color={colorSet.white}>
 Commit Changes
 </Text>
 </Button>
-
+</div>
+{modalOpen && (
+        <ModalPortal>
+          <EventModal onClose={HandleModalShow} />
+        </ModalPortal>
+      )}
 <ToastContainer position="top-center" 
 style={{ width: "400px" }}
 className="custom-toast-container"
 />
-
+</div>
 </Background>
 </Area>
   );

@@ -89,6 +89,7 @@
 @media (max-width: 560px) {
     #screen {
       width: 100%;
+      height:70%;
     }
   }
 #screen2 {

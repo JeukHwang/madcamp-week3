@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "../../atoms/containers/background/macTerminal.css";
 import axios from "axios";
 import colorSet from "../../styles/colorSet";
+import { toast, ToastContainer } from "react-toastify";
 const HomePage = () => {
     const movePage = useNavigate();
 /*     const handleButtonClick = () => {
@@ -36,15 +37,20 @@ const HomePage = () => {
         .catch(error => {
           // API 호출에 실패한 경우 실행될 로직을 작성합니다.
           console.error('API 호출에 실패했습니다.', error);
+          if(error.response.data.message === "Unauthorized"){
+            toast.warning("로그인 후 이용해주세요", { autoClose: 1000 });
+            return;
+          }
+          
         }); 
-    }
+    };
       
-    function main(){
-        movePage('/main');
-    }
     const board = () => {
      movePage('/board'); 
 
+    }
+    const setting = () => {
+      movePage('/setting');
     }
   
     return (
@@ -72,15 +78,21 @@ const HomePage = () => {
           <Button variant={ButtonVariant.outlined}>
             <Text color={colorSet.white} size="1.5rem" font={Font.Bold} >
               <a id="a" style={{ color: 'white' }} href="https://madcamp-week3-production.up.railway.app/auth">
-                googlelogin
+                로그인
               </a>
             </Text>
+        </Button>
+        <Button onClick={setting} variant={ButtonVariant.outlined}>
+          <Text size="1.5rem" font={Font.Bold}>설정</Text>
         </Button>
 
           </div>
 
 
         </div>
+        <ToastContainer position="top-center" 
+        style={{ width: "400px" }}
+        />
         </Background>
 
       </Area>
