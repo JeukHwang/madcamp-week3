@@ -16,6 +16,7 @@ export type GameEventJSON = {
   title: string;
   subtitle: string;
   options: GameOptionJSON[];
+  appliableOptions: number[];
 };
 
 export interface GameOption {
@@ -73,7 +74,7 @@ export interface GameEvent {
   title: string;
   subtitle: string;
   options: GameOption[];
-  toJson(): GameEventJSON;
+  toJson(game: GameInstance): GameEventJSON;
   canApply(game: GameInstance): this is AppliableGameEvent;
 }
 
@@ -91,11 +92,12 @@ export class EventInstance implements AppliableGameEvent {
     public options: GameOption[],
   ) {}
 
-  toJson(): GameEventJSON {
+  toJson(game: GameInstance): GameEventJSON {
     return {
       title: this.title,
       subtitle: this.subtitle,
       options: this.options.map((o) => o.toJson()),
+      appliableOptions: this.findAppliableOptions(game),
     };
   }
 
