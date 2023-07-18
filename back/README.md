@@ -71,3 +71,14 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+# Custom
+
+## TODO
+
+tsconfig.json strict:true
+
+## Caution
+
+OptionInstance 대신 GameOption, ApplicableGameOption 사용하기
+EventInstance 대신 GameEvent, ApplicableGameEvent 사용하기
