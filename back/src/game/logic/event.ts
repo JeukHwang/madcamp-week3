@@ -106,7 +106,7 @@ export class EventInstance implements AppliableGameEvent {
   }
 
   show(game: GameInstance): void {
-    logAndPrint(`[ 이벤트: ${this.title} ]\n${this.subtitle}\n`);
+    logAndPrint(`[ 이벤트 <${this.title}> ]\n${this.subtitle}\n`);
     this.options.forEach((opt, i) => opt.show(game, i));
     logAndPrint('');
   }

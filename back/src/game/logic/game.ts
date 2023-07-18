@@ -10,7 +10,7 @@ import type { PlayerJSON } from './player';
 import { Player } from './player';
 import type { TileJSON, TileLanguage } from './tile';
 import { Language, Tile } from './tile';
-import { countArray, log, logAndPrint } from './util';
+import { countArray, logAndPrint } from './util';
 
 export type EventApplyResult =
   | { applied: false }
@@ -176,9 +176,14 @@ export class GameInstance {
   }
 
   show() {
-    log(JSON.stringify(this.toJson(), null, 2));
-    // logAndPrint('[  규칙 ]');
-    // logAndPrint('');
+    logAndPrint('[ 규칙 ]');
+    logAndPrint(
+      `- 하루에 타일 ${GameConstant.experienceThreshold}개를 모으면 경험치 +1`,
+    );
+    logAndPrint(
+      `- 경험치 ${GameConstant.levelThreshold} 모은 후 <성장> 이벤트를 통해 경력 +1`,
+    );
+    logAndPrint('');
     logAndPrint('[ 금주의 목표 ]');
     if (this.property.weeklyGoalData.include.length === 0) {
       console.log(
