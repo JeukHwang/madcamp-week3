@@ -45,6 +45,7 @@ export type GameProperty = {
   eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
     '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
     '개발자님!': { isDone: boolean };
+    '불이야!': { data: TileLanguage[] };
   };
 };
 
@@ -77,6 +78,7 @@ export class GameInstance {
         eventData: {
           '버티컬 마우스가 필요해': { has: false, count: 0 },
           '개발자님!': { isDone: false },
+          '불이야!': { data: [] },
         },
       },
       map,
@@ -215,6 +217,10 @@ export class GameInstance {
     this.player.property.health -= move.indices.length;
     const collectedTile = move.tiles.map((tile) => tile.language);
     this.updateExperience(collectedTile);
+    if (Math.random() < 0.003) {
+      this.property.eventData['불이야!'].data = collectedTile;
+      this.property.status.unshift({ type: 'applyEvent', data: '불이야!' });
+    }
     move.tiles.forEach((tile) => tile.reset());
     this.player.position = move.positions[move.positions.length - 1];
   }

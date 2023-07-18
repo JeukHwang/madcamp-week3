@@ -3,6 +3,7 @@ import type { GameEvent } from '../logic/event';
 import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
 import { 변화의_물결 } from './변화의_물결';
+import { 불이야 } from './불이야';
 import { 성장 } from './성장';
 import { 주간_목표 } from './주간_목표';
 import { 개발자님 } from './개발자님';
@@ -14,6 +15,7 @@ const eventList: GameEvent[] = [
   밥은_먹고_다니니,
   버티컬_마우스가_필요해,
   개발자님,
+  불이야,
 ];
 const eventNameList = [
   '성장',
@@ -22,6 +24,7 @@ const eventNameList = [
   '밥은 먹고 다니니',
   '버티컬 마우스가 필요해',
   '개발자님!',
+  '불이야!',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
