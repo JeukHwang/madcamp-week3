@@ -55,10 +55,7 @@ export class OptionInstance implements AppliableGameOption {
   show(game: GameInstance, index: number): void {
     const color = this.canApply(game) ? clc.white : clc.blackBright;
     logAndPrint(
-      color(
-        `${index.toString()} => ${this.title}`.padEnd(15) +
-          ` | ${this.subtitle}`,
-      ),
+      color(`[ 선택지 ${index.toString()} <${this.title}> ]\n${this.subtitle}`),
     );
   }
 

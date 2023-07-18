@@ -240,25 +240,16 @@ export class GameInstance {
   show() {
     logAndPrint('[ 규칙 ]');
     logAndPrint(
-      `- 하루에 타일 ${GameConstant.experienceThreshold}개를 모으면 경험치 +1`,
+      `- 목표: 5x5 타일을 돌아다니며 경험치를 모으고 경력을 쌓아 개발자로 오래 살아남자!`,
     );
     logAndPrint(
-      `- 경험치 ${GameConstant.levelThreshold} 모은 후 <성장> 이벤트를 통해 경력 +1`,
+      `- 하루에 같은 색깔의 타일을 ${GameConstant.experienceThreshold}개 모을 때마다 해당 언어 경험치 +1 (단, 같은 색깔의 타일이 연속될 필요는 없다)`,
+    );
+    logAndPrint(
+      `- 경험치 ${GameConstant.levelThreshold} 모은 언어에 대해 매주 일요일 <성장> 이벤트를 통해 경력 +1`,
     );
     logAndPrint('');
-    logAndPrint('[ 금주의 목표 ]');
-    if (this.property.weeklyGoalData.include.length === 0) {
-      console.log(
-        `${this.property.weeklyGoalData.number}개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
-      );
-    } else {
-      console.log(
-        `${this.property.weeklyGoalData.include.join(', ')}를 포함하여 ${
-          this.property.weeklyGoalData.number
-        }개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
-      );
-    }
-    logAndPrint('');
+    logAndPrint(`[ 금주의 목표 ]\n${this.property.weeklyGoalData.string}\n`);
     const smallCircle = ' \u25CF';
     const circle = '\u2B24 ';
     const colors = [
