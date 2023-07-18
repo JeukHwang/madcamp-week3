@@ -4,12 +4,11 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { CreateDto } from './dto/create.dto';
 
-export type UserProfile = Pick<User, 'id' | 'name' | 'photo' | 'score'>;
+export type UserProfile = Pick<User, 'id' | 'name' | 'photo'>;
 export const toUserProfile = (user: User): UserProfile => ({
   id: user.id,
   name: user.name,
   photo: user.photo,
-  score: user.score,
 });
 
 @Injectable()
@@ -41,11 +40,15 @@ export class UserService {
   }
 
   async getLeaderboard(): Promise<UserProfile[]> {
-    const users: User[] | null = await this.prismaService.user.findMany({
-      orderBy: [{ score: 'desc' }, { createdAt: 'asc' }],
-      take: 5,
+    const users = await this.prismaService.user.findMany({
+      include: { games: { select: { score: true } } },
     });
-    return users.map(toUserProfile);
+    const sortedUsers = users.sort((a, b) => {
+      const scoreA = Math.max(...a.games.map((game) => game.score));
+      const scoreB = Math.max(...b.games.map((game) => game.score));
+      return scoreA > scoreB ? -1 : 1;
+    });
+    return sortedUsers.map(toUserProfile);
   }
 
   async getUserIfRefreshTokenMatches(

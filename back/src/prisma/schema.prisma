@@ -15,11 +15,10 @@ model User {
 
   name         String
   photo        String?
-  score        Int     @default(0)
   googleId     String  @unique()
   refreshToken String?
 
-  Game Game[]
+  games Game[]
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -32,6 +31,7 @@ model Game {
   json       Json
   isFinished Boolean @default(false)
   turn       Int     @default(0)
+  score      Int     @default(0)
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
