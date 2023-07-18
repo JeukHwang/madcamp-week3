@@ -112,6 +112,7 @@ export class GameInstance {
       const item = this.property.status.shift()!;
       switch (item.type) {
         case 'beginTurn': {
+          this.player.property.health = GameConstant.defaultHealth;
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
@@ -162,6 +163,10 @@ export class GameInstance {
   }
 
   movePlayer(move: Move) {
+    if (this.player.property.health < move.indices.length) {
+      throw new Error('Player health is not enough');
+    }
+    this.player.property.health -= move.indices.length;
     const collectedTile = move.tiles.map((tile) => tile.language);
     this.updateExperience(collectedTile);
     move.tiles.forEach((tile) => tile.reset());
@@ -245,6 +250,8 @@ export class GameInstance {
         })
         .join('\n'),
     );
+    logAndPrint('');
+    logAndPrint(`체력 : ${this.player.property.health}`);
     logAndPrint('');
   }
 

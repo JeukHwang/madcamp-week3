@@ -22,7 +22,7 @@ export class Player {
   public property: PlayerProperty;
   constructor(public position: Position) {
     this.property = {
-      health: 5,
+      health: 0,
       experience: Object.fromEntries(Language.data.map((s) => [s, 0])) as {
         [k in TileLanguage]: number;
       },
