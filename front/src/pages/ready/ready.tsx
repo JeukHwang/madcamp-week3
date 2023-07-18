@@ -75,22 +75,18 @@ const Ready = () => {
         withCredentials: true,
 
       }).then((response)=> {
-       // console.log(res);
+        console.log(response.data.json);
        const arrayData = response.data.json.map;
        const player = response.data.json.player.position;
        const level = response.data.json.player.property.experience;
        const require = response.data.json.property.requestInput.type;
        const turn = response.data.turn;
-       //console.log(require);
-       //console.log(response);
-       //console.log(level);
        setRequest(require);
        setArrayData(arrayData);
        setPlayerPosition(player);
        setLevelPlayer(level);
        
        SetTurnPlayer(turn);
-       //console.log(turn);
         movePlayerToSelectedCells();
         setSelectedCells([]);
     

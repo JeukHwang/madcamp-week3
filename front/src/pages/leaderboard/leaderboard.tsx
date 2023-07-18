@@ -5,6 +5,7 @@ import Background from "../../atoms/containers/background/background";
 import Font from "../../styles/font";
 import Text from "../../atoms/containers/text/text";
 import "../../atoms/containers/background/macTerminal.css";
+//import { Item } from "react-bootstrap/lib/Breadcrumb";
 
 
 interface User {
@@ -22,13 +23,14 @@ const LeaderBoard: React.FC = () => {
       .get<User[]>("https://madcamp-week3-production.up.railway.app/user/leaderboard", { withCredentials: true })
       .then(response => {
         console.log(response);
-        const userData = response.data.map(user => ({
-          id: user.id,
-          name: user.name,
-          score: user.score || 0,
-          photo: user.photo
+        const userData = response.data.map((item:any) => ({
+          id: item.user.id,
+          name: item.user.name,
+          score: item.score || 0,
+          photo: item.user.photo
         }));
         setUsers(userData);
+        console.log(userData);
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error);

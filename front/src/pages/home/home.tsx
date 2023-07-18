@@ -83,7 +83,7 @@ const HomePage = () => {
             </Text>
         </Button>
         <Button onClick={setting} variant={ButtonVariant.outlined}>
-          <Text size="1.5rem" font={Font.Bold}>설정</Text>
+          <Text size="1.5rem" font={Font.Bold}>💻</Text>
         </Button>
 
           </div>

@@ -3,7 +3,6 @@ import { Console } from "console";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Button from "../../atoms/button/button";
-import { Media } from "react-bootstrap";
 
 type event = {title: string, subtitle: string};
 const EventModal = ({ onClose }: any) => {
@@ -98,6 +97,7 @@ const EventData = styled.div`
 const OptionButton = styled.button`
     margin-left: 10%;
     margin-right: 10%;
+    width: 80%;
     background: #f7f7f7;
     border: 1px solid #ddd;
     padding: 10px;
