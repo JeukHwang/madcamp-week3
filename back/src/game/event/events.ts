@@ -72,7 +72,6 @@ const eventList: GameEvent[] = [
           const prop = game.player.property;
           const update = Language.experienceUpdatable(game);
           prop.levelEnabled = update;
-          console.log('update', update);
           Object.entries(update).forEach(
             ([lang, updatable]: [TileLanguage, boolean]) => {
               if (updatable) {

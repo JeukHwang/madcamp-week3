@@ -3,7 +3,6 @@ import { mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { clearLine, createInterface, moveCursor } from 'readline';
 import { GameConstant } from './constant';
-import type { RequestInput, ResponseInput } from './game';
 
 export function isArrayUnique<T>(array: Array<T>): boolean {
   return new Set(array).size === array.length;
@@ -55,33 +54,6 @@ export function log(msg: string) {
 }
 
 export function logAndPrint(msg: string) {
-  //   log(msg);
+  log(msg);
   console.log(msg);
-}
-
-export function* requestYield(
-  request: RequestInput,
-): Generator<RequestInput, ResponseInput, ResponseInput> {
-  yield request;
-  const data: ResponseInput = yield request;
-  logAndPrint('requestYield_data ' + JSON.stringify(data));
-  return data;
-}
-
-export async function responseYield1(
-  generator: AsyncGenerator<RequestInput, any, ResponseInput>,
-): Promise<RequestInput> {
-  const step = await generator.next();
-  return step.value;
-}
-
-export async function responseYield2(
-  generator: AsyncGenerator<RequestInput, any, ResponseInput>,
-  response: ResponseInput,
-): Promise<boolean> {
-  console.log('Before:', response);
-  const result = await generator.next(response);
-  await generator.next(); // make sure the generator is done
-  console.log('After:', response);
-  return result.done ? true : false;
 }

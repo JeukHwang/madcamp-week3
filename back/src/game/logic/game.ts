@@ -72,7 +72,7 @@ export class GameInstance {
   tryApplyEvent(eventName: string): EventApplyResult | null {
     const event = findEventByName(eventName);
     if (event.canApply(this)) {
-      //   console.clear();
+      console.clear();
       this.show();
       event.show(this);
       const response = this.getResponse();
@@ -85,7 +85,6 @@ export class GameInstance {
         return null;
       }
       const result = event.apply(this, response as number);
-      logAndPrint(`RESULT ${result}`);
       if (result === null) {
         this.inputQueue.pop();
         this.setRequest({
@@ -104,7 +103,7 @@ export class GameInstance {
     while (true) {
       const backup = this.toJson();
       this.inputQueueIndex = 0;
-      // console.clear();
+      console.clear();
       this.show();
       try {
         const response = this.getResponse();
@@ -254,7 +253,6 @@ export class GameInstance {
     this.inputQueue.push(input);
   }
   private getResponse(): GameInput | null {
-    console.log(this.inputQueueIndex, this.inputQueue.length);
     if (this.inputQueueIndex >= this.inputQueue.length) {
       return null;
     }

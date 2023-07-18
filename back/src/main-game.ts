@@ -3,16 +3,12 @@ import type { ResponseInput } from './game/logic/game';
 import { GameInstance } from './game/logic/game';
 
 async function playGameFromCLI() {
-  const game: GameInstance = GameInstance.new();
+  let game: GameInstance = GameInstance.new();
   while (!game.property.isFinished) {
-    // game = GameInstance.fromJson(game.toJson());
+    game = GameInstance.fromJson(game.toJson());
     while (true) {
-      const s = game.playStep();
-      console.log(s);
+      game.playStep();
       const request = game.getRequest();
-      //   const command = await responseYield1(gen);
-      //   logAndPrint('playGameFromCLI_command ' + JSON.stringify(command));
-      console.log(game.toJson());
       let data: ResponseInput;
       switch (request.type) {
         case 'number':
@@ -29,16 +25,6 @@ async function playGameFromCLI() {
           break;
       }
       game.setResponse(data);
-
-      //   //   game = GameInstance.fromJson(game.toJson());
-      //   //   gen = await game.playStepWithQueue();
-      //   //   await responseYield1(gen);
-      //   logAndPrint('playGameFromCLI_data ' + JSON.stringify(data));
-      //   const isDone = await responseYield2(gen, data);
-      //   logAndPrint('playGameFromCLI_isDone ' + isDone.toString());
-      //   if (isDone) {
-      //     break;
-      //   }
     }
   }
 }
