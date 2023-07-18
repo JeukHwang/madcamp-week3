@@ -1,3 +1,4 @@
+import * as assert from 'assert';
 import type { GameEvent } from '../logic/event';
 import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
@@ -20,6 +21,11 @@ const eventNameList = [
   '버티컬 마우스가 필요해',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
+
+assert(
+  eventList.length === eventNameList.length,
+  'eventList and eventNameList should have same length',
+);
 
 export function findEventByName(name: EventTitle): GameEvent {
   // TODO : find 결과가 undefined일 때 처리 or add type for title
