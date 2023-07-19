@@ -132,9 +132,9 @@ export class GameInstance {
         this.property.status = [
           { type: 'beginTurn' },
           { type: 'randomEvent' },
-          { type: 'movePlayer' },
           { type: 'applyEvent', data: '성장' },
           { type: 'applyEvent', data: '주간 목표' },
+          { type: 'movePlayer' },
           { type: 'endTurn' },
         ];
       }
