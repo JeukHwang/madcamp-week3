@@ -8,6 +8,7 @@ import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
 import { 변화의_물결 } from './변화의_물결';
 import { 불이야 } from './불이야';
+import { 새로운_컴퓨터가_필요해 } from './새로운_컴퓨터가_필요해';
 import { 성장 } from './성장';
 import { 데이터_시각화_외주, 웹사이트_개발_외주 } from './외주';
 import { 주간_목표 } from './주간_목표';
@@ -30,6 +31,7 @@ const eventList: GameEvent[] = [
   모니터_암이_필요해,
   ChatGPT,
   콩나물이_필요해,
+  새로운_컴퓨터가_필요해,
 ];
 const eventNameList = [
   '성장',
@@ -47,6 +49,7 @@ const eventNameList = [
   '모니터 암이 필요해',
   'ChatGPT',
   '콩나물이 필요해',
+  '새로운 컴퓨터가 필요해',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
