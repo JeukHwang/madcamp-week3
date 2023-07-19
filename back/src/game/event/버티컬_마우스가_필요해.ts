@@ -10,7 +10,7 @@ export const 버티컬_마우스가_필요해 = new EventInstance(
     !game.property.eventData['버티컬 마우스가 필요해'].has &&
     game.property.eventData['버티컬 마우스가 필요해'].count < 2 &&
     game.property.turn > 10 &&
-    WeekDay(3)(game),
+    WeekDay(2, 4)(game),
   '버티컬 마우스가 필요해',
   '손목이 아파서 새 마우스를 사고 싶다.',
   [

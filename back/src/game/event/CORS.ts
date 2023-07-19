@@ -1,7 +1,15 @@
-import { EventInstance, NoCondition, OptionInstance } from '../logic/event';
+import {
+  EventInstance,
+  NoCondition,
+  OptionInstance,
+  WeekDay,
+} from '../logic/event';
 
 export const CORS = new EventInstance(
-  (game) => !game.property.eventData['CORS'].isDone && game.property.turn > 4,
+  (game) =>
+    !game.property.eventData['CORS'].isDone &&
+    game.property.turn > 4 &&
+    WeekDay(2)(game),
   'CORS',
   '으아아아! CORS 에러가 났어요!',
   [
