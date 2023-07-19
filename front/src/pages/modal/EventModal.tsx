@@ -51,9 +51,10 @@ const EventModal = ({ onClose }: any) => {
             if (require==="number"){
                 onClose();
                 console.log("숫자 선택");
+                window.location.reload();
                 
             }
-            if(isFinished===true){
+            if(require==="positions"){
                 console.log("게임 끝");
                 onClose();
                 window.location.reload();

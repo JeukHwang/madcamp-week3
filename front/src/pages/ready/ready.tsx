@@ -50,6 +50,7 @@ const Ready = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [request, setRequest] = useState <string>("");
   const [weeklyGoal, setWeeklyGoal] = useState <string>("");
+  const [healthRest, setHealthRest] = useState <number>(0);
   const HandleModalShow = () => {
     setModalOpen(false);
   };
@@ -292,9 +293,10 @@ useEffect(() => {
         const require = response.data.json.property.requestInput.type;
         const turn = response.data.turn;
         const weekly = response.data.json.property.weeklyGoalData.string;
-        
+        const health = response.data.json.player.property.health;
+        console.log(health);
         //console.log(require);
-        //console.log(response.data);
+        console.log(response.data);
         //console.log(level);
         setRequest(require);
         setArrayData(arrayData);
@@ -302,6 +304,7 @@ useEffect(() => {
         setLevelPlayer(level);
         setWeeklyGoal(weekly);
         SetTurnPlayer(turn);
+        setHealthRest (health);
 
         if(require==="number"){
             HandleModalOpen();
@@ -309,7 +312,7 @@ useEffect(() => {
         //console.log(turn);
       })
       .catch(error => {
-        console.error("API 호출에 실패했습니다.", error.response);
+        console.error("API 호출에 실패했습니다. current game 없음", error.response);
           axios
             .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
             .then(response => {
@@ -320,18 +323,46 @@ useEffect(() => {
                  const player = response.data.json.player.position;
                  setPlayerPosition(player);
 
-                    const level = response.data.json.player.property.level;
-                    setLevelPlayer(level);
+                  const level = response.data.json.player.property.level;
+                  setLevelPlayer(level);
 
-                    const turn = response.data.turn;
-                    //console.log(turn);
-                    SetTurnPlayer(turn);
+                  const turn = response.data.turn;
+                  //console.log(turn);
+                  SetTurnPlayer(turn);
 
-                    const weekly = response.data.json.property.weeklyGoalData.string;
-                    setWeeklyGoal(weekly);
+                  const weekly = response.data.json.property.weeklyGoalData.string;
+                  setWeeklyGoal(weekly);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
+              if (error.response.data.statusCode === 403 && error.response.data?.message?.startsWith("Game exist")) {
+                console.log("이미 해당 게임이 존재합니다.");
+                // 이곳에 이미 존재하는 게임에 대한 처리를 추가하면 됩니다.
+                axios
+                .get("https://madcamp-week3-production.up.railway.app/game/current", { withCredentials: true })
+                .then(response => {
+                  const arrayData = response.data.json.map;
+                  const player = response.data.json.player.position;
+                  const level = response.data.json.player.property.experience;
+                  const require = response.data.json.property.requestInput.type;
+                  const turn = response.data.turn;
+                  const weekly = response.data.json.property.weeklyGoalData.string;
+                  const health = response.data.json.player.property.health;
+                  console.log(health);
+                  //console.log(require);
+                  console.log(response.data);
+                  //console.log(level);
+                  setRequest(require);
+                  setArrayData(arrayData);
+                  setPlayerPosition(player);
+                  setLevelPlayer(level);
+                  setWeeklyGoal(weekly);
+                  SetTurnPlayer(turn);
+                  setHealthRest (health);
+                })          
+
+                return; // 함수 종료
+              }
             });
       }); 
   }, []);
@@ -388,6 +419,14 @@ useEffect(() => {
           <div style={{fontFamily:"DungGeunMo",  fontSize:"1rem", color:colorSet.white}}>
           
             <Text style={{textAlign:"center",padding:"10px"}} color={colorSet.white}>▶ {weeklyGoal}</Text>
+            <div>
+            {healthRest!== null && (
+                <div style={{textAlign:"center",fontFamily:"DungGeunMo", fontSize:"1.2rem"}}>
+                <Text color={colorSet.white} > ❤ {healthRest} </Text>
+                    
+                </div>
+            )}
+        </div>
             <Text style={{textAlign:"center", fontSize:"2rem"}} color={colorSet.white}>----------------</Text>
           </div>
         )}
@@ -395,13 +434,13 @@ useEffect(() => {
 
         <div>
           {levelPlayer && (
-            <div style={{display:"flex", justifyContent:"space-between", fontFamily:"DungGeunMo", fontSize:"1.5rem", color:colorSet.white}}>
-              <ul>
+            <div style={{margin: "0px",display:"flex", justifyContent:"space-between", fontFamily:"DungGeunMo", fontSize:"1.5rem", color:colorSet.white}}>
+              <ul style={{margin:"0px"}}>
                 <li>C: {levelPlayer.C}</li>
                 <li>Java: {levelPlayer.Java}</li>
                 <li>Python: {levelPlayer.Python}</li>
               </ul>
-              <ul>
+              <ul style={{margin:"0px"}}>
                 <li>JavaScript: {levelPlayer.JavaScript}</li>
                 <li>TypeScript: {levelPlayer.TypeScript}</li>
               </ul>
@@ -412,11 +451,12 @@ useEffect(() => {
         <div>
             {turnPlayer!== null && (
                 <div style={{padding:"10px",fontFamily:"DungGeunMo", fontSize:"1.3rem"}}>
-                <Text color={colorSet.white} > ▶ {turnPlayer} 회 이동</Text>
+                <Text color={colorSet.white} > ▶ 현재 {turnPlayer} 회 이동</Text>
                     
                 </div>
             )}
         </div>
+
     </div>
     <div className="app">
   <div className="game">
