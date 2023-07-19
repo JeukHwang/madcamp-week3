@@ -48,6 +48,7 @@ export type GameProperty = {
     CORS: { isDone: boolean };
     '모니터 암이 필요해': { has: false; count: number } | { has: true };
     ChatGPT: { leftDay: number };
+    '콩나물이 필요해': { has: boolean };
   };
 };
 
@@ -84,6 +85,7 @@ export class GameInstance {
           CORS: { isDone: false },
           '모니터 암이 필요해': { has: false, count: 0 },
           ChatGPT: { leftDay: 0 },
+          '콩나물이 필요해': { has: false },
         },
       },
       map,
@@ -139,6 +141,9 @@ export class GameInstance {
       switch (item.type) {
         case 'beginTurn': {
           this.player.property.health = GameConstant.defaultHealth;
+          if (this.property.eventData['콩나물이 필요해'].has) {
+            this.player.property.health += 1;
+          }
           if (!this.property.eventData['모니터 암이 필요해'].has) {
             this.player.property.health -=
               this.property.eventData['모니터 암이 필요해'].count;
@@ -181,6 +186,7 @@ export class GameInstance {
             ['데이터 시각화 외주', 0.3],
             ['모니터 암이 필요해', 0.1],
             ['ChatGPT', 0.3],
+            ['콩나물이 필요해', 0.3],
           ];
           // Random event
           const appliableEvents = weight

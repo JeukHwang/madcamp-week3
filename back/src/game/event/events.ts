@@ -12,6 +12,7 @@ import { 성장 } from './성장';
 import { 데이터_시각화_외주, 웹사이트_개발_외주 } from './외주';
 import { 주간_목표 } from './주간_목표';
 import { 해커톤 } from './해커톤';
+import { 콩나물이_필요해 } from './콩나물이_필요해';
 
 const eventList: GameEvent[] = [
   성장,
@@ -28,6 +29,7 @@ const eventList: GameEvent[] = [
   데이터_시각화_외주,
   모니터_암이_필요해,
   ChatGPT,
+  콩나물이_필요해,
 ];
 const eventNameList = [
   '성장',
@@ -44,6 +46,7 @@ const eventNameList = [
   '데이터 시각화 외주',
   '모니터 암이 필요해',
   'ChatGPT',
+  '콩나물이 필요해',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
