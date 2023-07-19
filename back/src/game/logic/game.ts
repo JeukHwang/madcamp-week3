@@ -173,6 +173,9 @@ export class GameInstance {
             ['버티컬 마우스가 필요해', 0.5],
             ['개발자님!', 0.5],
             ['CORS', 0.5],
+            ['해커톤', 0.2],
+            ['웹사이트 개발 외주', 0.2],
+            ['데이터 시각화 외주', 0.2],
           ];
           // Random event
           const appliableEvents = weight
