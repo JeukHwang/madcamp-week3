@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import * as clc from 'cli-color';
 import type { EventTitle } from '../event/events';
 import { findEventByName } from '../event/events';
@@ -42,7 +41,7 @@ export type GameProperty = {
   weeklyGoalData: WeeklyGoalData;
   status: GameStatus[];
   input: ResponseInput | null;
-  eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
+  eventData: {
     '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
     '개발자님!': { isDone: boolean };
     '불이야!': { data: TileLanguage[] };

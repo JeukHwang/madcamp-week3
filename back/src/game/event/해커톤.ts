@@ -28,7 +28,7 @@ export const 해커톤 = new EventInstance(
       NoCondition,
       '참여하지 말자.',
       `아무 일도 일어나지 않는다.`,
-      (game) => {
+      () => {
         return true;
       },
     ),
