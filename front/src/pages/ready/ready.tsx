@@ -51,6 +51,8 @@ const Ready = () => {
   const [request, setRequest] = useState <string>("");
   const [weeklyGoal, setWeeklyGoal] = useState <string>("");
   const [healthRest, setHealthRest] = useState <number>(0);
+  const [coffeeGet, setCoffeeGet] = useState <number>(0);
+  const [energyGet, setEnergyGet] = useState <number>(0);
   const HandleModalShow = () => {
     setModalOpen(false);
   };
@@ -294,6 +296,9 @@ useEffect(() => {
         const turn = response.data.turn;
         const weekly = response.data.json.property.weeklyGoalData.string;
         const health = response.data.json.player.property.health;
+        const coffee = response.data.json.player.property.inventory.커피;
+        const energy = response.data.json.player.property.invetory.에너지드링크;
+        
         console.log(health);
         //console.log(require);
         console.log(response.data);
@@ -305,6 +310,9 @@ useEffect(() => {
         setWeeklyGoal(weekly);
         SetTurnPlayer(turn);
         setHealthRest (health);
+        setCoffeeGet(coffee);
+        //console.log(coffee);
+        setEnergyGet(energy);
 
         if(require==="number"){
             HandleModalOpen();
@@ -419,11 +427,12 @@ useEffect(() => {
           <div style={{fontFamily:"DungGeunMo",  fontSize:"1rem", color:colorSet.white}}>
           
             <Text style={{textAlign:"center",padding:"10px"}} color={colorSet.white}>▶ {weeklyGoal}</Text>
-            <div>
+            <div style={{display:"flex", flexDirection:"row", justifyContent:"center",alignItems:"center",fontFamily:"DungGeunMo", fontSize:"1.2rem"}}>
             {healthRest!== null && (
-                <div style={{textAlign:"center",fontFamily:"DungGeunMo", fontSize:"1.2rem"}}>
-                <Text color={colorSet.white} > ❤ {healthRest} </Text>
-                    
+                <div style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center",fontFamily:"DungGeunMo", fontSize:"1.2rem"}}>
+                <Text style={{paddingRight:"20px",}}  > ❤ {healthRest} </Text>
+                <Text color={colorSet.white} > ☕ {coffeeGet} </Text>    
+                <Text style={{paddingLeft:"20px",}} color={colorSet.white} > ☆ {energyGet} </Text>
                 </div>
             )}
         </div>
