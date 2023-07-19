@@ -13,7 +13,7 @@ export const 개발자님 = new EventInstance(
     new OptionInstance(
       NoCondition,
       '디자이너님! 지난번 시안은 그냥 원래대로 바꿔주세요.',
-      `체력을 1 잃는다.`,
+      `체력이 1 감소한다.`,
       (game) => {
         game.player.property.health -= 1;
         game.property.eventData['개발자님!'].isDone = true;
@@ -23,7 +23,7 @@ export const 개발자님 = new EventInstance(
     new OptionInstance(
       NoCondition,
       '아니! 금요일 퇴근 시간에 왜 그러세요!!',
-      `체력을 1 잃는다.`,
+      `체력이 1 감소한다.`,
       (game) => {
         game.player.property.health -= 1;
         game.property.eventData['개발자님!'].isDone = true;

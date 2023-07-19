@@ -10,7 +10,8 @@ export const 밥은_먹고_다니니 = new EventInstance(
   '밥은 먹고 다니니',
   '개발만 하니 딱해보였는지 부모님이 용돈을 보내주셨다.',
   [
-    new OptionInstance(NoCondition, '감사해요.', `돈 2를 얻는다.`, (game) => {
+    // object로 바꾼 후 OptionInstance를 EventInstance에서 만들기
+    new OptionInstance(NoCondition, '감사해요.', `돈이 2 증가한다.`, (game) => {
       const prop = game.player.property;
       prop.money += 2;
       return true;

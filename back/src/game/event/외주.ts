@@ -16,7 +16,7 @@ export const 웹사이트_개발_외주 = new EventInstance(
         game.player.property.levelEnabled['JavaScript'] &&
         game.player.property.health >= 1,
       'JavaScript 3년차 이상 개발자로서 수락하자.',
-      `체력 1를 잃고 돈 2를 얻는다.`,
+      `체력이 1 감소하고 돈이 2 증가한다.`,
       (game) => {
         const prop = game.player.property;
         if (prop.health < 1) {
@@ -33,7 +33,7 @@ export const 웹사이트_개발_외주 = new EventInstance(
         game.player.property.levelEnabled['JavaScript'] &&
         game.player.property.health >= 2,
       'JavaScript 1년차 이상 개발자로서 수락하자.',
-      `체력 2을 잃고 돈 1을 얻는다.`,
+      `체력이 2 감소하고 돈이 1 증가한다.`,
       (game) => {
         const prop = game.player.property;
         if (prop.health < 2) {
@@ -66,7 +66,7 @@ export const 데이터_시각화_외주 = new EventInstance(
         game.player.property.levelEnabled['Python'] &&
         game.player.property.health >= 1,
       'Python 2년차 이상 개발자로서 수락하자.',
-      `체력 1를 잃고 돈 2를 얻는다.`,
+      `체력이 1 감소하고 돈이 2 증가한다.`,
       (game) => {
         const prop = game.player.property;
         if (prop.health < 1) {
@@ -83,7 +83,7 @@ export const 데이터_시각화_외주 = new EventInstance(
         game.player.property.levelEnabled['Python'] &&
         game.player.property.health >= 2,
       'Python 1년차 이상 개발자로서 수락하자.',
-      `체력 2을 잃고 돈 2를 얻는다.`,
+      `체력이 2 감소하고 돈이 2 증가한다.`,
       (game) => {
         const prop = game.player.property;
         if (prop.health < 2) {

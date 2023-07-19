@@ -17,7 +17,7 @@ export const 모니터_암이_필요해 = new EventInstance(
     new OptionInstance(
       (game) => game.player.property.money >= 2,
       '사자.',
-      `돈 2를 사용한다.`,
+      `돈이 1 감소한다.`,
       (game) => {
         game.player.property.money -= 2;
         game.property.eventData['모니터 암이 필요해'] = { has: true };
@@ -27,7 +27,7 @@ export const 모니터_암이_필요해 = new EventInstance(
     new OptionInstance(
       NoCondition,
       '사지 말자.',
-      `모니터 암을 살 때까지 기본 체력이 1 줄어든다.`,
+      `모니터 암을 살 때까지 기본 체력이 1 감소한다.`,
       (game) => {
         // assert by condition but just for type safety
         if (!game.property.eventData['모니터 암이 필요해'].has) {

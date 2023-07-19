@@ -16,7 +16,7 @@ export const 성장 = new EventInstance(
     new OptionInstance(
       EndOfWeek,
       '좋아.',
-      `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어에 대해 1주의 경력이 인정된다.`,
+      `${GameConstant.levelThreshold} 이상의 경험치가 있는 언어의 경력이 1주 증가한다.`,
       (game) => {
         const prop = game.player.property;
         const update = Language.levelUpdatable(game);
