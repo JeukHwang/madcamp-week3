@@ -3,6 +3,7 @@ import type { GameEvent } from '../logic/event';
 import { CORS, CORS_문제 } from './CORS';
 import { ChatGPT } from './ChatGPT';
 import { 개발자님 } from './개발자님';
+import { 과로사 } from './과로사';
 import { 모니터_암이_필요해 } from './모니터_암이_필요해';
 import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
@@ -32,6 +33,7 @@ const eventList: GameEvent[] = [
   ChatGPT,
   콩나물이_필요해,
   새로운_컴퓨터가_필요해,
+  과로사,
 ];
 const eventNameList = [
   '성장',
@@ -50,6 +52,7 @@ const eventNameList = [
   'ChatGPT',
   '콩나물이 필요해',
   '새로운 컴퓨터가 필요해',
+  '과로사',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 

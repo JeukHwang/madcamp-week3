@@ -150,11 +150,18 @@ export class GameInstance {
             this.player.property.health -=
               this.property.eventData['모니터 암이 필요해'].count;
           }
-          // TODO: check if player has positive health before moving, if not, end game by event 과로사
 
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
+          }
+
+          if (this.player.property.health <= 0) {
+            this.property.status.unshift({
+              type: 'applyEvent',
+              data: '과로사',
+            });
+            break;
           }
           break;
         }
