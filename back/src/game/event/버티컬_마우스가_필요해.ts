@@ -32,6 +32,10 @@ export const 버티컬_마우스가_필요해 = new EventInstance(
         // assert by condition but just for type safety
         if (!game.property.eventData['버티컬 마우스가 필요해'].has) {
           game.property.eventData['버티컬 마우스가 필요해'].count += 1;
+          game.player.property.health = Math.max(
+            game.player.property.health - 1,
+            0,
+          );
         }
         return true;
       },
