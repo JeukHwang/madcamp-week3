@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import * as clc from 'cli-color';
 import type { EventTitle } from '../event/events';
 import { findEventByName } from '../event/events';
@@ -42,11 +41,15 @@ export type GameProperty = {
   weeklyGoalData: WeeklyGoalData;
   status: GameStatus[];
   input: ResponseInput | null;
-  eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
-    '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
+  eventData: {
+    '버티컬 마우스가 필요해': { has: boolean };
     '개발자님!': { isDone: boolean };
     '불이야!': { data: TileLanguage[] };
     CORS: { isDone: boolean };
+    '모니터 암이 필요해': { has: false; count: number } | { has: true };
+    ChatGPT: { leftDay: number };
+    '콩나물이 필요해': { has: boolean };
+    '새로운 컴퓨터가 필요해': { has: false } | { has: true; isMac: boolean };
   };
 };
 
@@ -77,10 +80,14 @@ export class GameInstance {
         status: [],
         input: null,
         eventData: {
-          '버티컬 마우스가 필요해': { has: false, count: 0 },
+          '버티컬 마우스가 필요해': { has: false },
           '개발자님!': { isDone: false },
           '불이야!': { data: [] },
           CORS: { isDone: false },
+          '모니터 암이 필요해': { has: false, count: 0 },
+          ChatGPT: { leftDay: 0 },
+          '콩나물이 필요해': { has: false },
+          '새로운 컴퓨터가 필요해': { has: false },
         },
       },
       map,
@@ -136,15 +143,25 @@ export class GameInstance {
       switch (item.type) {
         case 'beginTurn': {
           this.player.property.health = GameConstant.defaultHealth;
-          if (!this.property.eventData['버티컬 마우스가 필요해'].has) {
-            this.player.property.health -=
-              this.property.eventData['버티컬 마우스가 필요해'].count;
+          if (this.property.eventData['콩나물이 필요해'].has) {
+            this.player.property.health += 1;
           }
-          // TODO: check if player has positive health before moving, if not, end game by event 과로사
+          if (!this.property.eventData['모니터 암이 필요해'].has) {
+            this.player.property.health -=
+              this.property.eventData['모니터 암이 필요해'].count;
+          }
 
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
+          }
+
+          if (this.player.property.health <= 0) {
+            this.property.status.unshift({
+              type: 'applyEvent',
+              data: '과로사',
+            });
+            break;
           }
           break;
         }
@@ -170,12 +187,16 @@ export class GameInstance {
           const weight: [EventTitle, number][] = [
             ['변화의 물결', 0.1],
             ['밥은 먹고 다니니', 0.8],
-            ['버티컬 마우스가 필요해', 0.5],
-            ['개발자님!', 0.5],
+            ['버티컬 마우스가 필요해', 0.2],
+            ['개발자님!', 0.2],
             ['CORS', 0.5],
             ['해커톤', 0.2],
-            ['웹사이트 개발 외주', 0.2],
-            ['데이터 시각화 외주', 0.2],
+            ['웹사이트 개발 외주', 0.3],
+            ['데이터 시각화 외주', 0.3],
+            ['모니터 암이 필요해', 0.1],
+            ['ChatGPT', 0.3],
+            ['콩나물이 필요해', 0.3],
+            ['새로운 컴퓨터가 필요해', 0.1],
           ];
           // Random event
           const appliableEvents = weight
@@ -235,8 +256,20 @@ export class GameInstance {
 
   updateExperience(collectedTile: TileLanguage[]) {
     const { experience } = this.player.property;
+
+    const efficient =
+      (this.property.eventData['ChatGPT'].leftDay > 0 ? 2 : 1) *
+      (this.property.eventData['새로운 컴퓨터가 필요해'].has &&
+      this.property.eventData['새로운 컴퓨터가 필요해'].isMac
+        ? 2
+        : 1);
+    if (this.property.eventData['ChatGPT'].leftDay > 0) {
+      this.property.eventData['ChatGPT'].leftDay--;
+    }
+
     countArray(collectedTile).forEach(({ name, count }) => {
-      experience[name] += Math.floor(count / GameConstant.experienceThreshold);
+      experience[name] +=
+        Math.floor(count / GameConstant.experienceThreshold) * efficient;
     });
   }
 

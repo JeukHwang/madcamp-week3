@@ -10,7 +10,7 @@ export const 불이야 = new EventInstance(
     new OptionInstance(
       NoCondition,
       '그래도 커밋은 해야지~',
-      `체력을 1 잃는다.`,
+      `체력이 1 감소한다.`,
       (game) => {
         game.player.property.health = Math.max(
           game.player.property.health - 1,

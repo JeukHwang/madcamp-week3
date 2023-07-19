@@ -14,7 +14,7 @@ export const 해커톤 = new EventInstance(
     new OptionInstance(
       NoCondition,
       '참여하자.',
-      `체력을 2 소모하고 한 언어의 경험치를 2 얻는다.`,
+      `체력이 2 감소하고 무작위한 언어의 경험치가 2 증가한다.`,
       (game) => {
         if (game.player.property.health < 2) {
           return false;
@@ -28,7 +28,7 @@ export const 해커톤 = new EventInstance(
       NoCondition,
       '참여하지 말자.',
       `아무 일도 일어나지 않는다.`,
-      (game) => {
+      () => {
         return true;
       },
     ),

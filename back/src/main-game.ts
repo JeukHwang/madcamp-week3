@@ -8,7 +8,6 @@ import { logAndPrint } from './game/logic/util';
 async function playGameFromCLI() {
   let game: GameInstance = GameInstance.new();
   while (!game.property.isFinished) {
-    game = GameInstance.fromJson(game.toJson());
     while (true) {
       game.playStep();
       if (game.property.isFinished) {
@@ -38,6 +37,7 @@ async function playGameFromCLI() {
           };
           break;
       }
+      game = GameInstance.fromJson(game.toJson());
       game.setResponse(data);
     }
   }
