@@ -16,7 +16,7 @@ export const CORS = new EventInstance(
     new OptionInstance(
       NoCondition,
       '화가 치솟아오른다.',
-      `JavaScript 경험치를 1 잃는다.`,
+      `JavaScript 경험치가 1 감소한다.`,
       (game) => {
         game.player.property.experience.JavaScript = Math.max(
           game.player.property.experience.JavaScript - 1,
@@ -28,8 +28,8 @@ export const CORS = new EventInstance(
     ),
     new OptionInstance(
       NoCondition,
-      '해결하면 되는 거 아냐?',
-      `체력을 잃지 않는다.`,
+      'CORS 따위 해결하면 되는 거 아냐?',
+      `JavaScript 경험치가 감소하지 않는다.`,
       (game) => {
         game.property.status.unshift({ type: 'applyEvent', data: 'CORS 문제' });
         game.property.eventData['CORS'].isDone = true;
@@ -47,10 +47,10 @@ export const CORS_문제 = new EventInstance(
     new OptionInstance(
       NoCondition,
       'None',
-      '정답이 아니면 체력을 2 잃는다.',
+      '정답이 아니면 JavaScript 경험치가 2 감소한다.',
       (game) => {
-        game.player.property.health = Math.max(
-          game.player.property.health - 2,
+        game.player.property.experience.JavaScript = Math.max(
+          game.player.property.experience.JavaScript - 2,
           0,
         );
         return true;
@@ -59,10 +59,10 @@ export const CORS_문제 = new EventInstance(
     new OptionInstance(
       NoCondition,
       'Strict',
-      '정답이 아니면 체력을 2 잃는다.',
+      '정답이 아니면 JavaScript 경험치가 2 감소한다.',
       (game) => {
-        game.player.property.health = Math.max(
-          game.player.property.health - 2,
+        game.player.property.experience.JavaScript = Math.max(
+          game.player.property.experience.JavaScript - 2,
           0,
         );
         return true;
@@ -71,7 +71,7 @@ export const CORS_문제 = new EventInstance(
     new OptionInstance(
       NoCondition,
       'Lax',
-      '정답이 아니면 체력을 2 잃는다.',
+      '정답이 아니면 JavaScript 경험치가 2 감소한다.',
       () => {
         return true;
       },
