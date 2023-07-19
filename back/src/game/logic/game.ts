@@ -47,6 +47,7 @@ export type GameProperty = {
     '불이야!': { data: TileLanguage[] };
     CORS: { isDone: boolean };
     '모니터 암이 필요해': { has: false; count: number } | { has: true };
+    ChatGPT: { leftDay: number };
   };
 };
 
@@ -82,6 +83,7 @@ export class GameInstance {
           '불이야!': { data: [] },
           CORS: { isDone: false },
           '모니터 암이 필요해': { has: false, count: 0 },
+          ChatGPT: { leftDay: 0 },
         },
       },
       map,
@@ -178,6 +180,7 @@ export class GameInstance {
             ['웹사이트 개발 외주', 0.3],
             ['데이터 시각화 외주', 0.3],
             ['모니터 암이 필요해', 0.1],
+            ['ChatGPT', 0.3],
           ];
           // Random event
           const appliableEvents = weight
@@ -237,8 +240,15 @@ export class GameInstance {
 
   updateExperience(collectedTile: TileLanguage[]) {
     const { experience } = this.player.property;
+
+    const efficient = this.property.eventData['ChatGPT'].leftDay > 0 ? 2 : 1;
+    if (this.property.eventData['ChatGPT'].leftDay > 0) {
+      this.property.eventData['ChatGPT'].leftDay--;
+    }
+
     countArray(collectedTile).forEach(({ name, count }) => {
-      experience[name] += Math.floor(count / GameConstant.experienceThreshold);
+      experience[name] +=
+        Math.floor(count / GameConstant.experienceThreshold) * efficient;
     });
   }
 
