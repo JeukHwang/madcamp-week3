@@ -36,7 +36,7 @@ function App() {
     <BrowserRouter>
     
       {/* Add 'id' to the audio element */}
-      <audio id="audio-element" src="https://madcamp-week3-front.up.railway.app/mysteriousSmell.mp3" muted autoPlay loop preload="auto" controls>
+      <audio id="audio-element" src="https://madcamp-week3-front.up.railway.app/mysteriousSmell.mp3" autoPlay loop preload="auto" controls>
       </audio>
       <Routes>
         <Route path="/" element={<Home />} />

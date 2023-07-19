@@ -24,6 +24,10 @@ import { ButtonVariant } from "../../atoms/button/button";
 import "../../atoms/containers/background/macTerminal.css";
 import ModalPortal from "../../atoms/containers/background/ModalPortal";
 import EventModal from "../modal/EventModal";
+import EventModal2 from "../modal/EventModal2";
+//import {atom} from "jotai";
+import { useAtom } from "jotai";
+import { optionchooseAtom, responseAtom, playerPositionAtom, selectedCellsAtom, isFinishedAtom } from "../../utils/atom";
 //import "../../atoms/containers/background/macT.css";
 //import { TransitionGroup, CSSTransition } from "react-transition-group";
 const width=5;
@@ -31,7 +35,8 @@ type Position = {x:number, y:number}
 type Turn = 0;
 type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 const Ready = () => {
-
+  const [optionchoose, setOptionchoose] = useAtom(optionchooseAtom);
+  const [isModalOpen, setIsModalOpen] = useState(false);
     const iconimage2: Record<string, string> = {
         Java,
         JavaScript,
@@ -42,9 +47,23 @@ const Ready = () => {
         Cpp,
       };
   const history = useNavigate();
-  const [selectedCells, setSelectedCells] = useState<Position[]>([]);
+  const getWeekNumber = (turnPlayer: number): number => {
+    return Math.floor(turnPlayer / 7) + 1; // Calculate the week number by dividing by 7 and adding 1
+  };
+  
+  const getDayOfWeek = (turnPlayer: number): string => {
+    const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
+    const dayIndex = turnPlayer % 7; // Calculate the remainder when dividing by 7
+    
+    return daysOfWeek[dayIndex];
+  };
+  //const [selectedCells, setSelectedCells] = useState<Position[]>([]);
+  const [selectedCells, setSelectedCells] = useAtom(selectedCellsAtom); 
   const [arrayData, setArrayData] = useState<any[]>([]);
-  const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
+  const [response,setResponse] = useAtom(responseAtom);
+  //const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
+  const [playerPosition, setPlayerPosition] = useAtom(playerPositionAtom);
+  const [isFinished, setIsFinished] = useState<boolean>(false);
   const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
   const [turnPlayer, SetTurnPlayer] = useState<Turn|null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -53,6 +72,9 @@ const Ready = () => {
   const [healthRest, setHealthRest] = useState <number>(0);
   const [coffeeGet, setCoffeeGet] = useState <number>(0);
   const [energyGet, setEnergyGet] = useState <number>(0);
+  const [levelupState, setLevelupState] = useState <levelLanguage | null>(null);
+  const [moneyGet, setMoneyGet] = useState <number>(0);
+  const [isFinishedState, setIsFinishedState] = useAtom(isFinishedAtom);
   const HandleModalShow = () => {
     setModalOpen(false);
   };
@@ -84,22 +106,40 @@ const Ready = () => {
        const arrayData = response.data.json.map;
        const player = response.data.json.player.position;
        const level = response.data.json.player.property.experience;
+       const levelup = response.data.json.player.property.level;
        const require = response.data.json.property.requestInput.type;
        const turn = response.data.turn;
+       const money = response.data.json.player.property.money;
+       const isfished = response.data.isFinished;
+       const health = response.data.json.player.property.health;
+
+
+        //setHealthRest(health);
+       console.log("isfinished",isfished);
+       setIsFinishedState(isfished);
+       setMoneyGet(money);
+       setLevelupState(levelup);
        setRequest(require);
        setArrayData(arrayData);
        setPlayerPosition(player);
        setLevelPlayer(level);
+       setLevelupState(levelup);
+       console.log("ready",response.data);
+       setResponse(response.data);
        
        SetTurnPlayer(turn);
         movePlayerToSelectedCells();
         setSelectedCells([]);
     
+      }).catch((error) => {
+        console.log(error);
       });
     }   
     if(request==="number"){
         HandleModalOpen();
-        setSelectedCells([]);
+        //setSelectedCells([]);
+        
+
     }
 /*       
       await axios.post(
@@ -199,6 +239,7 @@ const Ready = () => {
         const player = response.data.json.player.position;
         setArrayData(arrayData);
         setPlayerPosition(player);
+        setResponse(response.data);
       })
       .catch((error) => {
         console.error("API 호출에 실패했습니다.", error.response);
@@ -212,9 +253,9 @@ const Ready = () => {
 }
 
 const handleCellClick = (row: number, col: number) => {
-  if (selectedCells.length === 5 && !isCellSelected(row, col)) {
+  if (selectedCells.length === healthRest && !isCellSelected(row, col)) {
     // Show warning popup when maximum selection limit is reached
-    toast.warning("최대 5개까지 선택할 수 있습니다.", { autoClose: 1000 });
+    toast.warning("체력 이상으로 선택할 수 없습니다.", { autoClose: 1000 });
     return;
   }
   if(selectedCells.length===0){
@@ -298,11 +339,19 @@ useEffect(() => {
         const health = response.data.json.player.property.health;
         const coffee = response.data.json.player.property.inventory.커피;
         const energy = response.data.json.player.property.invetory.에너지드링크;
+        const levelup = response.data.json.player.property.level;
+        const getDayOfWeek = (turnPlayer: number): string => {
+          const daysOfWeek = ["월", "화", "수", "목", "금", "토","일"];
+          const dayIndex = turnPlayer % 7; // Calculate the remainder when dividing by 7
+          return daysOfWeek[dayIndex];
+        };
         
         console.log(health);
         //console.log(require);
         console.log(response.data);
         //console.log(level);
+        setLevelupState(levelup);
+        console.log("level",levelupState);
         setRequest(require);
         setArrayData(arrayData);
         setPlayerPosition(player);
@@ -313,6 +362,10 @@ useEffect(() => {
         setCoffeeGet(coffee);
         //console.log(coffee);
         setEnergyGet(energy);
+        console.log(optionchoose);
+        
+        const money = response.data.json.player.property.money;
+                  setMoneyGet(money);
 
         if(require==="number"){
             HandleModalOpen();
@@ -324,22 +377,29 @@ useEffect(() => {
           axios
             .get("https://madcamp-week3-production.up.railway.app/game/create", { withCredentials: true })
             .then(response => {
-              
-                const arrayData = response.data.json.map;
-                 setArrayData(arrayData);
-
-                 const player = response.data.json.player.position;
-                 setPlayerPosition(player);
-
-                  const level = response.data.json.player.property.level;
-                  setLevelPlayer(level);
-
-                  const turn = response.data.turn;
-                  //console.log(turn);
-                  SetTurnPlayer(turn);
-
-                  const weekly = response.data.json.property.weeklyGoalData.string;
-                  setWeeklyGoal(weekly);
+              const arrayData = response.data.json.map;
+              const player = response.data.json.player.position;
+              const level = response.data.json.player.property.experience;
+              const require = response.data.json.property.requestInput.type;
+              const turn = response.data.turn;
+              const weekly = response.data.json.property.weeklyGoalData.string;
+              const health = response.data.json.player.property.health;
+              const levelup = response.data.json.player.property.level;
+              const money = response.data.json.player.property.money;
+              //console.log(levelup);
+              setLevelupState(levelup);
+              setMoneyGet(money);
+              //console.log(health);
+              //console.log(require);
+             // console.log(response.data);
+              //console.log(level);
+              setRequest(require);
+              setArrayData(arrayData);
+              setPlayerPosition(player);
+              setLevelPlayer(level);
+              setWeeklyGoal(weekly);
+              SetTurnPlayer(turn);
+              setHealthRest (health);
             })
             .catch(error => {
               console.error("새로운 API 호출에 실패했습니다.", error);
@@ -356,9 +416,15 @@ useEffect(() => {
                   const turn = response.data.turn;
                   const weekly = response.data.json.property.weeklyGoalData.string;
                   const health = response.data.json.player.property.health;
-                  console.log(health);
-                  //console.log(require);
+                  const levelup = response.data.json.player.property.level;
+                  const money = response.data.json.player.property.money;
+                  //console.log(levelup);
                   console.log(response.data);
+                  setLevelupState(levelup);
+                  setMoneyGet(money);
+                  //console.log(health);
+                  //console.log(require);
+                 // console.log(response.data);
                   //console.log(level);
                   setRequest(require);
                   setArrayData(arrayData);
@@ -373,7 +439,7 @@ useEffect(() => {
               }
             });
       }); 
-  }, []);
+  }, [response]);
   //console.log(turnPlayer);
 
 
@@ -431,8 +497,9 @@ useEffect(() => {
             {healthRest!== null && (
                 <div style={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center",fontFamily:"DungGeunMo", fontSize:"1.2rem"}}>
                 <Text style={{paddingRight:"20px",}}  > ❤ {healthRest} </Text>
-                <Text color={colorSet.white} > ☕ {coffeeGet} </Text>    
-                <Text style={{paddingLeft:"20px",}} color={colorSet.white} > ☆ {energyGet} </Text>
+
+              
+                <Text style={{paddingLeft:"20px",}} color={colorSet.white}> 💸 {moneyGet}</Text>
                 </div>
             )}
         </div>
@@ -445,13 +512,13 @@ useEffect(() => {
           {levelPlayer && (
             <div style={{margin: "0px",display:"flex", justifyContent:"space-between", fontFamily:"DungGeunMo", fontSize:"1.5rem", color:colorSet.white}}>
               <ul style={{margin:"0px"}}>
-                <li>C: {levelPlayer.C}</li>
-                <li>Java: {levelPlayer.Java}</li>
-                <li>Python: {levelPlayer.Python}</li>
+                <li>C: {levelPlayer.C}, {levelupState?.C}주차</li>
+                <li>Java: {levelPlayer.Java}, {levelupState?.Java}주차</li>
+                <li>Python: {levelPlayer.Python}, {levelupState?.Python}주차</li>
               </ul>
               <ul style={{margin:"0px"}}>
-                <li>JavaScript: {levelPlayer.JavaScript}</li>
-                <li>TypeScript: {levelPlayer.TypeScript}</li>
+                <li>JavaScript: {levelPlayer.JavaScript}, {levelupState?.JavaScript}주차</li>
+                <li>TypeScript: {levelPlayer.TypeScript}, {levelupState?.TypeScript}주차</li>
               </ul>
             </div>
 
@@ -460,7 +527,8 @@ useEffect(() => {
         <div>
             {turnPlayer!== null && (
                 <div style={{padding:"10px",fontFamily:"DungGeunMo", fontSize:"1.3rem"}}>
-                <Text color={colorSet.white} > ▶ 현재 {turnPlayer} 회 이동</Text>
+                
+                <Text color={colorSet.white}> ▶ 현재 {getWeekNumber(turnPlayer)}주차 {getDayOfWeek(turnPlayer)}요일</Text>
                     
                 </div>
             )}
@@ -520,6 +588,12 @@ Commit Changes
           <EventModal onClose={HandleModalShow} />
         </ModalPortal>
       )}
+
+{isFinished && (
+          <ModalPortal>
+            <EventModal2 onClose={() => setIsModalOpen(false)} />
+          </ModalPortal>
+        )}
 <ToastContainer position="top-center" 
 style={{ width: "400px" }}
 className="custom-toast-container"

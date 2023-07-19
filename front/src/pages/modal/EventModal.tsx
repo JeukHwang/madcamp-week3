@@ -2,6 +2,9 @@ import axios from "axios";
 import { Console } from "console";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
+import { useAtom } from "jotai";
+import { optionchooseAtom, playerPositionAtom, selectedCellsAtom } from "../../utils/atom";
+import { responseAtom } from "../../utils/atom";
 import Button from "../../atoms/button/button";
 import { ToastContainer, toast } from "react-toastify";
 import ModalPortal from "../../atoms/containers/background/ModalPortal";
@@ -10,22 +13,32 @@ type Turn = 0;
 type levelLanguage = {C: number, Java: number, Python: number, JavaScript: number, TypeScript: number}
 type event = {title: string, subtitle: string};
 const EventModal = ({ onClose }: any) => {
-    const [selectedCells, setSelectedCells] = useState<Position[]>([]);
+    const [response, setResponse] = useAtom(responseAtom);
+    const [selectedCells, setSelectedCells] = useAtom(selectedCellsAtom); 
     const [arrayData, setArrayData] = useState<any[]>([]);
-    const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
+
+    //const [playerPosition, setPlayerPosition] = useState<Position|null>(null);
+    const [playerPosition, setPlayerPosition] = useAtom(playerPositionAtom);
+  
     const [levelPlayer, setLevelPlayer] = useState<levelLanguage | null>(null);
     const [turnPlayer, SetTurnPlayer] = useState<Turn|null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [request, setRequest] = useState <string>("");
     const [weeklyGoal, setWeeklyGoal] = useState <string>("");
-
+    const [healthRest, setHealthRest] = useState <number>(0);
+    const [coffeeGet, setCoffeeGet] = useState <number>(0);
+    const [energyGet, setEnergyGet] = useState <number>(0);
+    const [levelupState, setLevelupState] = useState <levelLanguage | null>(null);
+    const [moneyGet, setMoneyGet] = useState <number>(0);
     const [eventtitle, setEventtitle] = useState<string>("");
     const [evensubtitle,setEventsubtitle]=useState<string>("");
     const [eventoptions,setEventoptions]=useState<any[]>();
     const [visibleOption, setVisibleOption] = useState<any[]>([]);
+
+    const [optionchoose, setOptionchoose] = useAtom(optionchooseAtom);
     const isVisibleOption = (index: number) => {
-        console.log("선택 가능한지 확인", index);
-        console.log(visibleOption.includes(index));
+       // console.log("선택 가능한지 확인", index);
+      //  console.log(visibleOption.includes(index));
         return visibleOption.includes(index);
       };
     const sellect = (index: any) => {
@@ -35,7 +48,9 @@ const EventModal = ({ onClose }: any) => {
         console.log(typeof index);
         if(isVisibleOption(index)===true){
             console.log("선택 가능");
-            
+            setOptionchoose(index);
+            onClose();
+            const positions = selectedCells.map(({ x, y }) => ({ x, y }));
         axios({
             method: "post",
             url: "https://madcamp-week3-production.up.railway.app/game/update-number",
@@ -51,13 +66,57 @@ const EventModal = ({ onClose }: any) => {
             if (require==="number"){
                 onClose();
                 console.log("숫자 선택");
-                window.location.reload();
+                //window.location.reload();
+                setResponse(response.data);
+
+                setSelectedCells([]);
                 
             }
             if(require==="positions"){
                 console.log("게임 끝");
                 onClose();
-                window.location.reload();
+                setResponse(response.data);
+                axios({
+                    method: "post",
+                    url: "https://madcamp-week3-production.up.railway.app/game/update-positions",
+                    data: {
+                        positions: positions,
+                    },
+                    withCredentials: true,
+            
+                  }).then((response)=> {
+                    //console.log(response.data.json);
+                   const arrayData = response.data.json.map;
+                   const player = response.data.json.player.position;
+                   const level = response.data.json.player.property.experience;
+                   const levelup = response.data.json.player.property.level;
+                   const require = response.data.json.property.requestInput.type;
+                   const turn = response.data.turn;
+                   const money = response.data.json.player.property.money;
+                   const health = response.data.json.player.property.health;
+                   setMoneyGet(money);
+                   setHealthRest(health);
+                   setLevelupState(levelup);
+                   setRequest(require);
+                   setArrayData(arrayData);
+                   setPlayerPosition(player);
+                   setLevelPlayer(level);
+                   setLevelupState(levelup);
+                   console.log("ready",response.data);
+                   setResponse(response.data);
+                   
+                   SetTurnPlayer(turn);
+                    //movePlayerToSelectedCells();
+                    setSelectedCells([]);
+                
+                  }).catch((error) => {
+                    console.log(error);
+                  });
+                setSelectedCells([]);
+                
+                //setPlayerPosition
+
+                //window.location.reload();
                 
 
             }
@@ -84,10 +143,10 @@ const EventModal = ({ onClose }: any) => {
             setEventsubtitle(evensubtitle);
             const length = response.data.json.property.requestInput.event.options.length;
             //console.log(length);
-
+            console.log("modal",response.data);
             const visisbleOption = response.data.json.property.requestInput.event.appliableOptions;
             setVisibleOption(visisbleOption);
-            console.log(visisbleOption);
+            //console.log(visisbleOption);
             const eventoptions = new Array(length);
             for(var i=0;i<length;i++){
                 eventoptions[i]=[response.data.json.property.requestInput.event.options[i].title, response.data.json.property.requestInput.event.options[i].subtitle];

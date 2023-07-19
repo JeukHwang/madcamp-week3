@@ -30,7 +30,7 @@ const LeaderBoard: React.FC = () => {
           photo: item.user.photo
         }));
         setUsers(userData);
-        console.log(userData);
+        //console.log(userData);
       })
       .catch(error => {
         console.error("API 호출에 실패했습니다.", error);
