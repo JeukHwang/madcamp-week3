@@ -1,4 +1,5 @@
 import * as clc from 'cli-color';
+import type { EventTitle } from '../event/events';
 import { GameConstant } from './constant';
 import type { GameInstance } from './game';
 import { logAndPrint } from './util';
@@ -8,8 +9,15 @@ export type GameEffect = (game: GameInstance) => boolean;
 export const NoCondition: GameCondition = () => true;
 export const StartOfWeek: GameCondition = (game) =>
   game.property.turn % GameConstant.bigTurn === 0;
+export const MiddleOfWeek: GameCondition = (game) =>
+  game.property.turn % GameConstant.bigTurn ===
+  Math.floor(GameConstant.bigTurn / 2);
 export const EndOfWeek: GameCondition = (game) =>
   game.property.turn % GameConstant.bigTurn === GameConstant.bigTurn - 1;
+export const WeekDay: (...array: number[]) => GameCondition =
+  (...array) =>
+  (game) =>
+    array.some((a) => a === game.property.turn % GameConstant.bigTurn);
 export const NoEffect: GameEffect = () => true;
 
 export type GameOptionJSON = {
@@ -18,7 +26,7 @@ export type GameOptionJSON = {
 };
 
 export type GameEventJSON = {
-  title: string;
+  title: EventTitle;
   subtitle: string;
   options: GameOptionJSON[];
   appliableOptions: number[];
@@ -47,10 +55,7 @@ export class OptionInstance implements AppliableGameOption {
   show(game: GameInstance, index: number): void {
     const color = this.canApply(game) ? clc.white : clc.blackBright;
     logAndPrint(
-      color(
-        `${index.toString()} => ${this.title}`.padEnd(15) +
-          ` | ${this.subtitle}`,
-      ),
+      color(`[ 선택지 ${index.toString()} <${this.title}> ]\n${this.subtitle}`),
     );
   }
 
@@ -75,7 +80,7 @@ export class OptionInstance implements AppliableGameOption {
 }
 
 export interface GameEvent {
-  title: string;
+  title: EventTitle;
   subtitle: string;
   options: GameOption[];
   toJson(game: GameInstance): GameEventJSON;
@@ -91,7 +96,7 @@ export interface AppliableGameEvent extends GameEvent {
 export class EventInstance implements AppliableGameEvent {
   constructor(
     private condition: GameCondition,
-    public title: string,
+    public title: EventTitle,
     public subtitle: string,
     public options: GameOption[],
   ) {}
@@ -106,7 +111,7 @@ export class EventInstance implements AppliableGameEvent {
   }
 
   show(game: GameInstance): void {
-    logAndPrint(`[ 이벤트: ${this.title} ]\n${this.subtitle}\n`);
+    logAndPrint(`[ 이벤트 <${this.title}> ]\n${this.subtitle}\n`);
     this.options.forEach((opt, i) => opt.show(game, i));
     logAndPrint('');
   }

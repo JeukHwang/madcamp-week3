@@ -56,3 +56,15 @@ export function logAndPrint(msg: string) {
   log(msg);
   console.log(msg);
 }
+
+export function weightedRandom(array: number[]): number {
+  const cdf: number[] = array.map(
+    (
+      (sum) => (value) =>
+        (sum += value)
+    )(0),
+  );
+  const normalizedCdf = cdf.map((value) => value / cdf[array.length - 1]);
+  const rand = Math.random();
+  return normalizedCdf.findIndex((el) => rand <= el);
+}

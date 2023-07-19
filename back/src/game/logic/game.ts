@@ -1,6 +1,9 @@
+import type { Prisma } from '@prisma/client';
 import * as clc from 'cli-color';
-import type { WeeklyGoalData } from '../event/events';
-import { findEventByName, randomWeeklyGoal } from '../event/events';
+import type { EventTitle } from '../event/events';
+import { findEventByName } from '../event/events';
+import type { WeeklyGoalData } from '../event/주간_목표';
+import { randomWeeklyGoal } from '../event/주간_목표';
 import { GameConstant } from './constant';
 import type { GameEvent, GameEventJSON } from './event';
 import { StartOfWeek } from './event';
@@ -10,7 +13,7 @@ import type { PlayerJSON } from './player';
 import { Player } from './player';
 import type { TileJSON, TileLanguage } from './tile';
 import { Language, Tile } from './tile';
-import { countArray, log, logAndPrint } from './util';
+import { countArray, logAndPrint, weightedRandom } from './util';
 
 export type EventApplyResult =
   | { applied: false }
@@ -26,13 +29,25 @@ export type ResponseInput =
   | { type: 'positions'; data: PositionJSON[] };
 export type GameInput = number | Position[];
 
+type GameStatus =
+  | {
+      type: 'beginTurn' | 'randomEvent' | 'movePlayer' | 'endTurn' | 'endGame';
+    }
+  | { type: 'applyEvent'; data: EventTitle };
+
 export type GameProperty = {
   turn: number;
   isFinished: boolean;
   requestInput: RequestInput;
   weeklyGoalData: WeeklyGoalData;
-  status: { type: string; data: string }[];
+  status: GameStatus[];
   input: ResponseInput | null;
+  eventData: { [key in EventTitle]?: Prisma.JsonValue } & {
+    '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
+    '개발자님!': { isDone: boolean };
+    '불이야!': { data: TileLanguage[] };
+    CORS: { isDone: boolean };
+  };
 };
 
 export type GameInstanceJSON = {
@@ -61,6 +76,12 @@ export class GameInstance {
         weeklyGoalData: null as unknown as WeeklyGoalData,
         status: [],
         input: null,
+        eventData: {
+          '버티컬 마우스가 필요해': { has: false, count: 0 },
+          '개발자님!': { isDone: false },
+          '불이야!': { data: [] },
+          CORS: { isDone: false },
+        },
       },
       map,
       player,
@@ -102,16 +123,25 @@ export class GameInstance {
     while (true) {
       if (this.property.status.length === 0) {
         this.property.status = [
-          { type: 'beginTurn', data: '' },
-          { type: 'movePlayer', data: '' },
+          { type: 'beginTurn' },
+          { type: 'randomEvent' },
+          { type: 'movePlayer' },
           { type: 'applyEvent', data: '성장' },
           { type: 'applyEvent', data: '주간 목표' },
-          { type: 'endTurn', data: '' },
+          { type: 'endTurn' },
         ];
       }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const item = this.property.status.shift()!;
       switch (item.type) {
         case 'beginTurn': {
+          this.player.property.health = GameConstant.defaultHealth;
+          if (!this.property.eventData['버티컬 마우스가 필요해'].has) {
+            this.player.property.health -=
+              this.property.eventData['버티컬 마우스가 필요해'].count;
+          }
+          // TODO: check if player has positive health before moving, if not, end game by event 과로사
+
           // Set random weekly goal at the start of the week
           if (StartOfWeek(this)) {
             this.property.weeklyGoalData = randomWeeklyGoal(this);
@@ -134,6 +164,33 @@ export class GameInstance {
             this.property.status.unshift(item);
             return 'movePlaye invalid response';
           }
+          break;
+        }
+        case 'randomEvent': {
+          const weight: [EventTitle, number][] = [
+            ['변화의 물결', 0.1],
+            ['밥은 먹고 다니니', 0.8],
+            ['버티컬 마우스가 필요해', 0.5],
+            ['개발자님!', 0.5],
+            ['CORS', 0.5],
+            ['해커톤', 0.2],
+            ['웹사이트 개발 외주', 0.2],
+            ['데이터 시각화 외주', 0.2],
+          ];
+          // Random event
+          const appliableEvents = weight
+            .map((e): [GameEvent, number] => [findEventByName(e[0]), e[1]])
+            .filter((e) => e[0].canApply(this));
+          if (appliableEvents.length === 0) {
+            break;
+          }
+          const eventTitle =
+            appliableEvents[weightedRandom(appliableEvents.map((e) => e[1]))][0]
+              .title;
+          this.property.status.unshift({
+            type: 'applyEvent',
+            data: eventTitle,
+          });
           break;
         }
         case 'applyEvent': {
@@ -162,8 +219,16 @@ export class GameInstance {
   }
 
   movePlayer(move: Move) {
+    if (this.player.property.health < move.indices.length) {
+      throw new Error('Player health is not enough');
+    }
+    this.player.property.health -= move.indices.length;
     const collectedTile = move.tiles.map((tile) => tile.language);
     this.updateExperience(collectedTile);
+    if (Math.random() < 0.003) {
+      this.property.eventData['불이야!'].data = collectedTile;
+      this.property.status.unshift({ type: 'applyEvent', data: '불이야!' });
+    }
     move.tiles.forEach((tile) => tile.reset());
     this.player.position = move.positions[move.positions.length - 1];
   }
@@ -176,22 +241,18 @@ export class GameInstance {
   }
 
   show() {
-    log(JSON.stringify(this.toJson(), null, 2));
-    // logAndPrint('[  규칙 ]');
-    // logAndPrint('');
-    logAndPrint('[ 금주의 목표 ]');
-    if (this.property.weeklyGoalData.include.length === 0) {
-      console.log(
-        `${this.property.weeklyGoalData.number}개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
-      );
-    } else {
-      console.log(
-        `${this.property.weeklyGoalData.include.join(', ')}를 포함하여 ${
-          this.property.weeklyGoalData.number
-        }개 이상의 언어를 활동할 수 있는 개발자가 되자.`,
-      );
-    }
+    logAndPrint('[ 규칙 ]');
+    logAndPrint(
+      `- 목표: 5x5 타일을 돌아다니며 경험치를 모으고 경력을 쌓아 개발자로 오래 살아남자!`,
+    );
+    logAndPrint(
+      `- 하루에 같은 색깔의 타일을 ${GameConstant.experienceThreshold}개 모을 때마다 해당 언어 경험치 +1 (단, 같은 색깔의 타일이 연속될 필요는 없다)`,
+    );
+    logAndPrint(
+      `- 경험치 ${GameConstant.levelThreshold} 모은 언어에 대해 매주 일요일 <성장> 이벤트를 통해 경력 +1`,
+    );
     logAndPrint('');
+    logAndPrint(`[ 금주의 목표 ]\n${this.property.weeklyGoalData.string}\n`);
     const smallCircle = ' \u25CF';
     const circle = '\u2B24 ';
     const colors = [
@@ -239,6 +300,10 @@ export class GameInstance {
           );
         })
         .join('\n'),
+    );
+    logAndPrint('');
+    logAndPrint(
+      `체력 : ${this.player.property.health} | 돈 : ${this.player.property.money}`,
     );
     logAndPrint('');
   }

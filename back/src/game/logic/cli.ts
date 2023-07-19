@@ -1,6 +1,5 @@
 import { ForbiddenException } from '@nestjs/common';
 import { josa } from '@toss/hangul';
-import { GameConstant } from './constant';
 import type { GameInstance } from './game';
 import { Position } from './move';
 import { erase, input, logAndPrint } from './util';
@@ -12,7 +11,7 @@ export async function getPositionsFromInput(
   while (true) {
     try {
       const str = await input(
-        `WASD키를 눌러 최대 ${GameConstant.defaultHealth}칸을 움직이세요. : `,
+        `WASD키를 눌러 최대 ${game.player.property.health}칸을 움직이세요. : `,
       );
       const positions: Position[] = [];
       const chars = str.split('');
