@@ -42,10 +42,11 @@ export type GameProperty = {
   status: GameStatus[];
   input: ResponseInput | null;
   eventData: {
-    '버티컬 마우스가 필요해': { has: false; count: number } | { has: true };
+    '버티컬 마우스가 필요해': { has: boolean };
     '개발자님!': { isDone: boolean };
     '불이야!': { data: TileLanguage[] };
     CORS: { isDone: boolean };
+    '모니터 암이 필요해': { has: false; count: number } | { has: true };
   };
 };
 
@@ -76,10 +77,11 @@ export class GameInstance {
         status: [],
         input: null,
         eventData: {
-          '버티컬 마우스가 필요해': { has: false, count: 0 },
+          '버티컬 마우스가 필요해': { has: false },
           '개발자님!': { isDone: false },
           '불이야!': { data: [] },
           CORS: { isDone: false },
+          '모니터 암이 필요해': { has: false, count: 0 },
         },
       },
       map,
@@ -135,9 +137,9 @@ export class GameInstance {
       switch (item.type) {
         case 'beginTurn': {
           this.player.property.health = GameConstant.defaultHealth;
-          if (!this.property.eventData['버티컬 마우스가 필요해'].has) {
+          if (!this.property.eventData['모니터 암이 필요해'].has) {
             this.player.property.health -=
-              this.property.eventData['버티컬 마우스가 필요해'].count;
+              this.property.eventData['모니터 암이 필요해'].count;
           }
           // TODO: check if player has positive health before moving, if not, end game by event 과로사
 
@@ -169,12 +171,13 @@ export class GameInstance {
           const weight: [EventTitle, number][] = [
             ['변화의 물결', 0.1],
             ['밥은 먹고 다니니', 0.8],
-            ['버티컬 마우스가 필요해', 0.5],
+            ['버티컬 마우스가 필요해', 0.2],
             ['개발자님!', 0.5],
             ['CORS', 0.5],
             ['해커톤', 0.2],
             ['웹사이트 개발 외주', 0.2],
             ['데이터 시각화 외주', 0.2],
+            ['모니터 암이 필요해', 0.1],
           ];
           // Random event
           const appliableEvents = weight

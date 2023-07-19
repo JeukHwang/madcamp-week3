@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import type { GameEvent } from '../logic/event';
 import { CORS, CORS_문제 } from './CORS';
 import { 개발자님 } from './개발자님';
+import { 모니터_암이_필요해 } from './모니터_암이_필요해';
 import { 밥은_먹고_다니니 } from './밥은_먹고_다니니';
 import { 버티컬_마우스가_필요해 } from './버티컬_마우스가_필요해';
 import { 변화의_물결 } from './변화의_물결';
@@ -24,6 +25,7 @@ const eventList: GameEvent[] = [
   해커톤,
   웹사이트_개발_외주,
   데이터_시각화_외주,
+  모니터_암이_필요해,
 ];
 const eventNameList = [
   '성장',
@@ -38,6 +40,7 @@ const eventNameList = [
   '해커톤',
   '웹사이트 개발 외주',
   '데이터 시각화 외주',
+  '모니터 암이 필요해',
 ] as const;
 export type EventTitle = typeof eventNameList[number];
 
