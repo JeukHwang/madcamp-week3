@@ -1,0 +1,37 @@
+.audio-controls {
+    display: flex;
+    align-items: center;
+  }
+  
+  .play-pause-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  /* Hiding the pause icon by default */
+  .play-pause-button .fa-pause {
+    display: none;
+  }
+  
+  /* Showing the play icon when audio is paused */
+  audio[controls]::-webkit-media-controls-pause-button {
+    display: none !important;
+  }
+  audio[controls]::-webkit-media-controls-play-button {
+    display: inline-block !important;
+  }
+  
+  /* Showing the pause icon when audio is playing */
+  audio[controls]::-webkit-media-controls-play-button {
+    display: none !important;
+  }
+  audio[controls]::-webkit-media-controls-pause-button {
+    display: inline-block !important;
+  }
+  
+  /* Adding some padding to the audio controls for better appearance */
+  audio[controls] {
+    padding-left: 10px;
+  }
