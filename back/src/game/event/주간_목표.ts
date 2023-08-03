@@ -58,10 +58,8 @@ export function randomWeeklyGoal(game: GameInstance): WeeklyGoalData {
       ', ',
     )}로 활동할 수 있는 개발자가 되자.`;
   } else {
-    option.string = `${game.property.weeklyGoalData.include.join(
-      ', ',
-    )}를 포함하여 ${
-      game.property.weeklyGoalData.number
+    option.string = `${option.include.join(', ')}를 포함하여 ${
+      option.number
     }개 이상의 언어로 활동할 수 있는 개발자가 되자.`;
   }
   return option;
